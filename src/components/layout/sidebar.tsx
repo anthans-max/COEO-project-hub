@@ -66,13 +66,9 @@ export function Sidebar() {
       </div>
 
       {/* User block */}
-      <div className="flex items-center gap-[10px] px-5 py-[13px] border-b border-white/[0.07]">
+      <div className="flex items-center px-5 py-[13px] border-b border-white/[0.07]">
         <div className="w-[30px] h-[30px] rounded-full bg-accent flex items-center justify-center text-[11px] font-semibold text-white shrink-0">
           AS
-        </div>
-        <div>
-          <div className="text-[12px] text-white font-medium">Anthan Sunder</div>
-          <div className="text-[10px] text-white/[0.38]">Consultant</div>
         </div>
       </div>
 
