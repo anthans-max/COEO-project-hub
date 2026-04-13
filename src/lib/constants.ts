@@ -1,0 +1,82 @@
+export const PROJECT_STATUSES = [
+  "Not Started",
+  "In Progress",
+  "On Hold",
+  "Complete",
+  "TBD",
+  "Unknown",
+] as const;
+
+export const MILESTONE_STATUSES = [
+  "Upcoming",
+  "Complete",
+  "At Risk",
+  "Overdue",
+] as const;
+
+export const ACTION_STATUSES = [
+  "Open",
+  "In Progress",
+  "Complete",
+  "Blocked",
+] as const;
+
+export const ACTION_PRIORITIES = ["High", "Medium", "Low"] as const;
+
+export const SYSTEM_CATEGORIES = [
+  "Internal System",
+  "Data Source",
+  "Infrastructure",
+] as const;
+
+export const SYSTEM_STATUSES = [
+  "Active",
+  "In Progress",
+  "Decision Pending",
+  "To Be Decommissioned",
+  "Fragmented",
+  "Unknown",
+] as const;
+
+export const VENDOR_STATUSES = [
+  "Active",
+  "Evaluating",
+  "On Hold",
+  "Former",
+] as const;
+
+// Maps status strings to badge color variants
+export const STATUS_BADGE_MAP: Record<string, string> = {
+  // Project statuses
+  "Not Started": "gray",
+  "In Progress": "blue",
+  "On Hold": "amber",
+  "Complete": "green",
+  "TBD": "gray",
+  "Unknown": "gray",
+  // Milestone statuses
+  "Upcoming": "blue",
+  "At Risk": "amber",
+  "Overdue": "red",
+  // Action statuses
+  "Open": "blue",
+  "Blocked": "red",
+  // System statuses
+  "Active": "green",
+  "Decision Pending": "amber",
+  "To Be Decommissioned": "red",
+  "Fragmented": "amber",
+  // Vendor statuses
+  "Evaluating": "amber",
+  "Former": "gray",
+};
+
+// Gantt bar colors by project status
+export const GANTT_BAR_COLORS: Record<string, string> = {
+  "Not Started": "#C8C0B4",
+  "In Progress": "#0A2342",
+  "On Hold": "#F4821F",
+  "Complete": "#1A5C32",
+  "TBD": "#8A7E6E",
+  "Unknown": "#8A7E6E",
+};

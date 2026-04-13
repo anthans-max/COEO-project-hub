@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COEO Project Hub — Design Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif}
+.app{display:flex;height:100vh;min-height:640px;background:#fff}
+.sidebar{width:224px;min-width:224px;background:#0A2342;display:flex;flex-direction:column}
+.logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.logo-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:0.12em;text-transform:uppercase}
+.logo-dot{color:#F4821F}
+.logo-sub{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:0.14em;text-transform:uppercase;margin-top:3px}
+.user-block{display:flex;align-items:center;gap:10px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.avatar-sm{width:30px;height:30px;border-radius:50%;background:#F4821F;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.user-name{font-size:12px;color:#fff;font-weight:500}
+.user-role{font-size:10px;color:rgba(255,255,255,0.38)}
+.nav{padding:8px 0;flex:1;overflow-y:auto}
+.nav-section{font-size:9px;font-weight:600;color:rgba(255,255,255,0.25);letter-spacing:0.14em;text-transform:uppercase;padding:13px 20px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 20px;cursor:pointer;color:rgba(255,255,255,0.52);font-size:12px;font-weight:500;transition:all 0.12s;border-left:3px solid transparent;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.85)}
+.nav-item.active{background:rgba(255,255,255,0.07);color:#fff;border-left:3px solid #F4821F}
+.main{flex:1;overflow-y:auto;background:#fff;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid #E8E2D9;padding:0 32px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-title{font-size:18px;font-weight:600;color:#0A2342;letter-spacing:-0.2px}
+.page-date{font-size:10px;color:#A09880;letter-spacing:0.06em;text-transform:uppercase;margin-top:2px}
+.btn-primary{background:#0A2342;color:#fff;border:none;padding:7px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:500}
+.btn-primary:hover{background:#0d2e56}
+.btn-ghost{background:transparent;color:#0A2342;border:1px solid #C8C0B4;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer}
+.btn-ghost:hover{background:#F5F0E8}
+.btn-danger{background:#C0392B;color:#fff;border:none;padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-weight:500}
+.content{padding:28px 32px;flex:1}
+.page{display:none}
+.page.active{display:block}
+.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:28px}
+.metric{background:#F5F0E8;border-radius:10px;padding:16px 18px}
+.metric-label{font-size:10px;font-weight:600;color:#8A7E6E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
+.metric-val{font-size:28px;font-weight:600;color:#0A2342;line-height:1}
+.metric-sub{font-size:11px;color:#A09880;margin-top:5px}
+.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.section-title{font-size:11px;font-weight:600;color:#0A2342;letter-spacing:0.07em;text-transform:uppercase}
+.view-all{font-size:11px;color:#A09880;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.card{background:#fff;border:1px solid #E8E2D9;border-radius:10px;margin-bottom:14px;overflow:hidden}
+.cream-row{display:flex;align-items:center;gap:12px;padding:9px 16px;background:#F5F0E8;border-bottom:1px solid #E8E2D9}
+.col-hdr{font-size:10px;font-weight:600;color:#8A7E6E;letter-spacing:0.07em;text-transform:uppercase}
+.proj-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #F0EAE0}
+.proj-row:last-child{border-bottom:none}
+.proj-row:hover{background:#FDFCFA}
+.proj-name{font-size:13px;font-weight:500;color:#1A1612}
+.proj-phase{font-size:11px;color:#A09880;margin-top:1px}
+.proj-owner{font-size:11px;color:#8A7E6E;width:110px;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;font-size:10px;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;font-weight:600;letter-spacing:0.02em}
+.b-blue{background:#E6EFF7;color:#0A2342}
+.b-amber{background:#FEF3E7;color:#924D0A}
+.b-green{background:#E8F4ED;color:#1A5C32}
+.b-gray{background:#F1EDE6;color:#6B5E50}
+.b-red{background:#FDECEA;color:#8B1F18}
+.b-navy{background:#0A2342;color:#fff}
+.b-orange{background:#FEF3E7;color:#924D0A}
+.prog-wrap{width:72px;flex-shrink:0}
+.prog-pct{font-size:11px;color:#8A7E6E;margin-bottom:3px;text-align:right}
+.prog-bg{height:3px;background:#E8E2D9;border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px}
+.action-row{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid #F0EAE0}
+.action-row:last-child{border-bottom:none}
+.action-row:hover{background:#FDFCFA}
+.cb{width:16px;height:16px;border-radius:50%;border:1.5px solid #C8C0B4;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.cb:hover{border-color:#0A2342}
+.cb.done{background:#0A2342;border-color:#0A2342}
+.action-text{font-size:13px;color:#1A1612;flex:1;line-height:1.45}
+.action-text.done{text-decoration:line-through;color:#C8C0B4}
+.owner-chip{font-size:10px;font-weight:600;color:#8A7E6E;background:#F5F0E8;padding:2px 8px;border-radius:20px;flex-shrink:0}
+.ms-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #F0EAE0}
+.ms-row:last-child{border-bottom:none}
+.ms-row:hover{background:#FDFCFA}
+.ms-date{font-size:11px;font-weight:500;color:#8A7E6E;width:56px;flex-shrink:0}
+.ms-date.hot{color:#C0392B;font-weight:600}
+.ms-name{font-size:13px;color:#1A1612;font-weight:500}
+.ms-proj{font-size:11px;color:#A09880}
+.filter-bar{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.filter-chip{font-size:11px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid #C8C0B4;background:transparent;color:#6B5E50;cursor:pointer;transition:all 0.12s}
+.filter-chip.active{background:#0A2342;color:#fff;border-color:#0A2342}
+.filter-chip:hover:not(.active){background:#F5F0E8}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.person-card{background:#F5F0E8;border:1px solid #E8E2D9;border-radius:10px;padding:16px}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-bottom:10px}
+.gantt-qtr{font-size:10px;font-weight:600;color:#8A7E6E;text-align:center;border-left:1px solid #E8E2D9;padding:7px 0;letter-spacing:0.06em;text-transform:uppercase}
+.gantt-row{display:flex;align-items:center;min-height:42px;border-bottom:1px solid #F0EAE0}
+.gantt-row:last-child{border-bottom:none}
+.gantt-row:hover{background:#FDFCFA}
+.gantt-label{width:172px;min-width:172px;padding:8px 12px 8px 16px}
+.gantt-sub{font-size:10px;color:#A09880;font-weight:400}
+.gantt-track{flex:1;position:relative;height:42px;display:flex;align-items:center}
+.gantt-bar{position:absolute;height:18px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:600;overflow:hidden;white-space:nowrap;cursor:pointer;color:#fff;transition:opacity 0.12s}
+.gantt-bar:hover{opacity:0.8}
+.gantt-ms-wrap{position:absolute;display:flex;align-items:center;justify-content:center;width:20px;height:42px;cursor:pointer}
+.gantt-diamond{width:9px;height:9px;transform:rotate(45deg);background:#F4821F;border:1.5px solid #fff}
+.g-tooltip{display:none;position:absolute;bottom:calc(100% - 2px);left:50%;transform:translateX(-50%);background:#0A2342;color:#fff;font-size:10px;font-weight:500;padding:4px 8px;border-radius:5px;white-space:nowrap;z-index:10;pointer-events:none}
+.today-line{position:absolute;top:0;bottom:0;width:1.5px;background:#F4821F;opacity:0.6;pointer-events:none}
+.sys-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.sys-card{background:#F5F0E8;border:1px solid #E8E2D9;border-radius:10px;padding:14px 16px}
+.sys-name{font-size:13px;font-weight:600;color:#0A2342;margin-bottom:3px}
+.sys-sub{font-size:11px;color:#8A7E6E;margin-bottom:10px}
+.vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.vendor-card{background:#F5F0E8;border:1px solid #E8E2D9;border-radius:10px;padding:16px}
+.divider-label{font-size:10px;font-weight:600;color:#8A7E6E;letter-spacing:0.1em;text-transform:uppercase;margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid #E8E2D9}
+.divider-label:first-child{margin-top:0}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+
+/* Design Token Reference (for Claude Code)
+--color-primary: #0A2342
+--color-accent: #F4821F
+--color-card-bg: #F5F0E8
+--color-border: #E8E2D9
+--color-border-light: #F0EAE0
+--color-text-primary: #1A1612
+--color-text-secondary: #8A7E6E
+--color-text-muted: #A09880
+--color-white: #FFFFFF
+--font-family: 'DM Sans', sans-serif
+--font-weight-regular: 400
+--font-weight-medium: 500
+--font-weight-semibold: 600
+--border-radius-card: 10px
+--border-radius-pill: 20px
+*/
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-name">COEO <span class="logo-dot">·</span> PROJECT HUB</div>
+      <div class="logo-sub">Internal Operations · 2026</div>
+    </div>
+    <div class="user-block">
+      <div class="avatar-sm">AS</div>
+      <div>
+        <div class="user-name">Anthan Sunder</div>
+        <div class="user-role">Consultant</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" onclick="nav('dashboard',this)">Dashboard</div>
+      <div class="nav-section">Projects</div>
+      <div class="nav-item" onclick="nav('projects',this)">Project list</div>
+      <div class="nav-item" onclick="nav('gantt',this)">Roadmap</div>
+      <div class="nav-item" onclick="nav('milestones',this)">Milestones</div>
+      <div class="nav-section">Work</div>
+      <div class="nav-item" onclick="nav('actions',this)">Action items</div>
+      <div class="nav-section">Reference</div>
+      <div class="nav-item" onclick="nav('systems',this)">Systems</div>
+      <div class="nav-item" onclick="nav('vendors',this)">Vendors</div>
+      <div class="nav-item" onclick="nav('people',this)">People</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="page-title">Dashboard</div>
+        <div class="page-date">Monday, April 13, 2026</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary">+ Add item</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="page active" id="page-dashboard">
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">Active projects</div><div class="metric-val">8</div><div class="metric-sub">3 in progress Q2</div></div>
+          <div class="metric"><div class="metric-label">Open actions</div><div class="metric-val">11</div><div class="metric-sub">4 assigned to you</div></div>
+          <div class="metric"><div class="metric-label">Milestones (30d)</div><div class="metric-val">3</div><div class="metric-sub">1 this week</div></div>
+          <div class="metric"><div class="metric-label">Open questions</div><div class="metric-val">6</div><div class="metric-sub">3 high priority</div></div>
+        </div>
+        <div class="grid2">
+          <div>
+            <div class="section-hdr"><div class="section-title">Project status</div><span class="view-all">View all</span></div>
+            <div class="card">
+              <div class="cream-row"><div class="col-hdr" style="flex:1">Project</div><div class="col-hdr" style="width:110px">Owner</div><div class="col-hdr" style="width:90px">Status</div><div class="col-hdr" style="width:72px;text-align:right">Progress</div></div>
+              <div class="proj-row"><div style="flex:1"><div class="proj-name">Data Warehouse</div><div class="proj-phase">Q2: Secondary KPIs</div></div><div class="proj-owner">Jack Minster</div><span class="badge b-blue">In progress</span><div class="prog-wrap"><div class="prog-pct">33%</div><div class="prog-bg"><div class="prog-fill" style="width:33%;background:#0A2342"></div></div></div></div>
+              <div class="proj-row"><div style="flex:1"><div class="proj-name">Customer Portal</div><div class="proj-phase">Q2: Prototype/POC</div></div><div class="proj-owner">Jack Minster</div><span class="badge b-amber">In progress</span><div class="prog-wrap"><div class="prog-pct">25%</div><div class="prog-bg"><div class="prog-fill" style="width:25%;background:#F4821F"></div></div></div></div>
+              <div class="proj-row"><div style="flex:1"><div class="proj-name">Salesforce Discovery</div><div class="proj-phase">Q2: Discovery & Design</div></div><div class="proj-owner">Mamata Huded</div><span class="badge b-amber">In progress</span><div class="prog-wrap"><div class="prog-pct">20%</div><div class="prog-bg"><div class="prog-fill" style="width:20%;background:#F4821F"></div></div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="section-hdr"><div class="section-title">My open actions</div><span class="view-all">View all</span></div>
+            <div class="card">
+              <div class="action-row"><div class="cb" onclick="toggleCb(this)"></div><div class="action-text">Review meeting transcript and synthesize notes</div><div class="owner-chip">AS</div></div>
+              <div class="action-row"><div class="cb" onclick="toggleCb(this)"></div><div class="action-text">Get up to speed on vendors and active projects</div><div class="owner-chip">AS</div></div>
+              <div class="action-row"><div class="cb" onclick="toggleCb(this)"></div><div class="action-text">Engage Technovate — requirements review</div><div class="owner-chip">AS</div></div>
+              <div class="action-row"><div class="cb" onclick="toggleCb(this)"></div><div class="action-text">Provide guidance on PM structure and governance</div><div class="owner-chip">AS</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page" id="page-projects"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+      <div class="page" id="page-gantt"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+      <div class="page" id="page-milestones"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+      <div class="page" id="page-actions"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+      <div class="page" id="page-systems"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+      <div class="page" id="page-vendors"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+      <div class="page" id="page-people"><p style="color:#8A7E6E;font-size:13px">→ See prototype in Claude chat for full interactive version</p></div>
+    </div>
+  </div>
+</div>
+<script>
+function nav(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');if(el)el.classList.add('active');document.getElementById('page-title').textContent=id.charAt(0).toUpperCase()+id.slice(1);}
+function toggleCb(el){el.classList.toggle('done');const txt=el.nextElementSibling;if(txt)txt.classList.toggle('done');el.innerHTML=el.classList.contains('done')?'<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>':'';}
+</script>
+</body>
+</html>
