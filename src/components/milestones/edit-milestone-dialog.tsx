@@ -17,9 +17,10 @@ interface Props {
   projects: ProjectOption[];
   onClose: () => void;
   onSave: (updated: Milestone) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function EditMilestoneDialog({ milestone, projects, onClose, onSave }: Props) {
+export function EditMilestoneDialog({ milestone, projects, onClose, onSave, onDelete }: Props) {
   const [form, setForm] = useState({
     title: "",
     project_id: "",
@@ -154,11 +155,20 @@ export function EditMilestoneDialog({ milestone, projects, onClose, onSave }: Pr
             <textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} rows={3} className={inputClass} />
           </div>
 
-          <div className="flex justify-end gap-2 mt-3">
-            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={saving || !form.title.trim()}>
-              {saving ? "Saving..." : "Save"}
-            </Button>
+          <div className="flex justify-between items-center mt-3">
+            <div>
+              {onDelete && (
+                <Button type="button" variant="destructive" size="sm" onClick={() => onDelete(milestone.id)}>
+                  Delete
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+              <Button type="submit" disabled={saving || !form.title.trim()}>
+                {saving ? "Saving..." : "Save"}
+              </Button>
+            </div>
           </div>
         </form>
       </div>

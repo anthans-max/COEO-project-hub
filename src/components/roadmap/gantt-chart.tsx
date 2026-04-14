@@ -49,6 +49,7 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
   const [editProject, setEditProject] = useState<Project | null>(null);
   const [editMilestone, setEditMilestone] = useState<Milestone | null>(null);
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
+  const [deleteMilestoneId, setDeleteMilestoneId] = useState<string | null>(null);
   const toast = useToast();
 
   const todayPct = todayPercent();
@@ -80,6 +81,25 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
 
   const handleMilestoneSave = (updated: Milestone) => {
     setMilestones((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+  };
+
+  const handleMilestoneDeleteRequest = (id: string) => {
+    setEditMilestone(null);
+    setDeleteMilestoneId(id);
+  };
+
+  const handleMilestoneDelete = async () => {
+    if (!deleteMilestoneId) return;
+    const original = milestones.find((m) => m.id === deleteMilestoneId);
+    setMilestones((prev) => prev.filter((m) => m.id !== deleteMilestoneId));
+    setDeleteMilestoneId(null);
+
+    const supabase = createClient();
+    const { error } = await supabase.from("coeo_milestones").delete().eq("id", deleteMilestoneId);
+    if (error) {
+      if (original) setMilestones((prev) => [...prev, original]);
+      toast.error("Failed to delete milestone");
+    }
   };
 
   return (
@@ -226,6 +246,16 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
         projects={projectOptions}
         onClose={() => setEditMilestone(null)}
         onSave={handleMilestoneSave}
+        onDelete={handleMilestoneDeleteRequest}
+      />
+
+      {/* Delete Milestone Confirmation */}
+      <ConfirmDialog
+        open={!!deleteMilestoneId}
+        title="Delete milestone"
+        message="Are you sure you want to delete this milestone?"
+        onConfirm={handleMilestoneDelete}
+        onCancel={() => setDeleteMilestoneId(null)}
       />
     </>
   );
