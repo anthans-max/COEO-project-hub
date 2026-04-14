@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,13 +28,36 @@ interface Props {
 export function ActionsList({ initialData, projects }: Props) {
   const [actions, setActions] = useRealtime("coeo_actions", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [projectFilter, setProjectFilter] = useState("All");
+  const [personFilter, setPersonFilter] = useState("All");
   const [showAdd, setShowAdd] = useState(false);
   const [editAction, setEditAction] = useState<Action | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
 
   const statusOptions = ["All", "Open", "In Progress", "Complete", "Blocked"];
-  const filtered = statusFilter === "All" ? actions : actions.filter((a) => a.status === statusFilter);
+
+  const peopleInScope = Array.from(
+    new Set(
+      actions
+        .filter((a) => projectFilter === "All" || a.project_id === projectFilter)
+        .map((a) => a.owner || "Unassigned")
+    )
+  ).sort();
+  const personOptions = ["All", ...peopleInScope];
+
+  useEffect(() => {
+    if (personFilter !== "All" && !peopleInScope.includes(personFilter)) {
+      setPersonFilter("All");
+    }
+  }, [personFilter, peopleInScope]);
+
+  const filtered = actions.filter(
+    (a) =>
+      (statusFilter === "All" || a.status === statusFilter) &&
+      (projectFilter === "All" || a.project_id === projectFilter) &&
+      (personFilter === "All" || (a.owner || "Unassigned") === personFilter)
+  );
 
   // Group by owner
   const grouped = filtered.reduce<Record<string, Action[]>>((acc, action) => {
@@ -77,8 +100,29 @@ export function ActionsList({ initialData, projects }: Props) {
 
   return (
     <>
-      <div className="flex justify-between items-start mb-4">
-        <FilterBar options={statusOptions} selected={statusFilter} onChange={setStatusFilter} />
+      <div className="flex justify-between items-start mb-4 gap-4 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
+          <FilterBar options={statusOptions} selected={statusFilter} onChange={setStatusFilter} />
+          <select
+            value={projectFilter}
+            onChange={(e) => setProjectFilter(e.target.value)}
+            className="border border-border rounded-card px-3 py-[5px] text-[13px] outline-none focus:border-accent mb-[18px]"
+          >
+            <option value="All">All projects</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+          <select
+            value={personFilter}
+            onChange={(e) => setPersonFilter(e.target.value)}
+            className="border border-border rounded-card px-3 py-[5px] text-[13px] outline-none focus:border-accent mb-[18px]"
+          >
+            {personOptions.map((name) => (
+              <option key={name} value={name}>{name === "All" ? "All people" : name}</option>
+            ))}
+          </select>
+        </div>
         <Button onClick={() => setShowAdd(true)}>+ Add action</Button>
       </div>
 
