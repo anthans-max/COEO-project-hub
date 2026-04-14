@@ -12,7 +12,7 @@ export default async function PeoplePage() {
   return (
     <>
       <Topbar title="People" />
-      <div className="p-7 px-8 flex-1">
+      <div className="pt-8 pb-7 px-8 flex-1">
         <PeopleGrid initialData={people ?? []} />
       </div>
     </>

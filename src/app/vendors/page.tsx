@@ -12,7 +12,7 @@ export default async function VendorsPage() {
   return (
     <>
       <Topbar title="Vendors" />
-      <div className="p-7 px-8 flex-1">
+      <div className="pt-8 pb-7 px-8 flex-1">
         <VendorsGrid initialData={vendors ?? []} />
       </div>
     </>

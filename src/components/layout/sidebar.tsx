@@ -57,8 +57,8 @@ export function Sidebar() {
     <aside className="w-sidebar min-w-sidebar bg-primary flex flex-col h-screen sticky top-0">
       {/* Logo */}
       <div className="px-5 pt-5 pb-4 border-b border-white/[0.07]">
-        <div className="text-[15px] font-semibold text-white tracking-[0.12em] uppercase">
-          COEO <span className="text-accent">·</span> PROJECT HUB
+        <div className="text-[15px] font-semibold text-white tracking-[0.12em] uppercase whitespace-nowrap">
+          COEO PROJECT HUB
         </div>
         <div className="text-[11px] text-white/[0.6] tracking-[0.14em] uppercase mt-[3px]">
           Internal Operations · 2026

@@ -25,7 +25,7 @@ export default async function SystemsPage() {
   return (
     <>
       <Topbar title="Systems" />
-      <div className="p-7 px-8 flex-1">
+      <div className="pt-8 pb-7 px-8 flex-1">
         <SystemsGrid
           initialData={systems ?? []}
           initialCategories={categories}
