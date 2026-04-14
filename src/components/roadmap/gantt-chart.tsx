@@ -104,9 +104,25 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
 
   return (
     <>
-      <div className="flex justify-end gap-2 mb-4">
-        <Button variant="ghost" onClick={() => setShowAddMilestone(true)}>+ Add milestone</Button>
-        <Button onClick={() => setShowAddProject(true)}>+ Add project</Button>
+      <div className="flex justify-between items-center gap-2 mb-4">
+        <div className="flex items-center gap-4 text-[12px] text-text-muted">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-2 rounded-sm" style={{ backgroundColor: GANTT_BAR_COLORS["In Progress"] }} />
+            In Progress
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-3 h-2 rounded-sm" style={{ backgroundColor: GANTT_BAR_COLORS["TBD"] }} />
+            TBD / Not Started
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rotate-45 bg-accent" />
+            Milestone
+          </span>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="ghost" onClick={() => setShowAddMilestone(true)}>+ Add milestone</Button>
+          <Button onClick={() => setShowAddProject(true)}>+ Add project</Button>
+        </div>
       </div>
 
       <div className="border border-border rounded-card overflow-hidden bg-white">
