@@ -38,6 +38,15 @@ export const SYSTEM_STATUSES = [
   "Unknown",
 ] as const;
 
+export const PEOPLE_COLORS: { label: string; value: string }[] = [
+  { label: "Navy", value: "#0A2342" },
+  { label: "Orange", value: "#F4821F" },
+  { label: "Teal", value: "#059669" },
+  { label: "Green", value: "#1A5C32" },
+  { label: "Purple", value: "#8B5CF6" },
+  { label: "Pink", value: "#EC4899" },
+];
+
 export const VENDOR_STATUSES = [
   "Active",
   "Evaluating",

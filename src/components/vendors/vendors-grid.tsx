@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddVendorDialog } from "./add-vendor-dialog";
+import { EditVendorDialog } from "./edit-vendor-dialog";
 import { useRealtime } from "@/lib/hooks/use-realtime";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
@@ -17,8 +18,13 @@ interface Props {
 export function VendorsGrid({ initialData }: Props) {
   const [vendors, setVendors] = useRealtime("coeo_vendors", initialData);
   const [showAdd, setShowAdd] = useState(false);
+  const [editVendor, setEditVendor] = useState<Vendor | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
+
+  const handleEditSave = (updated: Vendor) => {
+    setVendors((prev) => prev.map((v) => (v.id === updated.id ? updated : v)));
+  };
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -46,12 +52,20 @@ export function VendorsGrid({ initialData }: Props) {
             key={vendor.id}
             className="bg-cream border border-border rounded-card p-4 group relative"
           >
-            <button
-              onClick={() => setDeleteId(vendor.id)}
-              className="absolute top-2 right-3 text-[10px] text-text-muted hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              ×
-            </button>
+            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={() => setEditVendor(vendor)}
+                className="text-[10px] font-medium text-white bg-primary px-2 py-[2px] rounded-pill hover:bg-primary/90"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => setDeleteId(vendor.id)}
+                className="text-[10px] font-medium text-white bg-destructive px-2 py-[2px] rounded-pill hover:bg-destructive/90"
+              >
+                Delete
+              </button>
+            </div>
             <div className="text-[13px] font-semibold text-primary mb-1">{vendor.name}</div>
             {vendor.subtitle && (
               <div className="text-[11px] text-text-secondary mb-1">{vendor.subtitle}</div>
@@ -78,6 +92,12 @@ export function VendorsGrid({ initialData }: Props) {
         open={showAdd}
         onClose={() => setShowAdd(false)}
         onAdd={(vendor) => setVendors((prev) => [...prev, vendor])}
+      />
+
+      <EditVendorDialog
+        vendor={editVendor}
+        onClose={() => setEditVendor(null)}
+        onSave={handleEditSave}
       />
 
       <ConfirmDialog

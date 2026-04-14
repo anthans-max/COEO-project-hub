@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddSystemDialog } from "./add-system-dialog";
+import { EditSystemDialog } from "./edit-system-dialog";
 import { useRealtime } from "@/lib/hooks/use-realtime";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
@@ -17,8 +18,13 @@ interface Props {
 export function SystemsGrid({ initialData }: Props) {
   const [systems, setSystems] = useRealtime("coeo_systems", initialData);
   const [showAdd, setShowAdd] = useState(false);
+  const [editSystem, setEditSystem] = useState<System | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
+
+  const handleEditSave = (updated: System) => {
+    setSystems((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+  };
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -56,12 +62,20 @@ export function SystemsGrid({ initialData }: Props) {
                   key={system.id}
                   className="bg-cream border border-border rounded-card px-4 py-[14px] group relative"
                 >
-                  <button
-                    onClick={() => setDeleteId(system.id)}
-                    className="absolute top-2 right-3 text-[10px] text-text-muted hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ×
-                  </button>
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => setEditSystem(system)}
+                      className="text-[10px] font-medium text-white bg-primary px-2 py-[2px] rounded-pill hover:bg-primary/90"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setDeleteId(system.id)}
+                      className="text-[10px] font-medium text-white bg-destructive px-2 py-[2px] rounded-pill hover:bg-destructive/90"
+                    >
+                      Delete
+                    </button>
+                  </div>
                   <div className="text-[13px] font-semibold text-primary mb-[3px]">{system.name}</div>
                   <div className="text-[11px] text-text-secondary mb-[10px]">{system.subtitle}</div>
                   <Badge status={system.status} />
@@ -80,6 +94,12 @@ export function SystemsGrid({ initialData }: Props) {
         open={showAdd}
         onClose={() => setShowAdd(false)}
         onAdd={(system) => setSystems((prev) => [...prev, system])}
+      />
+
+      <EditSystemDialog
+        system={editSystem}
+        onClose={() => setEditSystem(null)}
+        onSave={handleEditSave}
       />
 
       <ConfirmDialog
