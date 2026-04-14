@@ -4,6 +4,7 @@ import { MetricCard } from "@/components/ui/metric-card";
 import { ProjectStatusTable } from "@/components/dashboard/project-status-table";
 import { ActionsWidget } from "@/components/dashboard/actions-widget";
 import { MilestonesWidget } from "@/components/dashboard/milestones-widget";
+import { PlaceholderNotice } from "@/components/ui/placeholder-notice";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -28,6 +29,7 @@ export default async function DashboardPage() {
     <>
       <Topbar title="Dashboard" />
       <div className="pt-8 pb-7 px-8 flex-1">
+        <PlaceholderNotice />
         {/* Metric cards */}
         <div className="grid grid-cols-4 gap-[10px] mb-7">
           <MetricCard label="Active projects" value={projectCount ?? 0} sub={`${projects?.filter(p => p.status === 'In Progress').length ?? 0} in progress`} />
