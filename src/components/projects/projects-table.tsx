@@ -5,11 +5,10 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Button } from "@/components/ui/button";
-import { InlineEdit } from "@/components/ui/inline-edit";
-import { InlineSelect } from "@/components/ui/inline-select";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FilterBar } from "@/components/ui/filter-bar";
 import { AddProjectDialog } from "./add-project-dialog";
+import { EditProjectDialog } from "./edit-project-dialog";
 import { useRealtime } from "@/lib/hooks/use-realtime";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
@@ -24,26 +23,15 @@ export function ProjectsTable({ initialData }: Props) {
   const [projects, setProjects] = useRealtime("coeo_projects", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
   const [showAdd, setShowAdd] = useState(false);
+  const [editProject, setEditProject] = useState<Project | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
 
   const statusOptions = ["All", ...PROJECT_STATUSES];
   const filtered = statusFilter === "All" ? projects : projects.filter((p) => p.status === statusFilter);
 
-  const updateField = async (id: string, field: string, value: string | number) => {
-    const original = projects.find((p) => p.id === id);
-    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
-
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("coeo_projects")
-      .update({ [field]: value })
-      .eq("id", id);
-
-    if (error) {
-      if (original) setProjects((prev) => prev.map((p) => (p.id === id ? original : p)));
-      toast.error("Failed to save");
-    }
+  const handleEditSave = (updated: Project) => {
+    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
   };
 
   const handleDelete = async () => {
@@ -71,10 +59,10 @@ export function ProjectsTable({ initialData }: Props) {
         <CardHeader>
           <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase flex-1 min-w-[160px]">Project</div>
           <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[110px]">Owner</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[100px]">Status</div>
+          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[90px]">Status</div>
           <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[72px] text-right">Progress</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[200px]">Current phase</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[60px]"></div>
+          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[180px]">Current phase</div>
+          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[120px]"></div>
         </CardHeader>
         {filtered.map((project) => (
           <div
@@ -82,41 +70,25 @@ export function ProjectsTable({ initialData }: Props) {
             className="flex items-center gap-3 px-4 py-[11px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
           >
             <div className="flex-1 min-w-[160px]">
-              <InlineEdit
-                value={project.name}
-                onSave={(v) => updateField(project.id, "name", v)}
-                className="text-[13px] font-medium"
-              />
+              <div className="text-[13px] font-medium text-text-primary">{project.name}</div>
               {project.key_risk && (
                 <div className="text-[10px] text-text-muted mt-1">{project.key_risk}</div>
               )}
             </div>
-            <div className="w-[110px] shrink-0">
-              <InlineEdit
-                value={project.owner ?? ""}
-                onSave={(v) => updateField(project.id, "owner", v)}
-                className="text-[11px] text-text-secondary"
-                placeholder="Unassigned"
-              />
+            <div className="text-[11px] text-text-secondary w-[110px] shrink-0">
+              {project.owner || "Unassigned"}
             </div>
-            <div className="w-[100px] shrink-0">
-              <InlineSelect
-                value={project.status}
-                options={PROJECT_STATUSES}
-                onSave={(v) => updateField(project.id, "status", v)}
-              />
-              <Badge status={project.status} className="mt-1" />
+            <div className="w-[90px] shrink-0">
+              <Badge status={project.status} />
             </div>
             <ProgressBar value={project.progress} />
-            <div className="w-[200px] shrink-0">
-              <InlineEdit
-                value={project.phase_current ?? ""}
-                onSave={(v) => updateField(project.id, "phase_current", v)}
-                className="text-[11px] text-text-muted"
-                placeholder="No phase set"
-              />
+            <div className="w-[180px] shrink-0 text-[11px] text-text-muted">
+              {project.phase_current || "—"}
             </div>
-            <div className="w-[60px] shrink-0 text-right">
+            <div className="w-[120px] shrink-0 flex justify-end gap-2">
+              <Button size="sm" onClick={() => setEditProject(project)}>
+                Edit
+              </Button>
               <Button variant="destructive" size="sm" onClick={() => setDeleteId(project.id)}>
                 Delete
               </Button>
@@ -132,6 +104,12 @@ export function ProjectsTable({ initialData }: Props) {
         open={showAdd}
         onClose={() => setShowAdd(false)}
         onAdd={(project) => setProjects((prev) => [...prev, project])}
+      />
+
+      <EditProjectDialog
+        project={editProject}
+        onClose={() => setEditProject(null)}
+        onSave={handleEditSave}
       />
 
       <ConfirmDialog
