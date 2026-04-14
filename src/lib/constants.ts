@@ -35,7 +35,6 @@ export const SYSTEM_STATUSES = [
   "Discovery underway",
   "Decision Pending",
   "To Be Decommissioned",
-  "Fragmented",
   "Unknown",
 ] as const;
 
@@ -76,7 +75,6 @@ export const STATUS_BADGE_MAP: Record<string, string> = {
   "Discovery underway": "blue",
   "Decision Pending": "amber",
   "To Be Decommissioned": "red",
-  "Fragmented": "amber",
   // Vendor statuses
   "Evaluating": "amber",
   "Former": "gray",
