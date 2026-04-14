@@ -72,7 +72,8 @@ INSERT INTO coeo_systems (name, subtitle, category, purpose, status, owner, note
   ('Provisioning Portal',  'Service activation tool',        'Internal System', 'Internal tool for provisioning and activating services',        'Active',      'Sean',         'Ongoing enhancements in Q2.',                                                       5),
   ('Data Warehouse',       'Reporting & analytics',          'Data Source',     'Centralized data warehouse for KPIs and reporting',             'In Progress', 'Jack Minster', 'Primary KPIs live. Secondary metrics in development.',                              6),
   ('Carrier APIs',         'Carrier integration layer',      'Data Source',     'API integrations with telecom carriers',                        'Active',      null,           'Multiple carrier integrations. Maintenance and monitoring.',                         7),
-  ('Network Monitoring',   'Infrastructure monitoring',      'Infrastructure',  'Network health monitoring and alerting',                        'Active',      'Sean',         'Evaluating tool upgrades.',                                                         8);
+  ('Network Monitoring',   'Infrastructure monitoring',      'Infrastructure',  'Network health monitoring and alerting',                        'Active',      'Sean',         'Evaluating tool upgrades.',                                                         8),
+  ('Jira',                 'Project task tracker',           'Internal System', 'Project task tracker',                                          'Decision Pending', null,      'Team is consolidating project tracking away from Jira into a single tool.',         9);
 
 -- ============================================================
 -- VENDORS
