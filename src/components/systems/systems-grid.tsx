@@ -52,8 +52,8 @@ export function SystemsGrid({ initialData }: Props) {
         const catSystems = systems.filter((s) => s.category === cat);
         if (catSystems.length === 0) return null;
         return (
-          <div key={cat}>
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-[10px] pb-[6px] border-b border-border mt-[52px] first:mt-0">
+          <div key={cat} className="mb-[24px]">
+            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-[10px] pb-[6px] border-b border-border mt-[32px]">
               {cat === "Internal System" ? "Internal Systems" : cat === "Data Source" ? "Data Sources" : cat}
             </div>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[10px]">
