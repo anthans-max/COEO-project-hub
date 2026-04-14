@@ -65,13 +65,6 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* User block */}
-      <div className="flex items-center px-5 py-[13px] border-b border-white/[0.07]">
-        <div className="w-[30px] h-[30px] rounded-full bg-accent flex items-center justify-center text-[11px] font-semibold text-white shrink-0">
-          AS
-        </div>
-      </div>
-
       {/* Navigation */}
       <nav className="py-2 flex-1 overflow-y-auto">
         {navSections.map((section) => (
