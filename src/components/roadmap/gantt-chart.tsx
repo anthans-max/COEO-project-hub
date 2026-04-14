@@ -17,6 +17,7 @@ import type { Project, Milestone } from "@/lib/types";
 interface Props {
   initialProjects: Project[];
   initialMilestones: Milestone[];
+  hideAddProject?: boolean;
 }
 
 // Quarter boundaries for 2026
@@ -40,7 +41,7 @@ function todayPercent(): number {
   return dateToPercent(new Date());
 }
 
-export function GanttChart({ initialProjects, initialMilestones }: Props) {
+export function GanttChart({ initialProjects, initialMilestones, hideAddProject }: Props) {
   const [projects, setProjects] = useProjects(initialProjects);
   const [milestones, setMilestones] = useRealtime("coeo_milestones", initialMilestones);
 
@@ -122,7 +123,9 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
         </div>
         <div className="flex gap-2">
           <Button variant="ghost" onClick={() => setShowAddMilestone(true)}>+ Add milestone</Button>
-          <Button onClick={() => setShowAddProject(true)}>+ Add project</Button>
+          {!hideAddProject && (
+            <Button onClick={() => setShowAddProject(true)}>+ Add project</Button>
+          )}
         </div>
       </div>
 

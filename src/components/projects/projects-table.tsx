@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
@@ -70,7 +71,12 @@ export function ProjectsTable({ initialData }: Props) {
             className="flex items-center gap-3 px-4 py-[11px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
           >
             <div className="flex-1 min-w-[160px]">
-              <div className="text-[15px] font-medium text-text-primary">{project.name}</div>
+              <Link
+                href={`/projects/${project.id}`}
+                className="text-[15px] font-medium text-text-primary hover:text-accent hover:underline underline-offset-2"
+              >
+                {project.name}
+              </Link>
               {project.notes && (
                 <div className="text-[15px] text-text-muted mt-1">{project.notes}</div>
               )}

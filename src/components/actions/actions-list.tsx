@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,12 +24,13 @@ interface ProjectOption {
 interface Props {
   initialData: Action[];
   projects: ProjectOption[];
+  lockProjectId?: string;
 }
 
-export function ActionsList({ initialData, projects }: Props) {
+export function ActionsList({ initialData, projects, lockProjectId }: Props) {
   const [actions, setActions] = useRealtime("coeo_actions", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
-  const [projectFilter, setProjectFilter] = useState("All");
+  const [projectFilter, setProjectFilter] = useState(lockProjectId ?? "All");
   const [personFilter, setPersonFilter] = useState("All");
   const [showAdd, setShowAdd] = useState(false);
   const [editAction, setEditAction] = useState<Action | null>(null);
@@ -103,16 +105,26 @@ export function ActionsList({ initialData, projects }: Props) {
       <div className="flex justify-between items-start mb-4 gap-4 flex-wrap">
         <div className="flex items-center gap-3 flex-wrap">
           <FilterBar options={statusOptions} selected={statusFilter} onChange={setStatusFilter} />
-          <select
-            value={projectFilter}
-            onChange={(e) => setProjectFilter(e.target.value)}
-            className="appearance-none bg-primary text-white border border-primary rounded-pill pl-[14px] pr-8 py-[5px] text-[13px] font-medium outline-none cursor-pointer mb-[18px] bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M1 1l4 4 4-4%22 stroke=%22white%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>')] bg-no-repeat bg-[right_12px_center]"
-          >
-            <option value="All">All projects</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
+          {!lockProjectId && (
+            <select
+              value={projectFilter}
+              onChange={(e) => setProjectFilter(e.target.value)}
+              className="appearance-none bg-primary text-white border border-primary rounded-pill pl-[14px] pr-8 py-[5px] text-[13px] font-medium outline-none cursor-pointer mb-[18px] bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M1 1l4 4 4-4%22 stroke=%22white%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>')] bg-no-repeat bg-[right_12px_center]"
+            >
+              <option value="All">All projects</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          )}
+          {!lockProjectId && projectFilter !== "All" && (
+            <Link
+              href={`/projects/${projectFilter}`}
+              className="text-[13px] text-text-muted hover:text-primary underline-offset-2 hover:underline mb-[18px]"
+            >
+              View project page →
+            </Link>
+          )}
           <select
             value={personFilter}
             onChange={(e) => setPersonFilter(e.target.value)}
@@ -174,6 +186,8 @@ export function ActionsList({ initialData, projects }: Props) {
         projects={projects}
         onClose={() => setShowAdd(false)}
         onAdd={(action) => setActions((prev) => [...prev, action])}
+        defaultProjectId={lockProjectId}
+        lockProject={!!lockProjectId}
       />
 
       <EditActionDialog

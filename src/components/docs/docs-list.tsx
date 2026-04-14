@@ -1,0 +1,105 @@
+"use client";
+
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { AddDocDialog } from "./add-doc-dialog";
+import { EditDocDialog } from "./edit-doc-dialog";
+import { useDocs } from "@/lib/hooks/use-docs";
+import { createClient } from "@/lib/supabase/browser";
+import { useToast } from "@/components/ui/toast";
+import { formatDate } from "@/lib/utils";
+import type { Doc } from "@/lib/types";
+
+interface Props {
+  projectId: string;
+  initialData: Doc[];
+}
+
+export function DocsList({ projectId, initialData }: Props) {
+  const [allDocs, setDocs] = useDocs(initialData);
+  const docs = allDocs
+    .filter((d) => d.project_id === projectId)
+    .sort((a, b) => (b.date ?? b.created_at).localeCompare(a.date ?? a.created_at));
+  const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState<Doc | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const toast = useToast();
+
+  const handleSave = (u: Doc) => setDocs((prev) => prev.map((d) => (d.id === u.id ? u : d)));
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const original = allDocs.find((d) => d.id === deleteId);
+    setDocs((prev) => prev.filter((d) => d.id !== deleteId));
+    setDeleteId(null);
+    const supabase = createClient();
+    const { error } = await supabase.from("coeo_docs").delete().eq("id", deleteId);
+    if (error) {
+      if (original) setDocs((prev) => [...prev, original]);
+      toast.error("Failed to delete doc");
+    }
+  };
+
+  return (
+    <>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setShowAdd(true)}>+ Add doc</Button>
+      </div>
+
+      {docs.length === 0 ? (
+        <Card className="p-8 text-center text-[15px] text-text-muted">No docs yet</Card>
+      ) : (
+        <Card>
+          {docs.map((d) => (
+            <div key={d.id} className="flex items-start gap-3 px-4 py-3 border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
+              <div className="flex-1 min-w-0">
+                {d.url ? (
+                  <a href={d.url} target="_blank" rel="noreferrer" className="text-[15px] font-medium text-text-primary hover:text-accent hover:underline underline-offset-2">
+                    {d.title}
+                  </a>
+                ) : (
+                  <div className="text-[15px] font-medium text-text-primary">{d.title}</div>
+                )}
+                <div className="text-[12px] text-text-muted mt-[2px]">
+                  {d.date ? formatDate(d.date) : "No date"}
+                </div>
+                {d.notes && <div className="text-[13px] text-text-secondary mt-1">{d.notes}</div>}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Button size="sm" onClick={() => setEditing(d)}>Edit</Button>
+                <Button variant="destructive" size="sm" onClick={() => setDeleteId(d.id)}>Delete</Button>
+              </div>
+            </div>
+          ))}
+        </Card>
+      )}
+
+      <AddDocDialog
+        open={showAdd}
+        projectId={projectId}
+        onClose={() => setShowAdd(false)}
+        onAdd={(d) => setDocs((prev) => [...prev, d])}
+      />
+
+      <EditDocDialog
+        doc={editing}
+        onClose={() => setEditing(null)}
+        onSave={handleSave}
+        onDelete={(id) => {
+          setEditing(null);
+          setDeleteId(id);
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!deleteId}
+        title="Delete doc"
+        message="Are you sure you want to delete this doc entry?"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteId(null)}
+      />
+    </>
+  );
+}

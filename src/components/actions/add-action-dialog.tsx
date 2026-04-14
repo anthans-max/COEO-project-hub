@@ -17,9 +17,11 @@ interface Props {
   projects: ProjectOption[];
   onClose: () => void;
   onAdd: (action: Action) => void;
+  defaultProjectId?: string;
+  lockProject?: boolean;
 }
 
-export function AddActionDialog({ open, projects, onClose, onAdd }: Props) {
+export function AddActionDialog({ open, projects, onClose, onAdd, defaultProjectId, lockProject }: Props) {
   const [form, setForm] = useState({
     description: "",
     owner: "",
@@ -27,7 +29,7 @@ export function AddActionDialog({ open, projects, onClose, onAdd }: Props) {
     status: "Open",
     priority: "Medium",
     due_date: "",
-    project_id: "",
+    project_id: defaultProjectId ?? "",
     notes: "",
   });
   const [saving, setSaving] = useState(false);
@@ -39,7 +41,7 @@ export function AddActionDialog({ open, projects, onClose, onAdd }: Props) {
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const resetForm = () =>
-    setForm({ description: "", owner: "", owner_initials: "", status: "Open", priority: "Medium", due_date: "", project_id: "", notes: "" });
+    setForm({ description: "", owner: "", owner_initials: "", status: "Open", priority: "Medium", due_date: "", project_id: defaultProjectId ?? "", notes: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,7 +129,7 @@ export function AddActionDialog({ open, projects, onClose, onAdd }: Props) {
 
           <div>
             <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Linked project</label>
-            <select value={form.project_id} onChange={(e) => set("project_id", e.target.value)} className={inputClass}>
+            <select value={form.project_id} onChange={(e) => set("project_id", e.target.value)} className={inputClass} disabled={lockProject}>
               <option value="">None</option>
               {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>

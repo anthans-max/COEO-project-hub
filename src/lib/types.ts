@@ -87,6 +87,30 @@ export interface Vendor {
   updated_at: string;
 }
 
+export interface MeetingNote {
+  id: string;
+  project_id: string;
+  title: string;
+  date: string | null;
+  attendees: string | null;
+  notes: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Doc {
+  id: string;
+  project_id: string;
+  title: string;
+  url: string | null;
+  notes: string | null;
+  date: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Person {
   id: string;
   name: string;
