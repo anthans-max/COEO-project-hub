@@ -4,20 +4,21 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
-import { SYSTEM_CATEGORIES, SYSTEM_STATUSES } from "@/lib/constants";
+import { SYSTEM_STATUSES } from "@/lib/constants";
 import type { System } from "@/lib/types";
 
 interface Props {
   system: System | null;
   onClose: () => void;
   onSave: (updated: System) => void;
+  categoryOptions: string[];
 }
 
-export function EditSystemDialog({ system, onClose, onSave }: Props) {
+export function EditSystemDialog({ system, onClose, onSave, categoryOptions }: Props) {
   const [form, setForm] = useState({
     name: "",
     subtitle: "",
-    category: "Internal System",
+    categories: [] as string[],
     purpose: "",
     status: "Active",
     owner: "",
@@ -31,7 +32,7 @@ export function EditSystemDialog({ system, onClose, onSave }: Props) {
       setForm({
         name: system.name ?? "",
         subtitle: system.subtitle ?? "",
-        category: system.category ?? "Internal System",
+        categories: Array.isArray(system.category) ? system.category : system.category ? [system.category as unknown as string] : [],
         purpose: system.purpose ?? "",
         status: system.status ?? "Active",
         owner: system.owner ?? "",
@@ -45,15 +46,24 @@ export function EditSystemDialog({ system, onClose, onSave }: Props) {
   const set = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
+  const toggleCategory = (cat: string) => {
+    setForm((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(cat)
+        ? prev.categories.filter((c) => c !== cat)
+        : [...prev.categories, cat],
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim()) return;
+    if (!form.name.trim() || form.categories.length === 0) return;
     setSaving(true);
 
     const payload = {
       name: form.name.trim(),
       subtitle: form.subtitle.trim() || null,
-      category: form.category,
+      category: form.categories,
       purpose: form.purpose.trim() || null,
       status: form.status,
       owner: form.owner.trim() || null,
@@ -103,10 +113,20 @@ export function EditSystemDialog({ system, onClose, onSave }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Category</label>
-              <select value={form.category} onChange={(e) => set("category", e.target.value)} className={inputClass}>
-                {SYSTEM_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-2 block">Categories</label>
+              <div className="flex flex-col gap-[6px]">
+                {categoryOptions.map((cat) => (
+                  <label key={cat} className="flex items-center gap-2 text-[13px] text-primary cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.categories.includes(cat)}
+                      onChange={() => toggleCategory(cat)}
+                      className="accent-primary"
+                    />
+                    {cat}
+                  </label>
+                ))}
+              </div>
             </div>
             <div>
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Status</label>
@@ -133,7 +153,7 @@ export function EditSystemDialog({ system, onClose, onSave }: Props) {
 
           <div className="flex justify-end gap-2 mt-3">
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={saving || !form.name.trim()}>
+            <Button type="submit" disabled={saving || !form.name.trim() || form.categories.length === 0}>
               {saving ? "Saving..." : "Save"}
             </Button>
           </div>

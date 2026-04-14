@@ -52,7 +52,7 @@ export interface System {
   id: string;
   name: string;
   subtitle: string | null;
-  category: string;
+  category: string[];
   purpose: string | null;
   status: string;
   owner: string | null;
@@ -60,6 +60,13 @@ export interface System {
   sort_order: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface SystemCategory {
+  id: string;
+  name: string;
+  sort_order: number;
+  created_at: string;
 }
 
 export interface Vendor {

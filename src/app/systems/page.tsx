@@ -9,11 +9,26 @@ export default async function SystemsPage() {
     .select("*")
     .order("sort_order");
 
+  // Categories table may not exist yet — query independently so it can't crash the page
+  let categories: { id: string; name: string; sort_order: number; created_at: string }[] = [];
+  try {
+    const { data } = await supabase
+      .from("coeo_system_categories")
+      .select("*")
+      .order("sort_order");
+    if (data) categories = data;
+  } catch {
+    // Table doesn't exist yet — fall back to empty array
+  }
+
   return (
     <>
       <Topbar title="Systems" />
       <div className="p-7 px-8 flex-1">
-        <SystemsGrid initialData={systems ?? []} />
+        <SystemsGrid
+          initialData={systems ?? []}
+          initialCategories={categories}
+        />
       </div>
     </>
   );
