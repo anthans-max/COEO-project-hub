@@ -12,7 +12,8 @@ INSERT INTO coeo_people (name, organization, role, initials, color, email, focus
   ('Mamata Huded',   'Coeo Internal', 'Salesforce Admin',    'MH', '#059669', null, ARRAY['Salesforce','CRM'], 3),
   ('Sean',           'Coeo Internal', 'Network / Infra',     'S',  '#3B82F6', null, ARRAY['Network','Infrastructure','Provisioning'], 4),
   ('SETGO',          'Vendor',        'Salesforce Partner',   'SE', '#8B5CF6', null, ARRAY['Salesforce'], 5),
-  ('Technovate',     'Vendor',        'Portal Development',  'TV', '#EC4899', null, ARRAY['Customer Portal'], 6);
+  ('Technovate',     'Vendor',        'Portal Development',  'TV', '#EC4899', null, ARRAY['Customer Portal'], 6)
+ON CONFLICT (name) DO NOTHING;
 
 -- ============================================================
 -- PROJECTS
@@ -26,7 +27,8 @@ INSERT INTO coeo_projects (name, owner, status, phase_current, phase_next, key_r
   ('Acquisitions',          'Jack Minster',  'Not Started',  'Pending: IT integration planning', 'As acquisitions occur',       'Timing and scope unknown; depends on deal flow',     0,  'IT integration playbook for future acquisitions. No active deals yet.',                    '2026-06-01', '2026-12-31', 6),
   ('TransUnion (Neustar)',  'Jack Minster',  'Not Started',  'Q3: BSS Integration planning',  'TBD',                            'Integration scope and timing TBD',                   0,  'BSS integration planning for the TransUnion (Neustar) data feed.',                         '2026-07-01', '2026-12-31', 7),
   ('KYC',                   'Jack Minster',  'In Progress',  'Ongoing: Process support',      'Automation opportunities',       'Manual processes; compliance dependencies',           15, 'Supporting customer transitions and KYC processes. Exploring automation.',                 '2026-01-01', '2026-12-31', 8),
-  ('Provisioning Portal',   'Sean',          'In Progress',  'Q2: Enhancements',              'Q3: Expanded automation',        'Dependency on network team bandwidth',                30, 'Internal provisioning tool for service activation. Ongoing enhancements.',                 '2026-02-01', '2026-09-30', 9);
+  ('Provisioning Portal',   'Sean',          'In Progress',  'Q2: Enhancements',              'Q3: Expanded automation',        'Dependency on network team bandwidth',                30, 'Internal provisioning tool for service activation. Ongoing enhancements.',                 '2026-02-01', '2026-09-30', 9)
+ON CONFLICT (name) DO NOTHING;
 
 -- ============================================================
 -- MILESTONES (linked to projects by name lookup)
@@ -42,7 +44,8 @@ INSERT INTO coeo_milestones (project_id, title, owner, due_date, status, notes, 
   ((SELECT id FROM proj WHERE name = 'Salesforce Discovery'), 'Discovery complete',                     'Mamata Huded',  '2026-06-30', 'Upcoming',  'Full current-state audit finished.',              5),
   ((SELECT id FROM proj WHERE name = 'Salesforce Discovery'), 'Rebuild vs. refactor decision',          'Mamata Huded',  '2026-05-31', 'At Risk',   'Key decision needed before design can proceed.', 6),
   ((SELECT id FROM proj WHERE name = 'Enterprise Middleware'), 'Architecture assessment complete',       'Jack Minster',  '2026-06-30', 'Upcoming',  'Evaluate middleware options and integration patterns.', 7),
-  ((SELECT id FROM proj WHERE name = 'Provisioning Portal'),  'Q2 enhancements deployed',               'Sean',          '2026-06-30', 'Upcoming',  'Current sprint of provisioning improvements.',   8);
+  ((SELECT id FROM proj WHERE name = 'Provisioning Portal'),  'Q2 enhancements deployed',               'Sean',          '2026-06-30', 'Upcoming',  'Current sprint of provisioning improvements.',   8)
+ON CONFLICT (project_id, title) DO NOTHING;
 
 -- ============================================================
 -- ACTIONS
@@ -59,21 +62,23 @@ INSERT INTO coeo_actions (description, owner, owner_initials, owner_color, statu
   ('Clarify BSS migration timeline for H2',                    'Jack Minster',  'JM', '#0A2342', 'Open', 'Medium', '2026-05-15', null,                                                            'What platform and when?',               6),
   ('Provide CRM standardization direction to team',            'Jack Minster',  'JM', '#0A2342', 'Open', 'Medium', '2026-05-01', null,                                                            'Salesforce vs Zoho exec decision.',     7),
   ('Complete Salesforce current-state audit',                   'Mamata Huded',  'MH', '#059669', 'Open', 'High',   '2026-05-15', (SELECT id FROM proj WHERE name = 'Salesforce Discovery'),       'Working with SETGO on assessment.',     8),
-  ('Coordinate with SETGO on discovery timeline',              'Mamata Huded',  'MH', '#059669', 'Open', 'Medium', '2026-04-30', (SELECT id FROM proj WHERE name = 'Salesforce Discovery'),       'Align on deliverables and schedule.',   9);
+  ('Coordinate with SETGO on discovery timeline',              'Mamata Huded',  'MH', '#059669', 'Open', 'Medium', '2026-04-30', (SELECT id FROM proj WHERE name = 'Salesforce Discovery'),       'Align on deliverables and schedule.',   9)
+ON CONFLICT (description, owner) DO NOTHING;
 
 -- ============================================================
 -- SYSTEMS
 -- ============================================================
 INSERT INTO coeo_systems (name, subtitle, category, purpose, status, owner, notes, sort_order) VALUES
-  ('Salesforce',           'CRM & sales platform',           'Internal System', 'Customer relationship management and sales pipeline',            'Fragmented', 'Mamata Huded', 'Multiple orgs, inconsistent configuration. Discovery underway.',                   1),
-  ('Customer Portal',      'Self-service customer portal',   'Internal System', 'Customer-facing portal for account management and support',     'In Progress', 'Jack Minster', 'Current portal is outdated. New build being evaluated.',                            2),
-  ('BSS / Billing',        'Billing support system',         'Internal System', 'Billing, invoicing, and service provisioning',                  'Active',      'Jack Minster', 'Current BSS operational. Migration being considered for H2.',                       3),
-  ('SharePoint',           'Document management',            'Internal System', 'Internal document storage and collaboration',                   'Active',      null,           'Used across teams. No major changes planned.',                                      4),
-  ('Provisioning Portal',  'Service activation tool',        'Internal System', 'Internal tool for provisioning and activating services',        'Active',      'Sean',         'Ongoing enhancements in Q2.',                                                       5),
-  ('Data Warehouse',       'Reporting & analytics',          'Data Source',     'Centralized data warehouse for KPIs and reporting',             'In Progress', 'Jack Minster', 'Primary KPIs live. Secondary metrics in development.',                              6),
-  ('Carrier APIs',         'Carrier integration layer',      'Data Source',     'API integrations with telecom carriers',                        'Active',      null,           'Multiple carrier integrations. Maintenance and monitoring.',                         7),
-  ('Network Monitoring',   'Infrastructure monitoring',      'Infrastructure',  'Network health monitoring and alerting',                        'Active',      'Sean',         'Evaluating tool upgrades.',                                                         8),
-  ('Jira',                 'Project task tracker',           'Internal System', 'Project task tracker',                                          'Decision Pending', null,      'Team is consolidating project tracking away from Jira into a single tool.',         9);
+  ('Salesforce',           'CRM & sales platform',           ARRAY['Internal System']::text[], 'Customer relationship management and sales pipeline',            'Fragmented', 'Mamata Huded', 'Multiple orgs, inconsistent configuration. Discovery underway.',                   1),
+  ('Customer Portal',      'Self-service customer portal',   ARRAY['Internal System']::text[], 'Customer-facing portal for account management and support',     'In Progress', 'Jack Minster', 'Current portal is outdated. New build being evaluated.',                            2),
+  ('BSS / Billing',        'Billing support system',         ARRAY['Internal System']::text[], 'Billing, invoicing, and service provisioning',                  'Active',      'Jack Minster', 'Current BSS operational. Migration being considered for H2.',                       3),
+  ('SharePoint',           'Document management',            ARRAY['Internal System']::text[], 'Internal document storage and collaboration',                   'Active',      null,           'Used across teams. No major changes planned.',                                      4),
+  ('Provisioning Portal',  'Service activation tool',        ARRAY['Internal System']::text[], 'Internal tool for provisioning and activating services',        'Active',      'Sean',         'Ongoing enhancements in Q2.',                                                       5),
+  ('Data Warehouse',       'Reporting & analytics',          ARRAY['Data Source']::text[],     'Centralized data warehouse for KPIs and reporting',             'In Progress', 'Jack Minster', 'Primary KPIs live. Secondary metrics in development.',                              6),
+  ('Carrier APIs',         'Carrier integration layer',      ARRAY['Data Source']::text[],     'API integrations with telecom carriers',                        'Active',      null,           'Multiple carrier integrations. Maintenance and monitoring.',                         7),
+  ('Network Monitoring',   'Infrastructure monitoring',      ARRAY['Infrastructure']::text[],  'Network health monitoring and alerting',                        'Active',      'Sean',         'Evaluating tool upgrades.',                                                         8),
+  ('Jira',                 'Project task tracker',           ARRAY['Internal System']::text[], 'Project task tracker',                                          'Decision Pending', null,      'Team is consolidating project tracking away from Jira into a single tool.',         9)
+ON CONFLICT (name) DO NOTHING;
 
 -- ============================================================
 -- VENDORS
@@ -82,7 +87,8 @@ INSERT INTO coeo_vendors (name, subtitle, category, role, status, contact_name, 
   ('SETGO',       'Salesforce consulting',  'Salesforce Partner', 'Salesforce discovery and implementation partner', 'Active',     null, null, 'Engaged for Salesforce discovery and potential rebuild.',       1),
   ('Technovate',  'Portal development',     'Portal Vendor',      'Customer portal build evaluation',                'Evaluating', null, null, 'Being evaluated for customer portal prototype/POC.',           2),
   ('Microsoft',   'Platform & productivity','Platform Provider',  'Office 365, Azure AD, SharePoint',                'Active',     null, null, 'Core platform provider. SSO via Entra ID planned for Phase 2.', 3),
-  ('Current BSS Vendor', 'Billing platform','BSS Provider',       'Current billing support system provider',         'Active',     null, null, 'Under review for potential migration in H2.',                  4);
+  ('Current BSS Vendor', 'Billing platform','BSS Provider',       'Current billing support system provider',         'Active',     null, null, 'Under review for potential migration in H2.',                  4)
+ON CONFLICT (name) DO NOTHING;
 
 -- ============================================================
 -- JOIN TABLES: Link projects to systems, vendors, people
@@ -100,7 +106,8 @@ SELECT p.id, s.id FROM proj p, sys s WHERE
   (p.name = 'Salesforce Discovery' AND s.name = 'Salesforce') OR
   (p.name = 'Salesforce Maintenance' AND s.name = 'Salesforce') OR
   (p.name = 'Provisioning Portal'  AND s.name = 'Provisioning Portal') OR
-  (p.name = 'Enterprise Middleware' AND s.name = 'Carrier APIs');
+  (p.name = 'Enterprise Middleware' AND s.name = 'Carrier APIs')
+ON CONFLICT DO NOTHING;
 
 -- Project ↔ Vendors (separate statement since CTEs can't span multiple DML)
 WITH proj AS (SELECT id, name FROM coeo_projects),
@@ -108,7 +115,8 @@ WITH proj AS (SELECT id, name FROM coeo_projects),
 INSERT INTO coeo_project_vendors (project_id, vendor_id)
 SELECT p.id, v.id FROM proj p, ven v WHERE
   (p.name = 'Customer Portal'      AND v.name = 'Technovate') OR
-  (p.name = 'Salesforce Discovery' AND v.name = 'SETGO');
+  (p.name = 'Salesforce Discovery' AND v.name = 'SETGO')
+ON CONFLICT DO NOTHING;
 
 -- Project ↔ People
 WITH proj AS (SELECT id, name FROM coeo_projects),
@@ -125,4 +133,5 @@ SELECT p.id, pp.id FROM proj p, ppl pp WHERE
   (p.name = 'KYC'                    AND pp.name = 'Jack Minster') OR
   (p.name = 'TransUnion (Neustar)'   AND pp.name = 'Jack Minster') OR
   (p.name = 'Enterprise Middleware'   AND pp.name = 'Jack Minster') OR
-  (p.name = 'Provisioning Portal'    AND pp.name = 'Sean');
+  (p.name = 'Provisioning Portal'    AND pp.name = 'Sean')
+ON CONFLICT DO NOTHING;
