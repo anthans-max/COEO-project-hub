@@ -6,16 +6,23 @@ import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import type { Milestone } from "@/lib/types";
 
+interface ProjectOption {
+  id: string;
+  name: string;
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
   onAdd: (milestone: Milestone) => void;
+  projects?: ProjectOption[];
 }
 
-export function AddMilestoneDialog({ open, onClose, onAdd }: Props) {
+export function AddMilestoneDialog({ open, onClose, onAdd, projects }: Props) {
   const [title, setTitle] = useState("");
   const [owner, setOwner] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [projectId, setProjectId] = useState("");
   const [saving, setSaving] = useState(false);
   const toast = useToast();
 
@@ -33,6 +40,7 @@ export function AddMilestoneDialog({ open, onClose, onAdd }: Props) {
         title: title.trim(),
         owner: owner.trim() || null,
         due_date: dueDate || null,
+        project_id: projectId || null,
       })
       .select()
       .single();
@@ -47,6 +55,7 @@ export function AddMilestoneDialog({ open, onClose, onAdd }: Props) {
     setTitle("");
     setOwner("");
     setDueDate("");
+    setProjectId("");
     onClose();
   };
 
@@ -76,6 +85,18 @@ export function AddMilestoneDialog({ open, onClose, onAdd }: Props) {
             onChange={(e) => setDueDate(e.target.value)}
             className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
           />
+          {projects && (
+            <select
+              value={projectId}
+              onChange={(e) => setProjectId(e.target.value)}
+              className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            >
+              <option value="">No project</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          )}
           <div className="flex justify-end gap-2 mt-2">
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
             <Button type="submit" disabled={saving || !title.trim()}>

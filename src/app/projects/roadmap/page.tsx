@@ -23,7 +23,7 @@ export default async function RoadmapPage() {
     <>
       <Topbar title="Roadmap" />
       <div className="p-7 px-8 flex-1 overflow-x-auto">
-        <GanttChart projects={projects ?? []} milestones={mappedMilestones} />
+        <GanttChart initialProjects={projects ?? []} initialMilestones={mappedMilestones} />
       </div>
     </>
   );

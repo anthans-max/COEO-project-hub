@@ -11,9 +11,10 @@ interface Props {
   project: Project | null;
   onClose: () => void;
   onSave: (updated: Project) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function EditProjectDialog({ project, onClose, onSave }: Props) {
+export function EditProjectDialog({ project, onClose, onSave, onDelete }: Props) {
   const [form, setForm] = useState({
     name: "",
     key_risk: "",
@@ -190,11 +191,20 @@ export function EditProjectDialog({ project, onClose, onSave }: Props) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 mt-3">
-            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={saving || !form.name.trim()}>
-              {saving ? "Saving..." : "Save"}
-            </Button>
+          <div className="flex justify-between items-center mt-3">
+            <div>
+              {onDelete && (
+                <Button type="button" variant="destructive" size="sm" onClick={() => onDelete(project.id)}>
+                  Delete
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+              <Button type="submit" disabled={saving || !form.name.trim()}>
+                {saving ? "Saving..." : "Save"}
+              </Button>
+            </div>
           </div>
         </form>
       </div>
