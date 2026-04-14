@@ -31,7 +31,7 @@ export default async function DashboardPage() {
         {/* Metric cards */}
         <div className="grid grid-cols-4 gap-[10px] mb-7">
           <MetricCard label="Active projects" value={projectCount ?? 0} sub={`${projects?.filter(p => p.status === 'In Progress').length ?? 0} in progress`} />
-          <MetricCard label="Open actions" value={actionCount ?? 0} sub={`${actions?.filter(a => a.owner === 'Anthan Sunder').length ?? 0} assigned to you`} />
+          <MetricCard label="Open actions" value={actionCount ?? 0} />
           <MetricCard label="Milestones (30d)" value={milestoneCount} sub="Upcoming" />
           <MetricCard label="Open questions" value={6} sub="3 high priority" />
         </div>
@@ -47,7 +47,7 @@ export default async function DashboardPage() {
           </div>
           <div>
             <div className="flex justify-between items-center mb-[10px]">
-              <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">My open actions</div>
+              <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Open actions</div>
               <a href="/actions" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
             </div>
             <ActionsWidget actions={actions ?? []} />
