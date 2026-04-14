@@ -8,6 +8,7 @@ import { EditProjectDialog } from "@/components/projects/edit-project-dialog";
 import { AddMilestoneDialog } from "@/components/milestones/add-milestone-dialog";
 import { EditMilestoneDialog } from "@/components/milestones/edit-milestone-dialog";
 import { useRealtime } from "@/lib/hooks/use-realtime";
+import { useProjects } from "@/lib/hooks/use-projects";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import { GANTT_BAR_COLORS } from "@/lib/constants";
@@ -40,7 +41,7 @@ function todayPercent(): number {
 }
 
 export function GanttChart({ initialProjects, initialMilestones }: Props) {
-  const [projects, setProjects] = useRealtime("coeo_projects", initialProjects);
+  const [projects, setProjects] = useProjects(initialProjects);
   const [milestones, setMilestones] = useRealtime("coeo_milestones", initialMilestones);
 
   const [tooltip, setTooltip] = useState<{ project: Project; x: number; y: number } | null>(null);

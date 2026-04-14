@@ -17,6 +17,8 @@ export function AddProjectDialog({ open, onClose, onAdd }: Props) {
   const [name, setName] = useState("");
   const [owner, setOwner] = useState("");
   const [status, setStatus] = useState("Not Started");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [saving, setSaving] = useState(false);
   const toast = useToast();
 
@@ -30,7 +32,13 @@ export function AddProjectDialog({ open, onClose, onAdd }: Props) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("coeo_projects")
-      .insert({ name: name.trim(), owner: owner.trim() || null, status })
+      .insert({
+        name: name.trim(),
+        owner: owner.trim() || null,
+        status,
+        start_date: startDate || null,
+        end_date: endDate || null,
+      })
       .select()
       .single();
 
@@ -44,6 +52,8 @@ export function AddProjectDialog({ open, onClose, onAdd }: Props) {
     setName("");
     setOwner("");
     setStatus("Not Started");
+    setStartDate("");
+    setEndDate("");
     onClose();
   };
 
@@ -76,6 +86,26 @@ export function AddProjectDialog({ open, onClose, onAdd }: Props) {
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
+          <div className="flex gap-2">
+            <label className="flex-1 flex flex-col gap-1">
+              <span className="text-[12px] text-text-muted">Start date</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
+              />
+            </label>
+            <label className="flex-1 flex flex-col gap-1">
+              <span className="text-[12px] text-text-muted">End date</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
+              />
+            </label>
+          </div>
           <div className="flex justify-end gap-2 mt-2">
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
             <Button type="submit" disabled={saving || !name.trim()}>

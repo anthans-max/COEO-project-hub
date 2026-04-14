@@ -9,7 +9,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FilterBar } from "@/components/ui/filter-bar";
 import { AddProjectDialog } from "./add-project-dialog";
 import { EditProjectDialog } from "./edit-project-dialog";
-import { useRealtime } from "@/lib/hooks/use-realtime";
+import { useProjects } from "@/lib/hooks/use-projects";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import { PROJECT_STATUSES } from "@/lib/constants";
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export function ProjectsTable({ initialData }: Props) {
-  const [projects, setProjects] = useRealtime("coeo_projects", initialData);
+  const [projects, setProjects] = useProjects(initialData);
   const [statusFilter, setStatusFilter] = useState("All");
   const [showAdd, setShowAdd] = useState(false);
   const [editProject, setEditProject] = useState<Project | null>(null);
