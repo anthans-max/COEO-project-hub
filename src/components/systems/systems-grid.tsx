@@ -7,6 +7,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddSystemDialog } from "./add-system-dialog";
 import { EditSystemDialog } from "./edit-system-dialog";
 import { AddCategoryDialog } from "./add-category-dialog";
+import { EditCategoryDialog } from "./edit-category-dialog";
 import { useRealtime } from "@/lib/hooks/use-realtime";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
@@ -40,6 +41,9 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editSystem, setEditSystem] = useState<System | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [hideEmpty, setHideEmpty] = useState(false);
+  const [editCategoryName, setEditCategoryName] = useState<string | null>(null);
+  const [deleteCategoryName, setDeleteCategoryName] = useState<string | null>(null);
   const toast = useToast();
 
   const handleEditSave = (updated: System) => {
@@ -72,18 +76,127 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
   // All category names for dialogs
   const categoryOptions = allCatNames;
 
+  const handleCategoryRename = async (oldName: string, newName: string) => {
+    // Optimistic update: rename in categories table state
+    setCategories((prev) =>
+      prev.map((c) => (c.name === oldName ? { ...c, name: newName } : c))
+    );
+    // Optimistic update: rename in all systems that reference this category
+    setSystems((prev) =>
+      prev.map((s) => {
+        const cats = getCategories(s);
+        if (!cats.includes(oldName)) return s;
+        return { ...s, category: cats.map((c) => (c === oldName ? newName : c)) };
+      })
+    );
+
+    const supabase = createClient();
+
+    // Update the categories table
+    const { error: catError } = await supabase
+      .from("coeo_system_categories")
+      .update({ name: newName })
+      .eq("name", oldName);
+
+    if (catError) {
+      // Revert
+      setCategories((prev) =>
+        prev.map((c) => (c.name === newName ? { ...c, name: oldName } : c))
+      );
+      setSystems((prev) =>
+        prev.map((s) => {
+          const cats = getCategories(s);
+          if (!cats.includes(newName)) return s;
+          return { ...s, category: cats.map((c) => (c === newName ? oldName : c)) };
+        })
+      );
+      toast.error("Failed to rename category");
+      return;
+    }
+
+    // Update all systems that had the old category name
+    const affectedSystems = systems.filter((s) => getCategories(s).includes(oldName));
+    for (const sys of affectedSystems) {
+      const updatedCats = getCategories(sys).map((c) => (c === oldName ? newName : c));
+      await supabase
+        .from("coeo_systems")
+        .update({ category: updatedCats })
+        .eq("id", sys.id);
+    }
+  };
+
+  const handleCategoryDelete = async () => {
+    if (!deleteCategoryName) return;
+    const catName = deleteCategoryName;
+    setDeleteCategoryName(null);
+
+    // Count systems in this category
+    const count = systems.filter((s) => getCategories(s).includes(catName)).length;
+    if (count > 0) {
+      toast.error(`${count} system${count === 1 ? " is" : "s are"} assigned to this category. Reassign them before deleting.`);
+      return;
+    }
+
+    // Optimistic remove
+    const original = categories.find((c) => c.name === catName);
+    setCategories((prev) => prev.filter((c) => c.name !== catName));
+
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("coeo_system_categories")
+      .delete()
+      .eq("name", catName);
+
+    if (error) {
+      if (original) setCategories((prev) => [...prev, original]);
+      toast.error("Failed to delete category");
+    }
+  };
+
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-end gap-4 mb-4">
+        <label className="flex items-center gap-[6px] text-[11px] text-text-secondary cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={hideEmpty}
+            onChange={(e) => setHideEmpty(e.target.checked)}
+            className="accent-primary"
+          />
+          Hide empty categories
+        </label>
         <Button onClick={() => setShowAdd(true)}>+ Add system</Button>
       </div>
 
       {allCatNames.map((cat) => {
         const catSystems = systems.filter((s) => getCategories(s).includes(cat));
+        if (hideEmpty && catSystems.length === 0) return null;
         return (
           <div key={cat} className="mb-[24px]">
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-[10px] pb-[6px] border-b border-border mt-[32px]">
-              {pluralize(cat)}
+            <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border mt-[32px] group/header">
+              <span className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+                {pluralize(cat)}
+              </span>
+              <div className="flex items-center gap-2 opacity-0 group-hover/header:opacity-100 transition-opacity">
+                <button
+                  onClick={() => setEditCategoryName(cat)}
+                  className="text-primary hover:text-primary/70 transition-colors"
+                  title="Rename category"
+                >
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setDeleteCategoryName(cat)}
+                  className="text-destructive hover:text-destructive/70 transition-colors"
+                  title="Delete category"
+                >
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 4h12M5.33 4V2.67a1.33 1.33 0 011.34-1.34h2.66a1.33 1.33 0 011.34 1.34V4m2 0v9.33a1.33 1.33 0 01-1.34 1.34H4.67a1.33 1.33 0 01-1.34-1.34V4h9.34z" />
+                  </svg>
+                </button>
+              </div>
             </div>
             {catSystems.length > 0 ? (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[10px]">
@@ -150,12 +263,35 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
         onAdd={(cat) => setCategories((prev) => [...prev, cat])}
       />
 
+      <EditCategoryDialog
+        categoryName={editCategoryName}
+        onClose={() => setEditCategoryName(null)}
+        onSave={handleCategoryRename}
+      />
+
       <ConfirmDialog
         open={!!deleteId}
         title="Delete system"
         message="Are you sure you want to delete this system?"
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}
+      />
+
+      <ConfirmDialog
+        open={!!deleteCategoryName}
+        title="Delete category"
+        message={
+          deleteCategoryName
+            ? (() => {
+                const count = systems.filter((s) => getCategories(s).includes(deleteCategoryName)).length;
+                return count > 0
+                  ? `${count} system${count === 1 ? " is" : "s are"} assigned to this category. Reassign them before deleting.`
+                  : `Are you sure you want to delete the "${deleteCategoryName}" category?`;
+              })()
+            : ""
+        }
+        onConfirm={handleCategoryDelete}
+        onCancel={() => setDeleteCategoryName(null)}
       />
     </>
   );
