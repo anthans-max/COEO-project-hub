@@ -4,25 +4,32 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { InlineEdit } from "@/components/ui/inline-edit";
 import { Badge } from "@/components/ui/badge";
 import { FilterBar } from "@/components/ui/filter-bar";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddActionDialog } from "./add-action-dialog";
+import { EditActionDialog } from "./edit-action-dialog";
 import { useRealtime } from "@/lib/hooks/use-realtime";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import { formatShortDate } from "@/lib/utils";
 import type { Action } from "@/lib/types";
 
-interface Props {
-  initialData: Action[];
+interface ProjectOption {
+  id: string;
+  name: string;
 }
 
-export function ActionsList({ initialData }: Props) {
+interface Props {
+  initialData: Action[];
+  projects: ProjectOption[];
+}
+
+export function ActionsList({ initialData, projects }: Props) {
   const [actions, setActions] = useRealtime("coeo_actions", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
   const [showAdd, setShowAdd] = useState(false);
+  const [editAction, setEditAction] = useState<Action | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
 
@@ -37,21 +44,21 @@ export function ActionsList({ initialData }: Props) {
     return acc;
   }, {});
 
-  const updateField = async (id: string, field: string, value: string) => {
-    const original = actions.find((a) => a.id === id);
-    setActions((prev) => prev.map((a) => (a.id === id ? { ...a, [field]: value } : a)));
+  const toggleComplete = async (action: Action) => {
+    const newStatus = action.status === "Complete" ? "Open" : "Complete";
+    const original = actions.find((a) => a.id === action.id);
+    setActions((prev) => prev.map((a) => (a.id === action.id ? { ...a, status: newStatus } : a)));
 
     const supabase = createClient();
-    const { error } = await supabase.from("coeo_actions").update({ [field]: value }).eq("id", id);
+    const { error } = await supabase.from("coeo_actions").update({ status: newStatus }).eq("id", action.id);
     if (error) {
-      if (original) setActions((prev) => prev.map((a) => (a.id === id ? original : a)));
-      toast.error("Failed to save");
+      if (original) setActions((prev) => prev.map((a) => (a.id === action.id ? original : a)));
+      toast.error("Failed to update action");
     }
   };
 
-  const toggleComplete = async (action: Action) => {
-    const newStatus = action.status === "Complete" ? "Open" : "Complete";
-    await updateField(action.id, "status", newStatus);
+  const handleEditSave = (updated: Action) => {
+    setActions((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
   };
 
   const handleDelete = async () => {
@@ -86,15 +93,13 @@ export function ActionsList({ initialData }: Props) {
               return (
                 <div
                   key={action.id}
-                  className="flex items-start gap-[10px] px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
+                  className="flex items-center gap-[10px] px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
                 >
                   <Checkbox checked={done} onChange={() => toggleComplete(action)} />
                   <div className="flex-1 min-w-0">
-                    <InlineEdit
-                      value={action.description}
-                      onSave={(v) => updateField(action.id, "description", v)}
-                      className={`text-[13px] leading-[1.45] ${done ? "line-through text-[#C8C0B4]" : ""}`}
-                    />
+                    <div className={`text-[13px] leading-[1.45] ${done ? "line-through text-[#C8C0B4]" : "text-text-primary"}`}>
+                      {action.description}
+                    </div>
                     {action.due_date && (
                       <div className="text-[10px] text-text-muted mt-1">
                         Due {formatShortDate(action.due_date)}
@@ -105,12 +110,10 @@ export function ActionsList({ initialData }: Props) {
                   <span className="text-[10px] font-semibold text-text-secondary bg-cream px-2 py-[2px] rounded-pill shrink-0">
                     {action.owner_initials}
                   </span>
-                  <button
-                    onClick={() => setDeleteId(action.id)}
-                    className="text-[10px] text-text-muted hover:text-destructive shrink-0"
-                  >
-                    ×
-                  </button>
+                  <div className="flex gap-2 shrink-0">
+                    <Button size="sm" onClick={() => setEditAction(action)}>Edit</Button>
+                    <Button variant="destructive" size="sm" onClick={() => setDeleteId(action.id)}>Delete</Button>
+                  </div>
                 </div>
               );
             })}
@@ -124,8 +127,16 @@ export function ActionsList({ initialData }: Props) {
 
       <AddActionDialog
         open={showAdd}
+        projects={projects}
         onClose={() => setShowAdd(false)}
         onAdd={(action) => setActions((prev) => [...prev, action])}
+      />
+
+      <EditActionDialog
+        action={editAction}
+        projects={projects}
+        onClose={() => setEditAction(null)}
+        onSave={handleEditSave}
       />
 
       <ConfirmDialog
