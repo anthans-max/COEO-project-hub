@@ -106,7 +106,7 @@ export function ActionsList({ initialData, projects }: Props) {
           <select
             value={projectFilter}
             onChange={(e) => setProjectFilter(e.target.value)}
-            className="border border-border rounded-card px-3 py-[5px] text-[13px] outline-none focus:border-accent mb-[18px]"
+            className="appearance-none bg-primary text-white border border-primary rounded-pill pl-[14px] pr-8 py-[5px] text-[13px] font-medium outline-none cursor-pointer mb-[18px] bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M1 1l4 4 4-4%22 stroke=%22white%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>')] bg-no-repeat bg-[right_12px_center]"
           >
             <option value="All">All projects</option>
             {projects.map((p) => (
@@ -116,7 +116,7 @@ export function ActionsList({ initialData, projects }: Props) {
           <select
             value={personFilter}
             onChange={(e) => setPersonFilter(e.target.value)}
-            className="border border-border rounded-card px-3 py-[5px] text-[13px] outline-none focus:border-accent mb-[18px]"
+            className="appearance-none bg-primary text-white border border-primary rounded-pill pl-[14px] pr-8 py-[5px] text-[13px] font-medium outline-none cursor-pointer mb-[18px] bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M1 1l4 4 4-4%22 stroke=%22white%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>')] bg-no-repeat bg-[right_12px_center]"
           >
             {personOptions.map((name) => (
               <option key={name} value={name}>{name === "All" ? "All people" : name}</option>
