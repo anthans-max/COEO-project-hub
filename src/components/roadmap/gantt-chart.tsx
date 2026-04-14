@@ -92,14 +92,14 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
       <div className="border border-border rounded-card overflow-hidden bg-white">
         {/* Quarter headers */}
         <div className="flex">
-          <div className="w-[172px] min-w-[172px] bg-cream border-b border-border border-r border-r-border px-4 py-[7px]">
-            <span className="text-[10px] font-semibold text-text-secondary tracking-[0.06em] uppercase">Project</span>
+          <div className="w-[200px] min-w-[200px] bg-cream border-b border-border border-r border-r-border px-4 py-3">
+            <span className="text-[13px] font-semibold text-text-secondary tracking-[0.06em] uppercase">Project</span>
           </div>
           <div className="flex-1 flex">
             {quarters.map((q, i) => (
               <div
                 key={q.label}
-                className="flex-1 text-[10px] font-semibold text-text-secondary text-center border-l border-border py-[7px] tracking-[0.06em] uppercase bg-cream border-b border-b-border"
+                className="flex-1 text-[13px] font-semibold text-text-secondary text-center border-l border-border py-3 tracking-[0.06em] uppercase bg-cream border-b border-b-border"
                 style={{ borderLeft: i === 0 ? "none" : undefined }}
               >
                 {q.label}
@@ -120,15 +120,15 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
           const projectMilestones = milestones.filter((m) => m.project_id === project.id && m.due_date);
 
           return (
-            <div key={project.id} className="flex items-center min-h-[42px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
+            <div key={project.id} className="flex items-center min-h-[56px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
               {/* Label */}
-              <div className="w-[172px] min-w-[172px] px-4 py-2 border-r border-border">
-                <div className="text-[13px] font-medium text-text-primary leading-tight">{project.name}</div>
-                <div className="text-[10px] text-text-muted font-normal">{project.owner}</div>
+              <div className="w-[200px] min-w-[200px] px-4 py-2 border-r border-border">
+                <div className="text-[14px] font-medium text-text-primary leading-tight">{project.name}</div>
+                <div className="text-[12px] text-text-muted font-normal">{project.owner}</div>
               </div>
 
               {/* Track */}
-              <div className="flex-1 relative h-[42px] flex items-center">
+              <div className="flex-1 relative h-[56px] flex items-center">
                 {/* Quarter dividers */}
                 {quarters.map((_, i) => (
                   i > 0 && <div key={i} className="absolute top-0 bottom-0 border-l border-border" style={{ left: `${(i / 4) * 100}%` }} />
@@ -143,7 +143,7 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
                 {/* Project bar */}
                 {hasRange && width > 0 && (
                   <div
-                    className="absolute h-[18px] rounded flex items-center px-2 text-[10px] font-semibold text-white overflow-hidden whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity"
+                    className="absolute h-[26px] rounded flex items-center px-2 text-[12px] font-medium text-white overflow-hidden whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity"
                     style={{
                       left: `${left}%`,
                       width: `${width}%`,
@@ -163,12 +163,12 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
                   return (
                     <div
                       key={ms.id}
-                      className="absolute flex items-center justify-center w-5 h-[42px] cursor-pointer z-20"
+                      className="absolute flex items-center justify-center w-5 h-[56px] cursor-pointer z-20"
                       style={{ left: `calc(${msPct}% - 10px)` }}
                       title={ms.title}
                       onClick={() => setEditMilestone(ms)}
                     >
-                      <div className="w-[9px] h-[9px] rotate-45 bg-accent border-[1.5px] border-white" />
+                      <div className="w-[12px] h-[12px] rotate-45 bg-accent border-[1.5px] border-white" />
                     </div>
                   );
                 })}
