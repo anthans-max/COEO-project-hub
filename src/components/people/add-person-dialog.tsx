@@ -60,11 +60,11 @@ export function AddPersonDialog({ open, onClose, onAdd }: Props) {
         <h3 className="text-[14px] font-semibold text-primary mb-4">Add person</h3>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input type="text" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent" autoFocus />
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" autoFocus />
           <input type="text" placeholder="Role / title" value={role} onChange={(e) => setRole(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent" />
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" />
           <select value={organization} onChange={(e) => setOrganization(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent">
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent">
             <option value="Coeo Internal">Coeo Internal</option>
             <option value="Vendor">Vendor</option>
             <option value="External">External</option>

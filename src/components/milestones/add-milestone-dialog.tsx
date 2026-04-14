@@ -69,7 +69,7 @@ export function AddMilestoneDialog({ open, onClose, onAdd, projects }: Props) {
             placeholder="Milestone title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
             autoFocus
           />
           <input
@@ -77,19 +77,19 @@ export function AddMilestoneDialog({ open, onClose, onAdd, projects }: Props) {
             placeholder="Owner"
             value={owner}
             onChange={(e) => setOwner(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
           />
           <input
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
           />
           {projects && (
             <select
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
-              className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+              className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
             >
               <option value="">No project</option>
               {projects.map((p) => (

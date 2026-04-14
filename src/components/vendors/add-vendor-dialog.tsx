@@ -53,11 +53,11 @@ export function AddVendorDialog({ open, onClose, onAdd }: Props) {
         <h3 className="text-[14px] font-semibold text-primary mb-4">Add vendor</h3>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input type="text" placeholder="Vendor name" value={name} onChange={(e) => setName(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent" autoFocus />
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" autoFocus />
           <input type="text" placeholder="Role / engagement" value={role} onChange={(e) => setRole(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent" />
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" />
           <select value={status} onChange={(e) => setStatus(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent">
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent">
             {VENDOR_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <div className="flex justify-end gap-2 mt-2">

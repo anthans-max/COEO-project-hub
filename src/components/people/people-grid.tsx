@@ -71,8 +71,8 @@ export function PeopleGrid({ initialData }: Props) {
               color={person.color || "#0A2342"}
               className="mb-[10px]"
             />
-            <div className="text-[13px] font-semibold text-primary">{person.name}</div>
-            <div className="text-[11px] text-text-secondary">{person.role}</div>
+            <div className="text-[15px] font-semibold text-primary">{person.name}</div>
+            <div className="text-[13px] text-text-secondary">{person.role}</div>
             <div className="text-[10px] text-text-muted mt-1">{person.organization}</div>
             {person.focus_areas && person.focus_areas.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
@@ -91,7 +91,7 @@ export function PeopleGrid({ initialData }: Props) {
       </div>
 
       {people.length === 0 && (
-        <div className="py-8 text-center text-[13px] text-text-muted">No people yet</div>
+        <div className="py-8 text-center text-[15px] text-text-muted">No people yet</div>
       )}
 
       <AddPersonDialog

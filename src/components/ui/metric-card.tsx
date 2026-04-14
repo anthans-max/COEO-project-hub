@@ -10,11 +10,11 @@ export function MetricCard({ label, value, sub }: MetricCardProps) {
       <div className="text-[10px] font-semibold text-text-secondary tracking-[0.08em] uppercase mb-2">
         {label}
       </div>
-      <div className="text-[28px] font-semibold text-primary leading-none">
+      <div className="text-[32px] font-semibold text-primary leading-none">
         {value}
       </div>
       {sub && (
-        <div className="text-[11px] text-text-muted mt-[5px]">{sub}</div>
+        <div className="text-[13px] text-text-muted mt-[5px]">{sub}</div>
       )}
     </div>
   );

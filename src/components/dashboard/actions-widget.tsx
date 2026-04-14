@@ -58,7 +58,7 @@ export function ActionsWidget({ actions: initialActions }: Props) {
               )}
             </button>
             <div
-              className={`text-[13px] flex-1 leading-[1.45] ${
+              className={`text-[15px] flex-1 leading-[1.45] ${
                 done ? "line-through text-[#C8C0B4]" : "text-text-primary"
               }`}
             >

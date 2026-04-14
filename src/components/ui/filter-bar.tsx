@@ -16,7 +16,7 @@ export function FilterBar({ options, selected, onChange }: FilterBarProps) {
           key={opt}
           onClick={() => onChange(opt)}
           className={cn(
-            "text-[11px] font-medium px-[14px] py-[5px] rounded-pill border transition-all cursor-pointer",
+            "text-[13px] font-medium px-[14px] py-[5px] rounded-pill border transition-all cursor-pointer",
             selected === opt
               ? "bg-primary text-white border-primary"
               : "bg-transparent text-badge-gray-text border-[#C8C0B4] hover:bg-cream"

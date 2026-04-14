@@ -62,14 +62,14 @@ export function AddSystemDialog({ open, onClose, onAdd, categoryOptions }: Props
         <h3 className="text-[14px] font-semibold text-primary mb-4">Add system</h3>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input type="text" placeholder="System name" value={name} onChange={(e) => setName(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent" autoFocus />
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" autoFocus />
           <input type="text" placeholder="Subtitle / description" value={subtitle} onChange={(e) => setSubtitle(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent" />
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" />
           <div>
             <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-2 block">Categories</label>
             <div className="flex flex-col gap-[6px]">
               {categoryOptions.map((cat) => (
-                <label key={cat} className="flex items-center gap-2 text-[13px] text-primary cursor-pointer">
+                <label key={cat} className="flex items-center gap-2 text-[15px] text-primary cursor-pointer">
                   <input
                     type="checkbox"
                     checked={selectedCategories.includes(cat)}
@@ -82,7 +82,7 @@ export function AddSystemDialog({ open, onClose, onAdd, categoryOptions }: Props
             </div>
           </div>
           <select value={status} onChange={(e) => setStatus(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent">
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent">
             {SYSTEM_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <div className="flex justify-end gap-2 mt-2">

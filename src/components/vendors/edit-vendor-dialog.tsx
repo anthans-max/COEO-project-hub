@@ -87,7 +87,7 @@ export function EditVendorDialog({ vendor, onClose, onSave }: Props) {
   };
 
   const inputClass =
-    "border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent w-full";
+    "border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent w-full";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={onClose}>

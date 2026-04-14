@@ -90,7 +90,7 @@ export function EditProjectDialog({ project, onClose, onSave, onDelete }: Props)
   };
 
   const inputClass =
-    "border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent w-full";
+    "border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent w-full";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={onClose}>
@@ -165,7 +165,7 @@ export function EditProjectDialog({ project, onClose, onSave, onDelete }: Props)
                 onChange={(e) => set("progress", Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
                 className={`${inputClass} w-[80px]`}
               />
-              <span className="text-[12px] text-text-secondary">%</span>
+              <span className="text-[13px] text-text-secondary">%</span>
             </div>
           </div>
 

@@ -41,14 +41,14 @@ export default async function DashboardPage() {
           <div>
             <div className="flex justify-between items-center mb-[10px]">
               <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Project status</div>
-              <a href="/projects" className="text-[11px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
+              <a href="/projects" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
             </div>
             <ProjectStatusTable projects={projects ?? []} />
           </div>
           <div>
             <div className="flex justify-between items-center mb-[10px]">
               <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">My open actions</div>
-              <a href="/actions" className="text-[11px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
+              <a href="/actions" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
             </div>
             <ActionsWidget actions={actions ?? []} />
           </div>
@@ -58,7 +58,7 @@ export default async function DashboardPage() {
         <div className="mt-6">
           <div className="flex justify-between items-center mb-[10px]">
             <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Upcoming milestones</div>
-            <a href="/milestones" className="text-[11px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
+            <a href="/milestones" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
           </div>
           <MilestonesWidget milestones={upcomingMilestones ?? []} />
         </div>

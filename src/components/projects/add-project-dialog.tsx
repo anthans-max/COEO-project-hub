@@ -57,7 +57,7 @@ export function AddProjectDialog({ open, onClose, onAdd }: Props) {
             placeholder="Project name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
             autoFocus
           />
           <input
@@ -65,12 +65,12 @@ export function AddProjectDialog({ open, onClose, onAdd }: Props) {
             placeholder="Owner"
             value={owner}
             onChange={(e) => setOwner(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
           />
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent"
+            className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent"
           >
             {PROJECT_STATUSES.map((s) => (
               <option key={s} value={s}>{s}</option>

@@ -46,7 +46,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={toast.id}
             className={cn(
-              "px-4 py-3 rounded-card text-[12px] font-medium shadow-lg animate-in slide-in-from-right transition-all",
+              "px-4 py-3 rounded-card text-[13px] font-medium shadow-lg animate-in slide-in-from-right transition-all",
               toast.type === "error"
                 ? "bg-destructive text-white"
                 : "bg-primary text-white"

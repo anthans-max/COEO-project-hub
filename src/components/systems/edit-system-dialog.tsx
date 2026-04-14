@@ -88,7 +88,7 @@ export function EditSystemDialog({ system, onClose, onSave, categoryOptions }: P
   };
 
   const inputClass =
-    "border border-border rounded-card px-3 py-2 text-[13px] outline-none focus:border-accent w-full";
+    "border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent w-full";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={onClose}>
@@ -116,7 +116,7 @@ export function EditSystemDialog({ system, onClose, onSave, categoryOptions }: P
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-2 block">Categories</label>
               <div className="flex flex-col gap-[6px]">
                 {categoryOptions.map((cat) => (
-                  <label key={cat} className="flex items-center gap-2 text-[13px] text-primary cursor-pointer">
+                  <label key={cat} className="flex items-center gap-2 text-[15px] text-primary cursor-pointer">
                     <input
                       type="checkbox"
                       checked={form.categories.includes(cat)}

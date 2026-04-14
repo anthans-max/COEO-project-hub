@@ -24,10 +24,10 @@ export function ProjectStatusTable({ projects }: Props) {
           className="flex items-center gap-3 px-4 py-[11px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
         >
           <div className="flex-1">
-            <div className="text-[13px] font-medium text-text-primary">{project.name}</div>
-            <div className="text-[11px] text-text-muted mt-[1px]">{project.phase_current}</div>
+            <div className="text-[15px] font-medium text-text-primary">{project.name}</div>
+            <div className="text-[13px] text-text-muted mt-[1px]">{project.phase_current}</div>
           </div>
-          <div className="text-[11px] text-text-secondary w-[110px] shrink-0">{project.owner}</div>
+          <div className="text-[13px] text-text-secondary w-[110px] shrink-0">{project.owner}</div>
           <Badge status={project.status} />
           <ProgressBar value={project.progress} color={project.status === 'In Progress' && project.progress < 30 ? '#F4821F' : '#0A2342'} />
         </div>

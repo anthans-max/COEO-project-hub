@@ -70,19 +70,19 @@ export function ProjectsTable({ initialData }: Props) {
             className="flex items-center gap-3 px-4 py-[11px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
           >
             <div className="flex-1 min-w-[160px]">
-              <div className="text-[13px] font-medium text-text-primary">{project.name}</div>
+              <div className="text-[15px] font-medium text-text-primary">{project.name}</div>
               {project.key_risk && (
                 <div className="text-[10px] text-text-muted mt-1">{project.key_risk}</div>
               )}
             </div>
-            <div className="text-[11px] text-text-secondary w-[110px] shrink-0">
+            <div className="text-[13px] text-text-secondary w-[110px] shrink-0">
               {project.owner || "Unassigned"}
             </div>
             <div className="w-[90px] shrink-0">
               <Badge status={project.status} />
             </div>
             <ProgressBar value={project.progress} />
-            <div className="w-[180px] shrink-0 text-[11px] text-text-muted">
+            <div className="w-[180px] shrink-0 text-[13px] text-text-muted">
               {project.phase_current || "—"}
             </div>
             <div className="w-[120px] shrink-0 flex justify-end gap-2">
@@ -96,7 +96,7 @@ export function ProjectsTable({ initialData }: Props) {
           </div>
         ))}
         {filtered.length === 0 && (
-          <div className="py-8 text-center text-[13px] text-text-muted">No projects found</div>
+          <div className="py-8 text-center text-[15px] text-text-muted">No projects found</div>
         )}
       </Card>
 

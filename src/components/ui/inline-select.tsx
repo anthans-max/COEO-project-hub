@@ -15,7 +15,7 @@ export function InlineSelect({ value, options, onSave, className }: InlineSelect
       value={value}
       onChange={(e) => onSave(e.target.value)}
       className={cn(
-        "bg-transparent border-none text-[11px] text-text-primary cursor-pointer outline-none hover:bg-cream/60 rounded px-1 py-0.5 -mx-1 appearance-none",
+        "bg-transparent border-none text-[13px] text-text-primary cursor-pointer outline-none hover:bg-cream/60 rounded px-1 py-0.5 -mx-1 appearance-none",
         className
       )}
     >

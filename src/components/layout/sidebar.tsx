@@ -80,7 +80,7 @@ export function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-[10px] px-5 py-2 text-[12px] font-medium transition-all border-l-[3px] border-transparent",
+                    "flex items-center gap-[10px] px-5 py-2 text-[13px] font-medium transition-all border-l-[3px] border-transparent",
                     active
                       ? "bg-white/[0.07] text-white border-l-accent"
                       : "text-white/[0.52] hover:bg-white/[0.05] hover:text-white/[0.85]"

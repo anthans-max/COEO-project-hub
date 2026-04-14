@@ -123,7 +123,7 @@ export function GanttChart({ initialProjects, initialMilestones }: Props) {
             <div key={project.id} className="flex items-center min-h-[42px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
               {/* Label */}
               <div className="w-[172px] min-w-[172px] px-4 py-2 border-r border-border">
-                <div className="text-[12px] font-medium text-text-primary leading-tight">{project.name}</div>
+                <div className="text-[13px] font-medium text-text-primary leading-tight">{project.name}</div>
                 <div className="text-[10px] text-text-muted font-normal">{project.owner}</div>
               </div>
 

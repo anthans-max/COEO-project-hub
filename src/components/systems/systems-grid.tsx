@@ -162,7 +162,7 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
   return (
     <>
       <div className="flex items-center justify-end gap-4 mb-4">
-        <label className="flex items-center gap-[6px] text-[11px] text-text-secondary cursor-pointer select-none">
+        <label className="flex items-center gap-[6px] text-[13px] text-text-secondary cursor-pointer select-none">
           <input
             type="checkbox"
             checked={hideEmpty}
@@ -206,7 +206,7 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
               </div>
             </div>
             {catRecord?.description && (
-              <div className="text-[11px] mb-[10px]" style={{ color: "#A09880" }}>
+              <div className="text-[13px] mb-[10px]" style={{ color: "#A09880" }}>
                 {catRecord.description}
               </div>
             )}
@@ -231,26 +231,26 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
                         Delete
                       </button>
                     </div>
-                    <div className="text-[13px] font-semibold text-primary mb-[3px]">{system.name}</div>
-                    <div className="text-[11px] text-text-secondary mb-[10px]">{system.subtitle}</div>
+                    <div className="text-[15px] font-semibold text-primary mb-[3px]">{system.name}</div>
+                    <div className="text-[13px] text-text-secondary mb-[10px]">{system.subtitle}</div>
                     <Badge status={system.status} />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-4 text-center text-[12px] text-text-muted">No systems in this category</div>
+              <div className="py-4 text-center text-[13px] text-text-muted">No systems in this category</div>
             )}
           </div>
         );
       })}
 
       {allCatNames.length === 0 && (
-        <div className="py-8 text-center text-[13px] text-text-muted">No systems yet</div>
+        <div className="py-8 text-center text-[15px] text-text-muted">No systems yet</div>
       )}
 
       <button
         onClick={() => setShowAddCategory(true)}
-        className="text-[12px] font-medium text-primary hover:underline mt-2"
+        className="text-[13px] font-medium text-primary hover:underline mt-2"
       >
         + Add category
       </button>

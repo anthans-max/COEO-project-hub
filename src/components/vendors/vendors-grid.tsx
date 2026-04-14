@@ -66,12 +66,12 @@ export function VendorsGrid({ initialData }: Props) {
                 Delete
               </button>
             </div>
-            <div className="text-[13px] font-semibold text-primary mb-1">{vendor.name}</div>
+            <div className="text-[15px] font-semibold text-primary mb-1">{vendor.name}</div>
             {vendor.subtitle && (
-              <div className="text-[11px] text-text-secondary mb-1">{vendor.subtitle}</div>
+              <div className="text-[13px] text-text-secondary mb-1">{vendor.subtitle}</div>
             )}
             {vendor.role && (
-              <div className="text-[11px] text-text-muted mb-2">{vendor.role}</div>
+              <div className="text-[13px] text-text-muted mb-2">{vendor.role}</div>
             )}
             <Badge status={vendor.status} />
             {vendor.contact_name && (
@@ -85,7 +85,7 @@ export function VendorsGrid({ initialData }: Props) {
       </div>
 
       {vendors.length === 0 && (
-        <div className="py-8 text-center text-[13px] text-text-muted">No vendors yet</div>
+        <div className="py-8 text-center text-[15px] text-text-muted">No vendors yet</div>
       )}
 
       <AddVendorDialog

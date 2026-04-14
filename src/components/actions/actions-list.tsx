@@ -97,7 +97,7 @@ export function ActionsList({ initialData, projects }: Props) {
                 >
                   <Checkbox checked={done} onChange={() => toggleComplete(action)} />
                   <div className="flex-1 min-w-0">
-                    <div className={`text-[13px] leading-[1.45] ${done ? "line-through text-[#C8C0B4]" : "text-text-primary"}`}>
+                    <div className={`text-[15px] leading-[1.45] ${done ? "line-through text-[#C8C0B4]" : "text-text-primary"}`}>
                       {action.description}
                     </div>
                     {action.due_date && (
@@ -122,7 +122,7 @@ export function ActionsList({ initialData, projects }: Props) {
       ))}
 
       {filtered.length === 0 && (
-        <div className="py-8 text-center text-[13px] text-text-muted">No actions found</div>
+        <div className="py-8 text-center text-[15px] text-text-muted">No actions found</div>
       )}
 
       <AddActionDialog

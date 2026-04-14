@@ -20,11 +20,11 @@ export function MilestonesWidget({ milestones }: Props) {
             key={ms.id}
             className="flex items-center gap-3 px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
           >
-            <div className={`text-[11px] font-medium w-[56px] shrink-0 ${overdue ? "text-destructive font-semibold" : "text-text-secondary"}`}>
+            <div className={`text-[13px] font-medium w-[56px] shrink-0 ${overdue ? "text-destructive font-semibold" : "text-text-secondary"}`}>
               {formatShortDate(ms.due_date)}
             </div>
             <div className="flex-1">
-              <div className="text-[13px] text-text-primary font-medium">{ms.title}</div>
+              <div className="text-[15px] text-text-primary font-medium">{ms.title}</div>
             </div>
             <Badge status={overdue ? "Overdue" : ms.status} />
           </div>
