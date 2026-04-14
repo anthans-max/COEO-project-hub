@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddMeetingNoteDialog } from "./add-meeting-note-dialog";
 import { EditMeetingNoteDialog } from "./edit-meeting-note-dialog";
+import { ImportMeetingNotesDialog } from "./import-meeting-notes-dialog";
 import { useMeetingNotes } from "@/lib/hooks/use-meeting-notes";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
@@ -23,6 +24,7 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
     .filter((n) => n.project_id === projectId)
     .sort((a, b) => (b.date ?? b.created_at).localeCompare(a.date ?? a.created_at));
   const [showAdd, setShowAdd] = useState(false);
+  const [showImport, setShowImport] = useState(false);
   const [editing, setEditing] = useState<MeetingNote | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
@@ -44,7 +46,8 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
 
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end gap-2 mb-4">
+        <Button variant="ghost" onClick={() => setShowImport(true)}>Import meeting notes</Button>
         <Button onClick={() => setShowAdd(true)}>+ Add meeting note</Button>
       </div>
 
@@ -79,6 +82,13 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
         open={showAdd}
         projectId={projectId}
         onClose={() => setShowAdd(false)}
+        onAdd={(n) => setNotes((prev) => [...prev, n])}
+      />
+
+      <ImportMeetingNotesDialog
+        open={showImport}
+        projectId={projectId}
+        onClose={() => setShowImport(false)}
         onAdd={(n) => setNotes((prev) => [...prev, n])}
       />
 
