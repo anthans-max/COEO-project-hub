@@ -42,7 +42,7 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
   const [editSystem, setEditSystem] = useState<System | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [hideEmpty, setHideEmpty] = useState(false);
-  const [editCategoryName, setEditCategoryName] = useState<string | null>(null);
+  const [editCategory, setEditCategory] = useState<SystemCategory | null>(null);
   const [deleteCategoryName, setDeleteCategoryName] = useState<string | null>(null);
   const toast = useToast();
 
@@ -76,26 +76,28 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
   // All category names for dialogs
   const categoryOptions = allCatNames;
 
-  const handleCategoryRename = async (oldName: string, newName: string) => {
-    // Optimistic update: rename in categories table state
+  const handleCategorySave = async (oldName: string, newName: string, description: string | null) => {
+    // Optimistic update: rename + description in categories table state
     setCategories((prev) =>
-      prev.map((c) => (c.name === oldName ? { ...c, name: newName } : c))
+      prev.map((c) => (c.name === oldName ? { ...c, name: newName, description } : c))
     );
     // Optimistic update: rename in all systems that reference this category
-    setSystems((prev) =>
-      prev.map((s) => {
-        const cats = getCategories(s);
-        if (!cats.includes(oldName)) return s;
-        return { ...s, category: cats.map((c) => (c === oldName ? newName : c)) };
-      })
-    );
+    if (oldName !== newName) {
+      setSystems((prev) =>
+        prev.map((s) => {
+          const cats = getCategories(s);
+          if (!cats.includes(oldName)) return s;
+          return { ...s, category: cats.map((c) => (c === oldName ? newName : c)) };
+        })
+      );
+    }
 
     const supabase = createClient();
 
     // Update the categories table
     const { error: catError } = await supabase
       .from("coeo_system_categories")
-      .update({ name: newName })
+      .update({ name: newName, description })
       .eq("name", oldName);
 
     if (catError) {
@@ -103,25 +105,29 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
       setCategories((prev) =>
         prev.map((c) => (c.name === newName ? { ...c, name: oldName } : c))
       );
-      setSystems((prev) =>
-        prev.map((s) => {
-          const cats = getCategories(s);
-          if (!cats.includes(newName)) return s;
-          return { ...s, category: cats.map((c) => (c === newName ? oldName : c)) };
-        })
-      );
-      toast.error("Failed to rename category");
+      if (oldName !== newName) {
+        setSystems((prev) =>
+          prev.map((s) => {
+            const cats = getCategories(s);
+            if (!cats.includes(newName)) return s;
+            return { ...s, category: cats.map((c) => (c === newName ? oldName : c)) };
+          })
+        );
+      }
+      toast.error("Failed to update category");
       return;
     }
 
     // Update all systems that had the old category name
-    const affectedSystems = systems.filter((s) => getCategories(s).includes(oldName));
-    for (const sys of affectedSystems) {
-      const updatedCats = getCategories(sys).map((c) => (c === oldName ? newName : c));
-      await supabase
-        .from("coeo_systems")
-        .update({ category: updatedCats })
-        .eq("id", sys.id);
+    if (oldName !== newName) {
+      const affectedSystems = systems.filter((s) => getCategories(s).includes(oldName));
+      for (const sys of affectedSystems) {
+        const updatedCats = getCategories(sys).map((c) => (c === oldName ? newName : c));
+        await supabase
+          .from("coeo_systems")
+          .update({ category: updatedCats })
+          .eq("id", sys.id);
+      }
     }
   };
 
@@ -171,15 +177,16 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
       {allCatNames.map((cat) => {
         const catSystems = systems.filter((s) => getCategories(s).includes(cat));
         if (hideEmpty && catSystems.length === 0) return null;
+        const catRecord = (categories ?? []).find((c) => c.name === cat);
         return (
           <div key={cat} className="mb-[24px]">
-            <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border mt-[32px] group/header">
+            <div className="flex items-center justify-between mb-[4px] pb-[6px] border-b border-border mt-[32px] group/header">
               <span className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
                 {pluralize(cat)}
               </span>
               <div className="flex items-center gap-2 opacity-0 group-hover/header:opacity-100 transition-opacity">
                 <button
-                  onClick={() => setEditCategoryName(cat)}
+                  onClick={() => catRecord && setEditCategory(catRecord)}
                   className="text-primary hover:text-primary/70 transition-colors"
                   title="Rename category"
                 >
@@ -198,6 +205,11 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
                 </button>
               </div>
             </div>
+            {catRecord?.description && (
+              <div className="text-[11px] mb-[10px]" style={{ color: "#A09880" }}>
+                {catRecord.description}
+              </div>
+            )}
             {catSystems.length > 0 ? (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[10px]">
                 {catSystems.map((system) => (
@@ -264,9 +276,9 @@ export function SystemsGrid({ initialData, initialCategories }: Props) {
       />
 
       <EditCategoryDialog
-        categoryName={editCategoryName}
-        onClose={() => setEditCategoryName(null)}
-        onSave={handleCategoryRename}
+        category={editCategory}
+        onClose={() => setEditCategory(null)}
+        onSave={handleCategorySave}
       />
 
       <ConfirmDialog

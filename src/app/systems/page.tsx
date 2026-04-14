@@ -1,6 +1,7 @@
 import { Topbar } from "@/components/layout/topbar";
 import { createClient } from "@/lib/supabase/server";
 import { SystemsGrid } from "@/components/systems/systems-grid";
+import type { SystemCategory } from "@/lib/types";
 
 export default async function SystemsPage() {
   const supabase = await createClient();
@@ -10,7 +11,7 @@ export default async function SystemsPage() {
     .order("sort_order");
 
   // Categories table may not exist yet — query independently so it can't crash the page
-  let categories: { id: string; name: string; sort_order: number; created_at: string }[] = [];
+  let categories: SystemCategory[] = [];
   try {
     const { data } = await supabase
       .from("coeo_system_categories")
