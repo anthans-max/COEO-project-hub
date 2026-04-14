@@ -1,6 +1,7 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSearchParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export interface TabDef {
@@ -16,17 +17,28 @@ interface Props {
 
 export function Tabs({ tabs, defaultTab }: Props) {
   const sp = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
-  const requested = sp.get("tab");
-  const active = tabs.find((t) => t.id === requested) ? requested! : defaultTab;
+  const initial = (() => {
+    const requested = sp.get("tab");
+    return tabs.find((t) => t.id === requested) ? requested! : defaultTab;
+  })();
+  const [active, setActive] = useState<string>(initial);
+
+  useEffect(() => {
+    const requested = sp.get("tab");
+    if (requested && tabs.find((t) => t.id === requested) && requested !== active) {
+      setActive(requested);
+    }
+  }, [sp, tabs, active]);
 
   const setTab = (id: string) => {
+    setActive(id);
     const params = new URLSearchParams(sp.toString());
     if (id === defaultTab) params.delete("tab");
     else params.set("tab", id);
     const qs = params.toString();
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    const url = qs ? `${pathname}?${qs}` : pathname;
+    window.history.replaceState(null, "", url);
   };
 
   const current = tabs.find((t) => t.id === active) ?? tabs[0];

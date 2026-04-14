@@ -5,17 +5,17 @@ import { createClient } from "@/lib/supabase/server";
 import { Tabs } from "@/components/ui/tabs";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 import { ProjectOverview } from "@/components/projects/project-overview";
-import { ProjectLinkedEntities } from "@/components/projects/project-linked-entities";
 import { ActionsList } from "@/components/actions/actions-list";
 import { MeetingNotesList } from "@/components/meeting-notes/meeting-notes-list";
-import { GanttChart } from "@/components/roadmap/gantt-chart";
-import { DocsList } from "@/components/docs/docs-list";
+// Hidden tabs (components preserved on disk for future re-enable):
+// import { ProjectLinkedEntities } from "@/components/projects/project-linked-entities";
+// import { GanttChart } from "@/components/roadmap/gantt-chart";
+// import { DocsList } from "@/components/docs/docs-list";
 import type {
   Project,
   Action,
   Milestone,
   MeetingNote,
-  Doc,
   System,
   Vendor,
   Person,
@@ -34,7 +34,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     actionsRes,
     milestonesRes,
     notesRes,
-    docsRes,
     systemsJoinRes,
     vendorsJoinRes,
     peopleJoinRes,
@@ -43,7 +42,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_milestones").select("*").eq("project_id", id).order("due_date"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
-    supabase.from("coeo_docs").select("*").eq("project_id", id),
     supabase.from("coeo_project_systems").select("coeo_systems(*)").eq("project_id", id),
     supabase.from("coeo_project_vendors").select("coeo_vendors(*)").eq("project_id", id),
     supabase.from("coeo_project_people").select("coeo_people(*)").eq("project_id", id),
@@ -55,7 +53,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const actions = (actionsRes.data ?? []) as Action[];
   const milestones = (milestonesRes.data ?? []) as Milestone[];
   const notes = (notesRes.data ?? []) as MeetingNote[];
-  const docs = (docsRes.data ?? []) as Doc[];
   const flattenJoin = <T,>(rows: unknown, key: string): T[] => {
     const arr = (rows ?? []) as Record<string, unknown>[];
     return arr.flatMap((row) => {
@@ -101,27 +98,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       label: "Meeting Notes",
       content: <MeetingNotesList projectId={project.id} initialData={notes} />,
     },
-    {
-      id: "roadmap",
-      label: "Roadmap",
-      content: (
-        <GanttChart
-          initialProjects={[project]}
-          initialMilestones={milestones}
-          hideAddProject
-        />
-      ),
-    },
-    {
-      id: "docs",
-      label: "Docs",
-      content: <DocsList projectId={project.id} initialData={docs} />,
-    },
-    {
-      id: "links",
-      label: "People / Vendors / Systems",
-      content: <ProjectLinkedEntities people={people} vendors={vendors} systems={systems} />,
-    },
+    // Hidden for now — will be re-enabled later:
+    // Roadmap: <GanttChart initialProjects={[project]} initialMilestones={milestones} hideAddProject />
+    // Docs: <DocsList projectId={project.id} initialData={docs} />
+    // People/Vendors/Systems: <ProjectLinkedEntities people={people} vendors={vendors} systems={systems} />
   ];
 
   return (
