@@ -57,10 +57,10 @@ export function Sidebar() {
     <aside className="w-sidebar min-w-sidebar bg-primary flex flex-col h-screen sticky top-0">
       {/* Logo */}
       <div className="px-5 pt-5 pb-4 border-b border-white/[0.07]">
-        <div className="text-[13px] font-semibold text-white tracking-[0.12em] uppercase">
+        <div className="text-[15px] font-semibold text-white tracking-[0.12em] uppercase">
           COEO <span className="text-accent">·</span> PROJECT HUB
         </div>
-        <div className="text-[9px] text-white/[0.32] tracking-[0.14em] uppercase mt-[3px]">
+        <div className="text-[11px] text-white/[0.6] tracking-[0.14em] uppercase mt-[3px]">
           Internal Operations · 2026
         </div>
       </div>
@@ -69,7 +69,7 @@ export function Sidebar() {
       <nav className="py-2 flex-1 overflow-y-auto">
         {navSections.map((section) => (
           <div key={section.label}>
-            <div className="text-[9px] font-semibold text-white/[0.25] tracking-[0.14em] uppercase px-5 pt-[13px] pb-1">
+            <div className="text-[11px] font-semibold text-white/[0.6] tracking-[0.14em] uppercase px-5 pt-[13px] pb-1">
               {section.label}
             </div>
             {section.items.map((item) => {
@@ -80,13 +80,13 @@ export function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-[10px] px-5 py-2 text-[13px] font-medium transition-all border-l-[3px] border-transparent",
+                    "flex items-center gap-[10px] px-5 py-2 text-[14px] font-medium transition-all border-l-[3px] border-transparent",
                     active
                       ? "bg-white/[0.07] text-white border-l-accent"
-                      : "text-white/[0.52] hover:bg-white/[0.05] hover:text-white/[0.85]"
+                      : "text-white hover:bg-white/[0.05]"
                   )}
                 >
-                  <Icon size={15} />
+                  <Icon size={15} className={active ? "" : "opacity-90"} />
                   {item.name}
                 </Link>
               );
