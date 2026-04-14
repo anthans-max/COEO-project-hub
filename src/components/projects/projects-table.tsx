@@ -72,7 +72,7 @@ export function ProjectsTable({ initialData }: Props) {
             <div className="flex-1 min-w-[160px]">
               <div className="text-[15px] font-medium text-text-primary">{project.name}</div>
               {project.key_risk && (
-                <div className="text-[10px] text-text-muted mt-1">{project.key_risk}</div>
+                <div className="text-[15px] text-text-muted mt-1">{project.key_risk}</div>
               )}
             </div>
             <div className="text-[13px] text-text-secondary w-[110px] shrink-0">

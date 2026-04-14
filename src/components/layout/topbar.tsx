@@ -11,7 +11,7 @@ export function Topbar({ title, children }: TopbarProps) {
   const today = format(new Date(), "EEEE, MMMM d, yyyy");
 
   return (
-    <div className="bg-white border-b border-border px-8 h-[54px] flex items-center justify-between shrink-0">
+    <div className="bg-white border-b border-border px-8 py-5 flex items-center justify-between shrink-0">
       <div>
         <div className="text-[22px] font-semibold text-primary tracking-[-0.2px]">
           {title}
