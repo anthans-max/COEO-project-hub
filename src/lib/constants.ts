@@ -32,6 +32,7 @@ export const SYSTEM_CATEGORIES = [
 export const SYSTEM_STATUSES = [
   "Active",
   "In Progress",
+  "Discovery underway",
   "Decision Pending",
   "To Be Decommissioned",
   "Fragmented",
@@ -72,6 +73,7 @@ export const STATUS_BADGE_MAP: Record<string, string> = {
   "Blocked": "red",
   // System statuses
   "Active": "green",
+  "Discovery underway": "blue",
   "Decision Pending": "amber",
   "To Be Decommissioned": "red",
   "Fragmented": "amber",
