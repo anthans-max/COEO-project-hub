@@ -20,7 +20,7 @@ export function ProjectOverview({ project, actions, milestones, systems, vendors
   return (
     <div className="flex flex-col gap-6">
       {project.notes && (
-        <Card className="p-5">
+        <Card className="p-5 bg-cream">
           <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-2">Description</div>
           <div className="text-[14px] text-text-primary whitespace-pre-wrap leading-relaxed">{project.notes}</div>
         </Card>
@@ -34,7 +34,7 @@ export function ProjectOverview({ project, actions, milestones, systems, vendors
         <Stat label="Systems" value={systems.length} />
       </div>
 
-      <Card className="p-5">
+      <Card className="p-5 bg-cream">
         <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-3">Key dates</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3">
           <Meta label="Start date" value={project.start_date ?? "—"} />
@@ -48,7 +48,7 @@ export function ProjectOverview({ project, actions, milestones, systems, vendors
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-cream">
       <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1">{label}</div>
       <div className="text-[22px] font-semibold text-primary">{value}</div>
     </Card>

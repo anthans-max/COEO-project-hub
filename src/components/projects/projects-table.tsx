@@ -59,7 +59,7 @@ export function ProjectsTable({ initialData }: Props) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="py-8 text-center text-[15px] text-text-muted border border-border rounded-card bg-white">
+        <div className="py-8 text-center text-[15px] text-text-muted border border-border rounded-card bg-cream">
           No projects found
         </div>
       ) : (
@@ -76,7 +76,7 @@ export function ProjectsTable({ initialData }: Props) {
                   router.push(`/projects/${project.id}`);
                 }
               }}
-              className="bg-white border-[0.5px] border-border rounded-card p-5 cursor-pointer hover:bg-cream/60 hover:border-[#C8C0B4] transition-colors flex flex-col gap-3"
+              className="bg-cream border-[0.5px] border-border rounded-card p-5 cursor-pointer hover:bg-[#EDE8DF] hover:border-[#C8C0B4] transition-colors flex flex-col gap-3"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="text-[15px] font-medium text-text-primary min-w-0 truncate">

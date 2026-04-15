@@ -59,13 +59,13 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
       {notes.length === 0 ? (
         <Card className="p-8 text-center text-[15px] text-text-muted">No meeting notes yet</Card>
       ) : (
-        <div className="flex flex-col border border-border rounded-card overflow-hidden bg-white">
+        <div className="flex flex-col border border-border rounded-card overflow-hidden bg-cream">
           {notes.map((n) => (
             <button
               key={n.id}
               onClick={() => setSelectedId(n.id)}
-              className={`flex items-center justify-between gap-4 px-5 py-3 text-left border-b border-border last:border-b-0 hover:bg-cream/60 transition-colors ${
-                selectedId === n.id ? "bg-cream" : ""
+              className={`flex items-center justify-between gap-4 px-5 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
+                selectedId === n.id ? "bg-[#E5DFD5]" : "hover:bg-[#EDE8DF]"
               }`}
             >
               <div className="min-w-0 flex-1">
