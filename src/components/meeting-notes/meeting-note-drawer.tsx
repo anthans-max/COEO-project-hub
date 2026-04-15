@@ -53,7 +53,8 @@ export function MeetingNoteDrawer({ note, onClose, onEdit, onDelete }: Props) {
                 h2: ({ node, ...props }) => <h2 className="text-[16px] font-medium mt-4 mb-2 first:mt-0" {...props} />,
                 h3: ({ node, ...props }) => <h3 className="text-[15px] font-medium mt-3 mb-2 first:mt-0" {...props} />,
                 a: ({ node, ...props }) => <a className="text-accent underline" target="_blank" rel="noreferrer" {...props} />,
-                code: ({ node, ...props }) => <code className="bg-cream px-1 py-0.5 rounded text-[13px]" {...props} />,
+                code: ({ node, ...props }) => <code className="bg-cream px-1 py-0.5 rounded text-[13px] break-words [overflow-wrap:anywhere]" {...props} />,
+                pre: ({ node, ...props }) => <pre className="bg-cream p-3 rounded text-[13px] mb-3 whitespace-pre-wrap break-words [overflow-wrap:anywhere] [&>code]:bg-transparent [&>code]:p-0" {...props} />,
                 /* eslint-enable @typescript-eslint/no-unused-vars */
               }}
             >
