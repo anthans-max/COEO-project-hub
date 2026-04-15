@@ -71,7 +71,7 @@ export function MilestonesList({ initialData, projects }: Props) {
     return (
       <div
         key={ms.id}
-        className="flex items-center gap-3 px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#EDE8DF] transition-colors"
+        className="flex items-center gap-3 px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA] transition-colors"
       >
         <div className={`text-[13px] font-medium w-[56px] shrink-0 ${overdue ? "text-destructive font-semibold" : "text-text-secondary"}`}>
           {formatShortDate(ms.due_date)}
@@ -142,17 +142,17 @@ export function MilestonesList({ initialData, projects }: Props) {
       ) : isGrouped ? (
         groupOrder.map((groupName) => (
           <div key={groupName} className="mb-5">
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-[10px] pb-[6px] border-b border-border">
+            <div className="bg-cream border border-border border-b-0 rounded-t-card px-4 py-[9px] text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
               {groupName}
             </div>
-            <Card className="bg-cream">
+            <Card className="bg-white rounded-t-none border-t-0">
               {renderHeader(false)}
               {grouped[groupName].map((ms) => renderRow(ms, false))}
             </Card>
           </div>
         ))
       ) : (
-        <Card className="bg-cream">
+        <Card className="bg-white">
           {renderHeader(false)}
           {filtered.map((ms) => renderRow(ms, false))}
         </Card>
