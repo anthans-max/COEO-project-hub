@@ -7,7 +7,8 @@ import { ProjectDetailHeader } from "@/components/projects/project-detail-header
 import { ProjectEditAction } from "@/components/projects/project-edit-action";
 import { ActionsList } from "@/components/actions/actions-list";
 import { MeetingNotesList } from "@/components/meeting-notes/meeting-notes-list";
-import type { Project, Action, MeetingNote } from "@/lib/types";
+import { ProjectTimelineRow } from "@/components/projects/project-timeline-row";
+import type { Project, Action, MeetingNote, ProjectPhase, Milestone } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -17,10 +18,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [projectRes, actionsRes, notesRes] = await Promise.all([
+  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes] = await Promise.all([
     supabase.from("coeo_projects").select("*").eq("id", id).single(),
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
+    supabase.from("coeo_project_phases").select("*").eq("project_id", id).order("sort_order"),
+    supabase.from("coeo_milestones").select("*").eq("project_id", id).order("due_date"),
   ]);
 
   const project = projectRes.data as Project | null;
@@ -28,6 +31,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   const actions = (actionsRes.data ?? []) as Action[];
   const notes = (notesRes.data ?? []) as MeetingNote[];
+  const phases = (phasesRes.data ?? []) as ProjectPhase[];
+  const milestones = (milestonesRes.data ?? []) as Milestone[];
 
   return (
     <>
@@ -47,6 +52,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       </Topbar>
       <div className="pt-8 pb-7 px-8 flex-1 overflow-x-auto">
         <ProjectDetailHeader initialProject={project} />
+
+        <ProjectTimelineRow
+          initialProject={project}
+          initialPhases={phases}
+          initialMilestones={milestones}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <section>

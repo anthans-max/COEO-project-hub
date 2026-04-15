@@ -99,6 +99,19 @@ export interface MeetingNote {
   updated_at: string;
 }
 
+export interface ProjectPhase {
+  id: string;
+  project_id: string;
+  name: string;
+  description: string | null;
+  status: "completed" | "in_progress" | "upcoming" | "at_risk";
+  start_date: string | null;
+  end_date: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Doc {
   id: string;
   project_id: string;
