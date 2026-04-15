@@ -6,7 +6,6 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { EditProjectDialog } from "./edit-project-dialog";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
-import { useProjects } from "@/lib/hooks/use-projects";
 import { useRouter } from "next/navigation";
 import type { Project } from "@/lib/types";
 
@@ -15,15 +14,14 @@ interface Props {
 }
 
 export function ProjectEditAction({ initialProject }: Props) {
-  const [projects, setProjects] = useProjects([initialProject]);
-  const project = projects.find((p) => p.id === initialProject.id) ?? initialProject;
+  const [project, setProject] = useState<Project>(initialProject);
   const [editing, setEditing] = useState<Project | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const router = useRouter();
   const toast = useToast();
 
   const handleSave = (updated: Project) => {
-    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    setProject(updated);
   };
 
   const handleDelete = async () => {
