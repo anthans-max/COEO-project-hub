@@ -26,6 +26,10 @@ interface Props {
 export function DashboardRoadmap({ projects, phases, milestones }: Props) {
   const todayPct = dateToPercent(new Date());
 
+  const visibleProjects = projects.filter(
+    (p) => p.status !== "Ongoing" && !/maintenance/i.test(p.name)
+  );
+
   return (
     <div className="border border-border rounded-[10px] overflow-hidden bg-white">
       <div className="grid grid-cols-[130px_1fr] bg-cream border-b border-border">
@@ -43,7 +47,7 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
         </div>
       </div>
 
-      {projects.map((project) => {
+      {visibleProjects.map((project) => {
         const projPhases = phases.filter((p) => p.project_id === project.id && p.start_date && p.end_date);
         const projMilestones = milestones.filter((m) => m.project_id === project.id && m.due_date);
 
