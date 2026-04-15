@@ -43,6 +43,7 @@ export function MeetingNoteDrawer({ note, onClose, onEdit, onDelete }: Props) {
           {note.notes ? (
             <ReactMarkdown
               components={{
+                /* eslint-disable @typescript-eslint/no-unused-vars */
                 p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
                 strong: ({ node, ...props }) => <strong className="font-medium" {...props} />,
                 ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-3 flex flex-col gap-1 [&_ul]:list-[circle] [&_ul]:pl-6 [&_ul]:mt-1 [&_ul]:mb-0" {...props} />,
@@ -53,6 +54,7 @@ export function MeetingNoteDrawer({ note, onClose, onEdit, onDelete }: Props) {
                 h3: ({ node, ...props }) => <h3 className="text-[15px] font-medium mt-3 mb-2 first:mt-0" {...props} />,
                 a: ({ node, ...props }) => <a className="text-accent underline" target="_blank" rel="noreferrer" {...props} />,
                 code: ({ node, ...props }) => <code className="bg-cream px-1 py-0.5 rounded text-[13px]" {...props} />,
+                /* eslint-enable @typescript-eslint/no-unused-vars */
               }}
             >
               {note.notes}
