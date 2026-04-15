@@ -54,7 +54,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <ProjectDetailHeader initialProject={project} />
 
         <ProjectTimelineRow
-          initialProject={project}
+          projectId={project.id}
           initialPhases={phases}
           initialMilestones={milestones}
         />

@@ -45,27 +45,44 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
     setMounted(true);
   }, []);
 
-  const { rangeStart, rangeEnd, columns } = useMemo(() => {
+  const { rangeStart, rangeEnd, columns, groupHeaders } = useMemo(() => {
     // Use a deterministic anchor for SSR so server and client first render match.
     const today = mounted ? new Date() : new Date(2026, 3, 1);
     if (zoom === "quarter") {
-      const start = startOfMonth(addMonths(today, -1));
-      const count = 9;
-      const cols = Array.from({ length: count }, (_, i) => {
+      // Full calendar year of the current year: Q1–Q4, 12 month columns.
+      const start = new Date(today.getFullYear(), 0, 1);
+      const end = new Date(today.getFullYear() + 1, 0, 1);
+      const cols = Array.from({ length: 12 }, (_, i) => {
         const d = addMonths(start, i);
         return { date: d, label: format(d, "MMM") };
       });
-      const end = addMonths(start, count);
-      return { rangeStart: start, rangeEnd: end, columns: cols };
+      const groups = Array.from({ length: 4 }, (_, q) => ({
+        label: `Q${q + 1} ${today.getFullYear()}`,
+        span: 3,
+      }));
+      return { rangeStart: start, rangeEnd: end, columns: cols, groupHeaders: groups };
     } else {
-      const start = startOfWeek(addWeeks(today, -4), { weekStartsOn: 1 });
-      const count = 13;
-      const cols = Array.from({ length: count }, (_, i) => {
-        const d = addWeeks(start, i);
-        return { date: d, label: format(d, "MMM d") };
+      // 6 months centered around current month; week columns grouped by month.
+      const monthStart = startOfMonth(addMonths(today, -2));
+      const monthEnd = addMonths(monthStart, 6);
+      // Generate week columns that fall within [monthStart, monthEnd).
+      const firstWeek = startOfWeek(monthStart, { weekStartsOn: 1 });
+      const cols: { date: Date; label: string }[] = [];
+      let cursor = firstWeek;
+      while (cursor < monthEnd) {
+        cols.push({ date: cursor, label: format(cursor, "MMM d") });
+        cursor = addWeeks(cursor, 1);
+      }
+      const groups = Array.from({ length: 6 }, (_, i) => {
+        const monthDate = addMonths(monthStart, i);
+        const nextMonth = addMonths(monthDate, 1);
+        const span = cols.filter(
+          (c) => c.date >= monthDate && c.date < nextMonth
+        ).length;
+        return { label: format(monthDate, "MMM yyyy"), span };
       });
-      const end = addWeeks(start, count);
-      return { rangeStart: start, rangeEnd: end, columns: cols };
+      // rangeStart/End drive bar positioning — use month boundaries, not week boundaries.
+      return { rangeStart: monthStart, rangeEnd: monthEnd, columns: cols, groupHeaders: groups };
     }
   }, [zoom, mounted]);
 
@@ -135,16 +152,37 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
           </div>
         </div>
 
-        {/* Header row */}
+        {/* Header row — top tier (quarters / months) */}
         <div className="flex bg-cream border-b border-border">
-          <div className="w-[140px] shrink-0 px-4 py-2 text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase border-r border-border">
+          <div className="w-[140px] shrink-0 px-4 py-2 text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase border-r border-border flex items-end">
             Phase
           </div>
-          <div className="flex-1 grid" style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(60px, 1fr))` }}>
+          <div
+            className="flex-1 grid"
+            style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(${zoom === "month" ? 42 : 56}px, 1fr))` }}
+          >
+            {groupHeaders.map((g, i) => (
+              <div
+                key={i}
+                className="px-2 py-2 text-[11px] font-semibold text-primary tracking-[0.07em] uppercase border-r border-border last:border-r-0 text-center"
+                style={{ gridColumn: `span ${g.span}` }}
+              >
+                {g.label}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Header row — bottom tier (months / weeks) */}
+        <div className="flex bg-cream border-b border-border">
+          <div className="w-[140px] shrink-0 border-r border-border" />
+          <div
+            className="flex-1 grid"
+            style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(${zoom === "month" ? 42 : 56}px, 1fr))` }}
+          >
             {columns.map((c, i) => (
               <div
                 key={i}
-                className="px-2 py-2 text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase border-r border-border last:border-r-0"
+                className="px-2 py-[6px] text-[10px] font-medium text-text-secondary tracking-[0.05em] border-r border-border last:border-r-0 text-center"
               >
                 {c.label}
               </div>
@@ -196,11 +234,11 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
                   ref={setTrackRef(phase.id)}
                   className="flex-1 relative"
                 >
-                  {columns.map((_, i) => (
+                  {columns.map((c, i) => (
                     <div
                       key={i}
-                      className="absolute top-0 bottom-0 border-r border-border last:border-r-0"
-                      style={{ left: `${(i / columns.length) * 100}%`, width: `${100 / columns.length}%` }}
+                      className="absolute top-0 bottom-0 border-l border-border"
+                      style={{ left: `${dateToPct(c.date)}%` }}
                     />
                   ))}
                   <GanttBar
