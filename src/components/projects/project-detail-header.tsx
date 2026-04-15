@@ -41,33 +41,35 @@ export function ProjectDetailHeader({ initialProject }: Props) {
 
   return (
     <>
-      <Card className="p-6 mb-6">
-        <div className="flex items-start justify-between gap-6">
+      <Card className="p-6 mb-4 bg-cream">
+        <div className="flex items-start justify-between gap-6 mb-4">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-3 flex-wrap mb-2">
-              <h1 className="text-[22px] font-semibold text-primary tracking-[-0.2px]">{project.name}</h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-[18px] font-medium text-primary">{project.name}</h1>
               <Badge status={project.status} />
             </div>
-            {project.key_risk && (
-              <div className="text-[13px] text-text-secondary mb-3">{project.key_risk}</div>
+            {project.notes && (
+              <div className="text-[13px] text-text-muted mt-1">{project.notes}</div>
             )}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-3 mt-3">
-              <Meta label="Owner" value={project.owner ?? "Unassigned"} />
-              <Meta label="Current phase" value={project.phase_current ?? "—"} />
-              <Meta label="Next phase" value={project.phase_next ?? "—"} />
-              <div>
-                <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1">Progress</div>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-[6px] bg-border rounded-sm overflow-hidden">
-                    <div className="h-full bg-primary rounded-sm transition-all" style={{ width: `${project.progress}%` }} />
-                  </div>
-                  <span className="text-[13px] text-text-secondary">{project.progress}%</span>
-                </div>
-              </div>
-            </div>
           </div>
           <div className="shrink-0">
             <Button onClick={() => setEditing(project)}>Edit project</Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-3 pt-4 border-t border-border">
+          <Meta label="Owner" value={project.owner ?? "Unassigned"} />
+          <Meta label="Current phase" value={project.phase_current ?? "—"} />
+          <Meta label="Next phase" value={project.phase_next ?? "—"} />
+          <Meta label="Key risk" value={project.key_risk ?? "—"} risk={!!project.key_risk} />
+          <div>
+            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1">Progress</div>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-[6px] bg-white rounded-sm overflow-hidden">
+                <div className="h-full bg-primary rounded-sm transition-all" style={{ width: `${project.progress}%` }} />
+              </div>
+              <span className="text-[13px] text-text-secondary">{project.progress}%</span>
+            </div>
           </div>
         </div>
       </Card>
@@ -93,11 +95,11 @@ export function ProjectDetailHeader({ initialProject }: Props) {
   );
 }
 
-function Meta({ label, value }: { label: string; value: string }) {
+function Meta({ label, value, risk }: { label: string; value: string; risk?: boolean }) {
   return (
     <div>
       <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1">{label}</div>
-      <div className="text-[13px] text-text-primary">{value}</div>
+      <div className={`text-[13px] ${risk ? "text-destructive" : "text-text-primary"}`}>{value}</div>
     </div>
   );
 }

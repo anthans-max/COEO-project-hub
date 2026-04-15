@@ -25,9 +25,10 @@ interface Props {
   initialData: Action[];
   projects: ProjectOption[];
   lockProjectId?: string;
+  hideFilters?: boolean;
 }
 
-export function ActionsList({ initialData, projects, lockProjectId }: Props) {
+export function ActionsList({ initialData, projects, lockProjectId, hideFilters }: Props) {
   const [actions, setActions] = useRealtime("coeo_actions", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState(lockProjectId ?? "All");
@@ -104,8 +105,10 @@ export function ActionsList({ initialData, projects, lockProjectId }: Props) {
     <>
       <div className="flex justify-between items-start mb-4 gap-4 flex-wrap">
         <div className="flex items-center gap-3 flex-wrap">
+          {!hideFilters && (
           <FilterBar options={statusOptions} selected={statusFilter} onChange={setStatusFilter} />
-          {!lockProjectId && (
+          )}
+          {!hideFilters && !lockProjectId && (
             <select
               value={projectFilter}
               onChange={(e) => setProjectFilter(e.target.value)}
@@ -117,7 +120,7 @@ export function ActionsList({ initialData, projects, lockProjectId }: Props) {
               ))}
             </select>
           )}
-          {!lockProjectId && projectFilter !== "All" && (
+          {!hideFilters && !lockProjectId && projectFilter !== "All" && (
             <Link
               href={`/projects/${projectFilter}`}
               className="text-[13px] text-text-muted hover:text-primary underline-offset-2 hover:underline mb-[18px]"
@@ -125,6 +128,7 @@ export function ActionsList({ initialData, projects, lockProjectId }: Props) {
               View project page →
             </Link>
           )}
+          {!hideFilters && (
           <select
             value={personFilter}
             onChange={(e) => setPersonFilter(e.target.value)}
@@ -134,6 +138,7 @@ export function ActionsList({ initialData, projects, lockProjectId }: Props) {
               <option key={name} value={name}>{name === "All" ? "All people" : name}</option>
             ))}
           </select>
+          )}
         </div>
         <Button onClick={() => setShowAdd(true)}>+ Add action</Button>
       </div>

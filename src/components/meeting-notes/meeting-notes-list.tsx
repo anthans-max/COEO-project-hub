@@ -18,9 +18,10 @@ import type { MeetingNote } from "@/lib/types";
 interface Props {
   projectId: string;
   initialData: MeetingNote[];
+  compactHeader?: boolean;
 }
 
-export function MeetingNotesList({ projectId, initialData }: Props) {
+export function MeetingNotesList({ projectId, initialData, compactHeader }: Props) {
   const [allNotes, setNotes] = useMeetingNotes(initialData);
   const notes = allNotes
     .filter((n) => n.project_id === projectId)
@@ -52,8 +53,14 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
   return (
     <>
       <div className="flex justify-end gap-2 mb-4">
-        <Button variant="ghost" onClick={() => setShowImport(true)}>Import meeting notes</Button>
-        <Button onClick={() => setShowAdd(true)}>+ Add meeting note</Button>
+        {compactHeader ? (
+          <Button onClick={() => setShowImport(true)}>+ Import / Add</Button>
+        ) : (
+          <>
+            <Button variant="ghost" onClick={() => setShowImport(true)}>Import meeting notes</Button>
+            <Button onClick={() => setShowAdd(true)}>+ Add meeting note</Button>
+          </>
+        )}
       </div>
 
       {notes.length === 0 ? (
