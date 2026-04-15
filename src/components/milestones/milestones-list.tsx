@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -71,7 +71,7 @@ export function MilestonesList({ initialData, projects }: Props) {
     return (
       <div
         key={ms.id}
-        className="flex items-center gap-3 px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA] transition-colors"
+        className="flex items-center gap-3 px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-cream transition-colors"
       >
         <div className={`text-[13px] font-medium w-[56px] shrink-0 ${overdue ? "text-destructive font-semibold" : "text-text-secondary"}`}>
           {formatShortDate(ms.due_date)}
@@ -102,19 +102,6 @@ export function MilestonesList({ initialData, projects }: Props) {
     );
   };
 
-  const renderHeader = (showProject: boolean) => (
-    <CardHeader>
-      <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[56px]">Date</div>
-      <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase flex-1">Milestone</div>
-      {showProject && (
-        <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[140px]">Project</div>
-      )}
-      <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[110px]">Owner</div>
-      <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[90px]">Status</div>
-      <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[120px]"></div>
-    </CardHeader>
-  );
-
   const isGrouped = projectFilter === "All";
 
   return (
@@ -139,19 +126,20 @@ export function MilestonesList({ initialData, projects }: Props) {
         <div className="py-8 text-center text-[15px] text-text-muted border border-border rounded-card bg-cream">
           No milestones yet
         </div>
+      ) : isGrouped ? (
+        groupOrder.map((groupName) => (
+          <div key={groupName} className="mb-5">
+            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-[10px] pb-[6px] border-b border-border">
+              {groupName}
+            </div>
+            <Card className="bg-white">
+              {grouped[groupName].map((ms) => renderRow(ms, false))}
+            </Card>
+          </div>
+        ))
       ) : (
         <Card className="bg-white">
-          {renderHeader(false)}
-          {isGrouped
-            ? groupOrder.map((groupName) => (
-                <div key={groupName}>
-                  <div className="text-[11px] font-medium text-text-muted tracking-[0.1em] uppercase px-4 pt-4 pb-[6px] border-b border-border">
-                    {groupName}
-                  </div>
-                  {grouped[groupName].map((ms) => renderRow(ms, false))}
-                </div>
-              ))
-            : filtered.map((ms) => renderRow(ms, false))}
+          {filtered.map((ms) => renderRow(ms, false))}
         </Card>
       )}
 
