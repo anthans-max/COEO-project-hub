@@ -26,9 +26,10 @@ interface Props {
   projects: ProjectOption[];
   lockProjectId?: string;
   hideFilters?: boolean;
+  title?: string;
 }
 
-export function ActionsList({ initialData, projects, lockProjectId, hideFilters }: Props) {
+export function ActionsList({ initialData, projects, lockProjectId, hideFilters, title }: Props) {
   const [actions, setActions] = useRealtime("coeo_actions", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState(lockProjectId ?? "All");
@@ -103,7 +104,12 @@ export function ActionsList({ initialData, projects, lockProjectId, hideFilters 
 
   return (
     <>
-      <div className="flex justify-between items-start mb-4 gap-4 flex-wrap">
+      <div className="flex justify-between items-end mb-4 gap-4 flex-wrap">
+        {title && (
+          <h2 className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+            {title}
+          </h2>
+        )}
         <div className="flex items-center gap-3 flex-wrap">
           {!hideFilters && (
           <FilterBar options={statusOptions} selected={statusFilter} onChange={setStatusFilter} />

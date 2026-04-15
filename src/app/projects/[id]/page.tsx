@@ -50,25 +50,21 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <section>
-            <h2 className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-3">
-              Action items
-            </h2>
             <ActionsList
               initialData={actions}
               projects={[{ id: project.id, name: project.name }]}
               lockProjectId={project.id}
               hideFilters
+              title="Action items"
             />
           </section>
 
           <section>
-            <h2 className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-3">
-              Meeting notes
-            </h2>
             <MeetingNotesList
               projectId={project.id}
               initialData={notes}
               compactHeader
+              title="Meeting notes"
             />
           </section>
         </div>

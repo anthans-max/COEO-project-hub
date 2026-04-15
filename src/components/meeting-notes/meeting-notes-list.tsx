@@ -19,9 +19,10 @@ interface Props {
   projectId: string;
   initialData: MeetingNote[];
   compactHeader?: boolean;
+  title?: string;
 }
 
-export function MeetingNotesList({ projectId, initialData, compactHeader }: Props) {
+export function MeetingNotesList({ projectId, initialData, compactHeader, title }: Props) {
   const [allNotes, setNotes] = useMeetingNotes(initialData);
   const notes = allNotes
     .filter((n) => n.project_id === projectId)
@@ -52,18 +53,27 @@ export function MeetingNotesList({ projectId, initialData, compactHeader }: Prop
 
   return (
     <>
-      <div className="flex justify-end gap-2 mb-4">
-        {compactHeader ? (
-          <>
-            <Button variant="ghost" onClick={() => setShowAdd(true)}>+ Add note</Button>
-            <Button onClick={() => setShowImport(true)}>+ Import / Add</Button>
-          </>
+      <div className="flex justify-between items-end gap-2 mb-4">
+        {title ? (
+          <h2 className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+            {title}
+          </h2>
         ) : (
-          <>
-            <Button variant="ghost" onClick={() => setShowImport(true)}>Import meeting notes</Button>
-            <Button onClick={() => setShowAdd(true)}>+ Add meeting note</Button>
-          </>
+          <div />
         )}
+        <div className="flex items-end gap-2">
+          {compactHeader ? (
+            <>
+              <Button variant="ghost" onClick={() => setShowAdd(true)}>+ Add note</Button>
+              <Button onClick={() => setShowImport(true)}>+ Import / Add</Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={() => setShowImport(true)}>Import meeting notes</Button>
+              <Button onClick={() => setShowAdd(true)}>+ Add meeting note</Button>
+            </>
+          )}
+        </div>
       </div>
 
       {notes.length === 0 ? (
