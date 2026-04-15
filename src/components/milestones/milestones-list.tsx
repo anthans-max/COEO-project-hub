@@ -139,22 +139,19 @@ export function MilestonesList({ initialData, projects }: Props) {
         <div className="py-8 text-center text-[15px] text-text-muted border border-border rounded-card bg-cream">
           No milestones yet
         </div>
-      ) : isGrouped ? (
-        groupOrder.map((groupName) => (
-          <div key={groupName} className="mb-5">
-            <div className="bg-cream border border-border border-b-0 rounded-t-card px-4 py-[9px] text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
-              {groupName}
-            </div>
-            <Card className="bg-white rounded-t-none border-t-0">
-              {renderHeader(false)}
-              {grouped[groupName].map((ms) => renderRow(ms, false))}
-            </Card>
-          </div>
-        ))
       ) : (
         <Card className="bg-white">
           {renderHeader(false)}
-          {filtered.map((ms) => renderRow(ms, false))}
+          {isGrouped
+            ? groupOrder.map((groupName) => (
+                <div key={groupName}>
+                  <div className="text-[11px] font-medium text-text-muted tracking-[0.1em] uppercase px-4 pt-4 pb-[6px] border-b border-border">
+                    {groupName}
+                  </div>
+                  {grouped[groupName].map((ms) => renderRow(ms, false))}
+                </div>
+              ))
+            : filtered.map((ms) => renderRow(ms, false))}
         </Card>
       )}
 
