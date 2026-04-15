@@ -143,13 +143,13 @@ export function ActionsList({ initialData, projects, lockProjectId }: Props) {
           <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-[10px] pb-[6px] border-b border-border">
             {owner}
           </div>
-          <Card className="bg-cream">
+          <Card className="bg-white">
             {ownerActions.map((action) => {
               const done = action.status === "Complete";
               return (
                 <div
                   key={action.id}
-                  className="flex items-center gap-[10px] px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-[#EDE8DF] transition-colors"
+                  className="flex items-center gap-[10px] px-4 py-[10px] border-b border-border-light last:border-b-0 hover:bg-cream transition-colors"
                 >
                   <Checkbox checked={done} onChange={() => toggleComplete(action)} />
                   <div className="flex-1 min-w-0">
