@@ -8,7 +8,7 @@ interface Props {
   phase: ProjectPhase;
   rangeStart: Date;
   rangeEnd: Date;
-  trackRef: React.RefObject<HTMLDivElement | null>;
+  getTrackEl: () => HTMLDivElement | null;
   onDragUpdate: (id: string, start: string, end: string) => void;
   onDragEnd: (id: string, start: string, end: string) => void;
   onClick: (phase: ProjectPhase) => void;
@@ -37,7 +37,7 @@ export function GanttBar({
   phase,
   rangeStart,
   rangeEnd,
-  trackRef,
+  getTrackEl,
   onDragUpdate,
   onDragEnd,
   onClick,
@@ -79,7 +79,7 @@ export function GanttBar({
 
   const handlePointerMove = (e: React.PointerEvent) => {
     const drag = dragRef.current;
-    const track = trackRef.current;
+    const track = getTrackEl();
     if (!drag || !track) return;
     const deltaPx = e.clientX - drag.startX;
     if (Math.abs(deltaPx) > 3) drag.moved = true;

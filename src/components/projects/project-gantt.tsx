@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { addMonths, addWeeks, format, startOfMonth, startOfWeek } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,11 +37,17 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState<ProjectPhase | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const trackRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const toast = useToast();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { rangeStart, rangeEnd, columns } = useMemo(() => {
-    const today = new Date();
+    // Use a deterministic anchor for SSR so server and client first render match.
+    const today = mounted ? new Date() : new Date(2026, 3, 1);
     if (zoom === "quarter") {
       const start = startOfMonth(addMonths(today, -1));
       const count = 9;
@@ -61,11 +67,11 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
       const end = addWeeks(start, count);
       return { rangeStart: start, rangeEnd: end, columns: cols };
     }
-  }, [zoom]);
+  }, [zoom, mounted]);
 
   const totalMs = rangeEnd.getTime() - rangeStart.getTime();
   const dateToPct = (d: Date) => ((d.getTime() - rangeStart.getTime()) / totalMs) * 100;
-  const todayPct = dateToPct(new Date());
+  const todayPct = mounted ? dateToPct(new Date()) : -1;
 
   const setTrackRef = (phaseId: string) => (el: HTMLDivElement | null) => {
     if (el) trackRefs.current.set(phaseId, el);
@@ -201,7 +207,7 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
                     phase={phase}
                     rangeStart={rangeStart}
                     rangeEnd={rangeEnd}
-                    trackRef={{ current: trackRefs.current.get(phase.id) ?? null }}
+                    getTrackEl={() => trackRefs.current.get(phase.id) ?? null}
                     onDragUpdate={handleDragUpdate}
                     onDragEnd={handleDragEnd}
                     onClick={(p) => setEditing(p)}
