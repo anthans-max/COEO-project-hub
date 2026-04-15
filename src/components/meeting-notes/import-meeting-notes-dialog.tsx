@@ -15,13 +15,14 @@ interface Props {
 }
 
 interface ExtractedItem {
+  title: string | null;
   task: string;
   assignee: string;
   priority: "high" | "medium" | "low" | null;
 }
 
 const SYSTEM_PROMPT =
-  "You extract ONLY explicit follow-up tasks from meeting notes. Return ONLY a JSON array, no markdown, no explanation. Each item must have: task (string), assignee (string, or TBD if unknown), priority (high | medium | low | null). Only include tasks explicitly stated as follow-up or next steps. If none exist, return [].";
+  "You extract ONLY explicit follow-up tasks from meeting notes. Return ONLY a JSON array, no markdown, no explanation. Each item must have: title (string or null — the bold header or section name the action item appears under, e.g. \"Service and Inventory Requirements Summary\"; use null only when the notes have no such named header for the item), task (string — the full description of what needs to be done), assignee (string, or TBD if unknown), priority (high | medium | low | null). Only include tasks explicitly stated as follow-up or next steps. If none exist, return [].";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -87,9 +88,12 @@ async function extractActionItems(notesBody: string): Promise<ExtractedItem[]> {
   const data = await res.json();
   const text: string = data?.content?.[0]?.text ?? "";
   const items = parseExtractionText(text);
-  return items.filter(
-    (i) => i && typeof i.task === "string" && i.task.trim().length > 0
-  );
+  return items
+    .filter((i) => i && typeof i.task === "string" && i.task.trim().length > 0)
+    .map((i) => ({
+      ...i,
+      title: typeof i.title === "string" && i.title.trim().length > 0 ? i.title.trim() : null,
+    }));
 }
 
 export function ImportMeetingNotesDialog({ open, projectId, onClose, onAdd }: Props) {
@@ -172,14 +176,14 @@ export function ImportMeetingNotesDialog({ open, projectId, onClose, onAdd }: Pr
     }
     setSavingItems(true);
     const rows = items.map((it) => ({
-      description: it.task.trim(),
+      description: (it.title && it.title.trim()) || it.task.trim(),
       owner: it.assignee && it.assignee !== "TBD" ? it.assignee : null,
       owner_initials: deriveInitials(it.assignee),
       status: "Open",
       priority: mapPriority(it.priority),
       due_date: null,
       project_id: projectId,
-      notes: null,
+      notes: it.title ? it.task.trim() : null,
     }));
 
     const supabase = createClient();
@@ -251,7 +255,10 @@ export function ImportMeetingNotesDialog({ open, projectId, onClose, onAdd }: Pr
                       className="flex items-start gap-3 px-3 py-2 border border-border rounded-card"
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="text-[14px] text-text-primary leading-[1.45]">{it.task}</div>
+                        {it.title && (
+                          <div className="text-[13px] font-medium text-text-primary leading-[1.4]">{it.title}</div>
+                        )}
+                        <div className={`text-[14px] text-text-primary leading-[1.45] ${it.title ? "mt-[2px] font-normal" : ""}`}>{it.task}</div>
                         <div className="mt-1 flex items-center gap-2">
                           <span className="text-[10px] font-semibold text-text-secondary bg-cream px-2 py-[2px] rounded-pill">
                             {it.assignee || "TBD"}
