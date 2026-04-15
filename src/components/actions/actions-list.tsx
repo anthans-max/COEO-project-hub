@@ -153,9 +153,21 @@ export function ActionsList({ initialData, projects, lockProjectId }: Props) {
                 >
                   <Checkbox checked={done} onChange={() => toggleComplete(action)} />
                   <div className="flex-1 min-w-0">
-                    <div className={`text-[15px] leading-[1.45] ${done ? "line-through text-[#C8C0B4]" : "text-text-primary"}`}>
+                    <div className={`text-[14px] font-medium leading-[1.45] ${done ? "line-through text-[#C8C0B4]" : "text-text-primary"}`}>
                       {action.description}
                     </div>
+                    {action.notes && (
+                      <div
+                        className="text-[12px] text-text-muted mt-[2px] leading-[1.4] overflow-hidden"
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {action.notes}
+                      </div>
+                    )}
                     {action.due_date && (
                       <div className="text-[10px] text-text-muted mt-1">
                         Due {formatShortDate(action.due_date)}
