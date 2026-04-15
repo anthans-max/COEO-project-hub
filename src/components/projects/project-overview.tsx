@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { todayISO } from "@/lib/utils";
 import type { Project, Action, Milestone, System, Vendor, Person } from "@/lib/types";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 
 export function ProjectOverview({ project, actions, milestones, systems, vendors, people }: Props) {
   const openActions = actions.filter((a) => a.status !== "Complete").length;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayISO();
   const upcomingMilestones = milestones.filter(
     (m) => m.status !== "Complete" && m.due_date && m.due_date >= today
   ).length;

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
+import { todayISO } from "@/lib/utils";
 import type { MeetingNote } from "@/lib/types";
 
 interface Props {
@@ -23,10 +24,6 @@ interface ExtractedItem {
 
 const SYSTEM_PROMPT =
   "You extract ONLY explicit follow-up tasks from meeting notes. Return ONLY a JSON array, no markdown, no explanation. Each item must have: title (string or null — the bold header or section name the action item appears under, e.g. \"Service and Inventory Requirements Summary\"; use null only when the notes have no such named header for the item), task (string — the full description of what needs to be done), assignee (string, or TBD if unknown), priority (high | medium | low | null). Only include tasks explicitly stated as follow-up or next steps. If none exist, return [].";
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
 
 function deriveInitials(name: string): string | null {
   if (!name || name === "TBD") return null;

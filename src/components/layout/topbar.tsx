@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { formatLongDate } from "@/lib/utils";
 import { MobileMenuButton } from "./mobile-menu-button";
 
 interface TopbarProps {
@@ -12,7 +12,7 @@ interface TopbarProps {
 }
 
 export function Topbar({ title, children, subtitle, badge, hideDate }: TopbarProps) {
-  const today = format(new Date(), "EEEE, MMMM d, yyyy");
+  const today = formatLongDate(new Date());
 
   return (
     <div className="sticky top-0 z-10 bg-white border-b border-border px-4 md:px-8 py-3 md:py-5 flex items-center md:items-start justify-between shrink-0 gap-3 md:gap-4">
