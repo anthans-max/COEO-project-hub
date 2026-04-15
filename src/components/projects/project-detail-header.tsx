@@ -27,7 +27,7 @@ export function ProjectDetailHeader({ initialProject }: Props) {
         <Value>{project.owner ?? "Unassigned"}</Value>
         <Value>{project.phase_current ?? "—"}</Value>
         <Value>{project.phase_next ?? "—"}</Value>
-        <Value risk={!!project.key_risk}>{project.key_risk ?? "—"}</Value>
+        <Value>{project.key_risk ?? "—"}</Value>
         <div className="flex items-center gap-2">
           <div className="flex-1 h-[6px] bg-cream rounded-sm overflow-hidden">
             <div
@@ -50,10 +50,6 @@ function Label({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Value({ children, risk }: { children: React.ReactNode; risk?: boolean }) {
-  return (
-    <div className={`text-[15px] ${risk ? "text-destructive" : "text-text-primary"}`}>
-      {children}
-    </div>
-  );
+function Value({ children }: { children: React.ReactNode }) {
+  return <div className="text-[15px] text-text-primary">{children}</div>;
 }
