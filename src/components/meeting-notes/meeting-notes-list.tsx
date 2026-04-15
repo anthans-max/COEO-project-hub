@@ -54,7 +54,10 @@ export function MeetingNotesList({ projectId, initialData, compactHeader }: Prop
     <>
       <div className="flex justify-end gap-2 mb-4">
         {compactHeader ? (
-          <Button onClick={() => setShowImport(true)}>+ Import / Add</Button>
+          <>
+            <Button variant="ghost" onClick={() => setShowAdd(true)}>+ Add note</Button>
+            <Button onClick={() => setShowImport(true)}>+ Import / Add</Button>
+          </>
         ) : (
           <>
             <Button variant="ghost" onClick={() => setShowImport(true)}>Import meeting notes</Button>
