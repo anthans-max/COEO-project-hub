@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddMeetingNoteDialog } from "./add-meeting-note-dialog";
 import { EditMeetingNoteDialog } from "./edit-meeting-note-dialog";
 import { ImportMeetingNotesDialog } from "./import-meeting-notes-dialog";
+import { MeetingNoteDrawer } from "./meeting-note-drawer";
 import { useMeetingNotes } from "@/lib/hooks/use-meeting-notes";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
@@ -27,7 +29,10 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
   const [showImport, setShowImport] = useState(false);
   const [editing, setEditing] = useState<MeetingNote | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const toast = useToast();
+
+  const selected = selectedId ? notes.find((n) => n.id === selectedId) ?? null : null;
 
   const handleSave = (u: MeetingNote) => setNotes((prev) => prev.map((n) => (n.id === u.id ? u : n)));
 
@@ -54,29 +59,34 @@ export function MeetingNotesList({ projectId, initialData }: Props) {
       {notes.length === 0 ? (
         <Card className="p-8 text-center text-[15px] text-text-muted">No meeting notes yet</Card>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col border border-border rounded-card overflow-hidden bg-white">
           {notes.map((n) => (
-            <Card key={n.id} className="p-5">
-              <div className="flex justify-between items-start gap-4 mb-2">
-                <div>
-                  <div className="text-[15px] font-semibold text-text-primary">{n.title}</div>
-                  <div className="text-[12px] text-text-muted mt-[2px]">
-                    {n.date ? formatDate(n.date) : "No date"}
-                    {n.attendees ? ` · ${n.attendees}` : ""}
-                  </div>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  <Button size="sm" onClick={() => setEditing(n)}>Edit</Button>
-                  <Button variant="destructive" size="sm" onClick={() => setDeleteId(n.id)}>Delete</Button>
+            <button
+              key={n.id}
+              onClick={() => setSelectedId(n.id)}
+              className={`flex items-center justify-between gap-4 px-5 py-3 text-left border-b border-border last:border-b-0 hover:bg-cream/60 transition-colors ${
+                selectedId === n.id ? "bg-cream" : ""
+              }`}
+            >
+              <div className="min-w-0 flex-1">
+                <div className="text-[14px] font-medium text-text-primary truncate">{n.title}</div>
+                <div className="text-[12px] text-text-muted mt-[2px] truncate">
+                  {n.date ? formatDate(n.date) : "No date"}
+                  {n.attendees ? ` · ${n.attendees}` : ""}
                 </div>
               </div>
-              {n.notes && (
-                <div className="text-[14px] text-text-primary whitespace-pre-wrap leading-relaxed mt-2">{n.notes}</div>
-              )}
-            </Card>
+              <ChevronRight className="w-4 h-4 text-text-muted shrink-0" />
+            </button>
           ))}
         </div>
       )}
+
+      <MeetingNoteDrawer
+        note={selected}
+        onClose={() => setSelectedId(null)}
+        onEdit={(n) => setEditing(n)}
+        onDelete={(id) => setDeleteId(id)}
+      />
 
       <AddMeetingNoteDialog
         open={showAdd}
