@@ -1,5 +1,6 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import type { MeetingNote } from "@/lib/types";
@@ -38,8 +39,27 @@ export function MeetingNoteDrawer({ note, onClose, onEdit, onDelete }: Props) {
           </button>
         </div>
         <div className="border-b border-border" />
-        <div className="flex-1 overflow-y-auto px-6 py-5 text-[14px] text-text-primary whitespace-pre-wrap leading-[1.7]">
-          {note.notes || <span className="text-text-muted">No notes</span>}
+        <div className="flex-1 overflow-y-auto px-6 py-5 text-[14px] text-text-primary leading-[1.7]">
+          {note.notes ? (
+            <ReactMarkdown
+              components={{
+                p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+                strong: ({ node, ...props }) => <strong className="font-medium" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-3 flex flex-col gap-1 [&_ul]:list-[circle] [&_ul]:pl-6 [&_ul]:mt-1 [&_ul]:mb-0" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal pl-6 mb-3 flex flex-col gap-1" {...props} />,
+                li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                h1: ({ node, ...props }) => <h1 className="text-[18px] font-medium mt-4 mb-2 first:mt-0" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-[16px] font-medium mt-4 mb-2 first:mt-0" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-[15px] font-medium mt-3 mb-2 first:mt-0" {...props} />,
+                a: ({ node, ...props }) => <a className="text-accent underline" target="_blank" rel="noreferrer" {...props} />,
+                code: ({ node, ...props }) => <code className="bg-cream px-1 py-0.5 rounded text-[13px]" {...props} />,
+              }}
+            >
+              {note.notes}
+            </ReactMarkdown>
+          ) : (
+            <span className="text-text-muted">No notes</span>
+          )}
         </div>
         <div className="border-t border-border" />
         <div className="px-6 py-4 flex justify-end gap-2">
