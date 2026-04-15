@@ -24,7 +24,7 @@ export function MeetingNoteDrawer({ note, onClose, onEdit, onDelete }: Props) {
       >
         <div className="px-6 py-4 flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <div className="text-[18px] font-medium text-text-primary truncate">{note.title}</div>
+            <div className="text-[18px] font-medium text-text-primary break-words">{note.title}</div>
             <div className="text-[12px] text-text-muted mt-1">
               {note.date ? formatDate(note.date) : "No date"}
               {note.attendees ? ` · ${note.attendees}` : ""}

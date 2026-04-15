@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -79,26 +78,50 @@ export function MeetingNotesList({ projectId, initialData, compactHeader, title 
       {notes.length === 0 ? (
         <Card className="p-8 text-center text-[15px] text-text-muted">No meeting notes yet</Card>
       ) : (
-        <div className="flex flex-col border border-border rounded-card overflow-hidden bg-cream">
-          {notes.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => setSelectedId(n.id)}
-              className={`flex items-center justify-between gap-4 px-5 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
-                selectedId === n.id ? "bg-[#E5DFD5]" : "hover:bg-[#EDE8DF]"
-              }`}
-            >
-              <div className="min-w-0 flex-1">
-                <div className="text-[14px] font-medium text-text-primary truncate">{n.title}</div>
-                <div className="text-[12px] text-text-muted mt-[2px] truncate">
-                  {n.date ? formatDate(n.date) : "No date"}
-                  {n.attendees ? ` · ${n.attendees}` : ""}
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-text-muted shrink-0" />
-            </button>
-          ))}
-        </div>
+        <table className="w-full border-collapse table-fixed">
+          <thead>
+            <tr className="bg-cream border-b border-border">
+              <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[120px]">
+                Date
+              </th>
+              <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3">
+                Meeting Topic
+              </th>
+              <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[220px]">
+                Attendees
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {notes.map((n) => (
+              <tr
+                key={n.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedId(n.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedId(n.id);
+                  }
+                }}
+                className={`border-b border-border last:border-b-0 cursor-pointer transition-colors ${
+                  selectedId === n.id ? "bg-[#E5DFD5]" : "bg-white hover:bg-cream"
+                }`}
+              >
+                <td className="px-4 py-3 text-[13px] text-text-primary whitespace-nowrap align-middle">
+                  {n.date ? formatDate(n.date) : "—"}
+                </td>
+                <td className="px-4 py-3 text-[14px] text-text-primary align-middle truncate">
+                  {n.title}
+                </td>
+                <td className="px-4 py-3 text-[13px] text-text-muted align-middle truncate">
+                  {n.attendees || "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
 
       <MeetingNoteDrawer
