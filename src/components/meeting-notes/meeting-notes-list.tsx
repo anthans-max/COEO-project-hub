@@ -78,7 +78,8 @@ export function MeetingNotesList({ projectId, initialData, compactHeader, title 
       {notes.length === 0 ? (
         <Card className="p-8 text-center text-[15px] text-text-muted">No meeting notes yet</Card>
       ) : (
-        <table className="w-full border-collapse table-fixed">
+        <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+        <table className="w-full border-collapse table-fixed min-w-[560px]">
           <thead>
             <tr className="bg-cream border-b border-border">
               <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[120px]">
@@ -122,6 +123,7 @@ export function MeetingNotesList({ projectId, initialData, compactHeader, title 
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       <MeetingNoteDrawer

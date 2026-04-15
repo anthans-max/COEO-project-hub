@@ -11,8 +11,10 @@ import {
   Server,
   Building2,
   Users,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMobileDrawer } from "./app-shell";
 
 const navSections = [
   {
@@ -47,6 +49,7 @@ const navSections = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { open, setOpen } = useMobileDrawer();
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -54,15 +57,32 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-sidebar min-w-sidebar bg-primary flex flex-col h-screen sticky top-0">
+    <aside
+      className={cn(
+        "bg-primary flex flex-col",
+        "fixed inset-y-0 left-0 z-50 w-[260px] transform transition-transform duration-300 ease-out",
+        open ? "translate-x-0" : "-translate-x-full",
+        "md:sticky md:top-0 md:translate-x-0 md:transition-none md:w-sidebar md:min-w-sidebar md:h-screen"
+      )}
+    >
       {/* Logo */}
-      <div className="px-5 pt-5 pb-4 border-b border-white/[0.07]">
-        <div className="text-[15px] font-semibold text-white tracking-[0.12em] uppercase whitespace-nowrap">
-          COEO PROJECT HUB
+      <div className="px-5 pt-5 pb-4 border-b border-white/[0.07] flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="text-[15px] font-semibold text-white tracking-[0.12em] uppercase whitespace-nowrap">
+            COEO PROJECT HUB
+          </div>
+          <div className="text-[11px] text-white/[0.6] tracking-[0.14em] uppercase mt-[3px]">
+            Internal Operations · 2026
+          </div>
         </div>
-        <div className="text-[11px] text-white/[0.6] tracking-[0.14em] uppercase mt-[3px]">
-          Internal Operations · 2026
-        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="md:hidden -mr-2 -mt-1 p-2 text-white/80 hover:text-white"
+          aria-label="Close menu"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -79,8 +99,9 @@ export function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => setOpen(false)}
                   className={cn(
-                    "flex items-center gap-[10px] px-5 py-2 text-[14px] font-medium transition-all border-l-[3px] border-transparent",
+                    "flex items-center gap-[10px] px-5 py-3 md:py-2 min-h-[44px] md:min-h-0 text-[14px] font-medium transition-all border-l-[3px] border-transparent",
                     active
                       ? "bg-white/[0.07] text-white border-l-accent"
                       : "text-white hover:bg-white/[0.05]"

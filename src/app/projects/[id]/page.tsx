@@ -50,7 +50,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         </Link>
         <ProjectEditAction initialProject={project} />
       </Topbar>
-      <div className="pt-8 pb-7 px-8 flex-1 overflow-x-auto">
+      <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1 overflow-x-auto">
         <ProjectDetailHeader initialProject={project} />
 
         <ProjectTimelineRow

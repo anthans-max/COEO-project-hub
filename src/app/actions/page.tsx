@@ -13,7 +13,7 @@ export default async function ActionsPage() {
   return (
     <>
       <Topbar title="Action items" />
-      <div className="pt-8 pb-7 px-8 flex-1">
+      <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1">
         <ActionsList
           initialData={actions ?? []}
           projects={(projects ?? []) as { id: string; name: string }[]}

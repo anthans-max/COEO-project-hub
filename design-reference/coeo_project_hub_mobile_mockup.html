@@ -1,0 +1,206 @@
+
+<h2 class="sr-only">Mobile mockup of the COEO Project Hub showing a hamburger menu, stacked dashboard cards, and responsive metric tiles</h2>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.mock-wrap{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;padding:1.5rem 0}
+.phone{width:375px;height:812px;border-radius:40px;border:6px solid #222;background:#fff;overflow:hidden;position:relative;flex-shrink:0}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:34px;background:#222;border-radius:0 0 20px 20px;z-index:20}
+.phone-home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#222;border-radius:3px;z-index:20}
+.screen{height:100%;overflow-y:auto;background:#fff;padding-top:34px}
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0A2342;position:sticky;top:0;z-index:10}
+.hamburger{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:20px;height:2px;background:#fff;border-radius:1px}
+.topbar-title{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:0.1em}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:#F4821F;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;margin-left:auto}
+.page-header{padding:20px 16px 12px}
+.page-title{font-family:'DM Sans',sans-serif;font-size:20px;font-weight:600;color:#0A2342}
+.page-date{font-size:11px;color:#999;margin-top:2px;letter-spacing:0.04em}
+.banner{margin:0 16px 16px;padding:12px 14px;background:#FFF8F0;border:1px solid #F4D5B0;border-radius:8px;font-size:11px;color:#8B6B3D;line-height:1.5;position:relative}
+.banner-close{position:absolute;top:8px;right:10px;font-size:12px;color:#ccc;cursor:pointer}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 20px}
+.metric{background:#F5F0E8;border-radius:10px;padding:14px}
+.metric-label{font-size:9px;font-weight:600;color:#8B8070;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+.metric-val{font-family:'DM Sans',sans-serif;font-size:28px;font-weight:600;color:#0A2342}
+.metric-sub{font-size:10px;color:#999;margin-top:2px}
+.section{padding:0 16px 20px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.section-title{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#0A2342}
+.section-link{font-size:11px;color:#F4821F;font-weight:500;text-decoration:none}
+.project-card{background:#F5F0E8;border-radius:10px;padding:14px;margin-bottom:10px}
+.project-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.project-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#0A2342}
+.status-badge{font-size:9px;font-weight:600;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em}
+.status-green{background:#E0F2E6;color:#2D7A44}
+.status-amber{background:#FFF3DC;color:#8B6B1F}
+.status-red{background:#FDE8E8;color:#993030}
+.project-owner{font-size:11px;color:#888;margin-bottom:8px}
+.progress-bar{height:4px;background:#E0DCD4;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px}
+.action-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid #f0ebe3}
+.action-check{width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;margin-top:1px}
+.action-text{font-size:12px;color:#333;line-height:1.4;flex:1}
+.action-owner{font-size:10px;color:#999;margin-top:2px}
+.action-priority{font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;margin-top:4px;display:inline-block}
+.pri-high{background:#FDE8E8;color:#993030}
+.pri-med{background:#FFF3DC;color:#8B6B1F}
+.drawer-overlay{position:absolute;top:34px;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:15;display:none}
+.drawer{position:absolute;top:34px;left:0;width:260px;height:calc(100% - 34px);background:#0A2342;z-index:16;display:none;flex-direction:column;overflow-y:auto}
+.drawer-header{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 16px 12px}
+.drawer-logo{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:0.1em}
+.drawer-sub{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:0.12em;margin-top:3px}
+.drawer-close{color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;padding:4px}
+.drawer-nav{padding:8px 0}
+.drawer-section{font-size:9px;font-weight:600;color:rgba(255,255,255,0.25);letter-spacing:0.12em;padding:14px 16px 4px}
+.drawer-item{display:flex;align-items:center;gap:10px;padding:10px 16px;color:rgba(255,255,255,0.5);font-size:13px;font-weight:500;cursor:pointer;border-left:3px solid transparent}
+.drawer-item.active{background:rgba(255,255,255,0.07);color:#fff;border-left-color:#F4821F}
+.label-closed{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--color-text-secondary);text-align:center;padding:12px 0 4px;letter-spacing:0.06em}
+.label-open{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--color-text-secondary);text-align:center;padding:12px 0 4px;letter-spacing:0.06em}
+</style>
+
+<div class="mock-wrap">
+
+<div>
+<p style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--color-text-secondary);text-align:center;padding-bottom:8px;letter-spacing:0.06em">CLOSED (DEFAULT)</p>
+<div class="phone" id="phone1">
+<div class="phone-notch"></div>
+<div class="screen">
+<div class="topbar">
+<div class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></div>
+<div class="topbar-title">COEO PROJECT HUB</div>
+<div class="topbar-avatar">AM</div>
+</div>
+<div class="page-header">
+<div class="page-title">Dashboard</div>
+<div class="page-date">TUESDAY, APRIL 15, 2026</div>
+</div>
+<div class="banner">
+Progress figures and project descriptions shown are illustrative placeholders.
+<span class="banner-close">&times;</span>
+</div>
+<div class="metrics">
+<div class="metric"><div class="metric-label">Active projects</div><div class="metric-val">10</div><div class="metric-sub">4 in progress</div></div>
+<div class="metric"><div class="metric-label">Open actions</div><div class="metric-val">15</div><div class="metric-sub">6 high priority</div></div>
+<div class="metric"><div class="metric-label">Milestones (30d)</div><div class="metric-val">5</div><div class="metric-sub">3 upcoming</div></div>
+<div class="metric"><div class="metric-label">Open questions</div><div class="metric-val">6</div><div class="metric-sub">3 high priority</div></div>
+</div>
+<div class="section">
+<div class="section-header"><div class="section-title">Project status</div><a class="section-link">View all</a></div>
+<div class="project-card">
+<div class="project-top"><div class="project-name">Data warehouse migration</div><span class="status-badge status-green">On track</span></div>
+<div class="project-owner">Jack Minster</div>
+<div class="progress-bar"><div class="progress-fill" style="width:65%;background:#2D7A44"></div></div>
+</div>
+<div class="project-card">
+<div class="project-top"><div class="project-name">Salesforce redesign</div><span class="status-badge status-amber">At risk</span></div>
+<div class="project-owner">Mamata</div>
+<div class="progress-bar"><div class="progress-fill" style="width:30%;background:#C4960F"></div></div>
+</div>
+<div class="project-card">
+<div class="project-top"><div class="project-name">Customer portal v2</div><span class="status-badge status-red">Blocked</span></div>
+<div class="project-owner">Sean</div>
+<div class="progress-bar"><div class="progress-fill" style="width:15%;background:#C03030"></div></div>
+</div>
+</div>
+<div class="section">
+<div class="section-header"><div class="section-title">Open actions</div><a class="section-link">View all</a></div>
+<div class="action-item">
+<div class="action-check"></div>
+<div><div class="action-text">Set up data warehouse staging environment</div><div class="action-owner">Jack Minster</div><span class="action-priority pri-high">High</span></div>
+</div>
+<div class="action-item">
+<div class="action-check"></div>
+<div><div class="action-text">Schedule vendor review with SETGO</div><div class="action-owner">Anthan</div><span class="action-priority pri-med">Medium</span></div>
+</div>
+<div class="action-item">
+<div class="action-check"></div>
+<div><div class="action-text">Draft CRM decision matrix for exec team</div><div class="action-owner">Jack Minster</div><span class="action-priority pri-high">High</span></div>
+</div>
+</div>
+</div>
+<div class="drawer-overlay" id="overlay" onclick="toggleDrawer()"></div>
+<div class="drawer" id="drawer">
+<div class="drawer-header">
+<div><div class="drawer-logo">COEO PROJECT HUB</div><div class="drawer-sub">INTERNAL OPERATIONS &middot; 2026</div></div>
+<div class="drawer-close" onclick="toggleDrawer()">&times;</div>
+</div>
+<div class="drawer-nav">
+<div class="drawer-section">OVERVIEW</div>
+<div class="drawer-item active">Dashboard</div>
+<div class="drawer-section">PROJECTS</div>
+<div class="drawer-item">Project list</div>
+<div class="drawer-item">Roadmap</div>
+<div class="drawer-item">Milestones</div>
+<div class="drawer-section">WORK</div>
+<div class="drawer-item">Action items</div>
+<div class="drawer-section">REFERENCE</div>
+<div class="drawer-item">Systems</div>
+<div class="drawer-item">Vendors</div>
+<div class="drawer-item">People</div>
+</div>
+</div>
+<div class="phone-home"></div>
+</div>
+</div>
+
+<div>
+<p style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--color-text-secondary);text-align:center;padding-bottom:8px;letter-spacing:0.06em">DRAWER OPEN</p>
+<div class="phone" id="phone2">
+<div class="phone-notch"></div>
+<div class="screen" style="position:relative">
+<div class="topbar">
+<div class="hamburger"><span></span><span></span><span></span></div>
+<div class="topbar-title">COEO PROJECT HUB</div>
+<div class="topbar-avatar">AM</div>
+</div>
+<div class="page-header">
+<div class="page-title">Dashboard</div>
+<div class="page-date">TUESDAY, APRIL 15, 2026</div>
+</div>
+<div class="banner">
+Progress figures and project descriptions shown are illustrative placeholders.
+<span class="banner-close">&times;</span>
+</div>
+<div class="metrics">
+<div class="metric"><div class="metric-label">Active projects</div><div class="metric-val">10</div><div class="metric-sub">4 in progress</div></div>
+<div class="metric"><div class="metric-label">Open actions</div><div class="metric-val">15</div><div class="metric-sub">6 high priority</div></div>
+<div class="metric"><div class="metric-label">Milestones (30d)</div><div class="metric-val">5</div><div class="metric-sub">3 upcoming</div></div>
+<div class="metric"><div class="metric-label">Open questions</div><div class="metric-val">6</div><div class="metric-sub">3 high priority</div></div>
+</div>
+<div class="drawer-overlay" style="display:block;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:15"></div>
+<div class="drawer" style="display:flex;position:absolute;top:0;left:0;width:260px;height:100%;background:#0A2342;z-index:16;flex-direction:column">
+<div class="drawer-header">
+<div><div class="drawer-logo">COEO PROJECT HUB</div><div class="drawer-sub">INTERNAL OPERATIONS &middot; 2026</div></div>
+<div class="drawer-close">&times;</div>
+</div>
+<div class="drawer-nav">
+<div class="drawer-section">OVERVIEW</div>
+<div class="drawer-item active">Dashboard</div>
+<div class="drawer-section">PROJECTS</div>
+<div class="drawer-item">Project list</div>
+<div class="drawer-item">Roadmap</div>
+<div class="drawer-item">Milestones</div>
+<div class="drawer-section">WORK</div>
+<div class="drawer-item">Action items</div>
+<div class="drawer-section">REFERENCE</div>
+<div class="drawer-item">Systems</div>
+<div class="drawer-item">Vendors</div>
+<div class="drawer-item">People</div>
+</div>
+</div>
+</div>
+<div class="phone-home"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+function toggleDrawer(){
+var d=document.getElementById('drawer');
+var o=document.getElementById('overlay');
+var show=d.style.display!=='flex';
+d.style.display=show?'flex':'none';
+o.style.display=show?'block':'none';
+}
+</script>

@@ -28,10 +28,10 @@ export default async function DashboardPage() {
   return (
     <>
       <Topbar title="Dashboard" />
-      <div className="pt-8 pb-7 px-8 flex-1">
+      <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1">
         <PlaceholderNotice />
         {/* Metric cards */}
-        <div className="grid grid-cols-4 gap-[10px] mb-7">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-[10px] mb-7">
           <MetricCard label="Active projects" value={projectCount ?? 0} sub={`${projects?.filter(p => p.status === 'In Progress').length ?? 0} in progress`} />
           <MetricCard label="Open actions" value={actionCount ?? 0} />
           <MetricCard label="Milestones (30d)" value={milestoneCount} sub="Upcoming" />
@@ -39,18 +39,18 @@ export default async function DashboardPage() {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <div className="flex justify-between items-center mb-[10px]">
               <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Project status</div>
-              <a href="/projects" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
+              <a href="/projects" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer shrink-0">View all</a>
             </div>
             <ProjectStatusTable projects={projects ?? []} />
           </div>
           <div>
             <div className="flex justify-between items-center mb-[10px]">
               <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Open actions</div>
-              <a href="/actions" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
+              <a href="/actions" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer shrink-0">View all</a>
             </div>
             <ActionsWidget actions={actions ?? []} />
           </div>
@@ -60,7 +60,7 @@ export default async function DashboardPage() {
         <div className="mt-6">
           <div className="flex justify-between items-center mb-[10px]">
             <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Upcoming milestones</div>
-            <a href="/milestones" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer">View all</a>
+            <a href="/milestones" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer shrink-0">View all</a>
           </div>
           <MilestonesWidget milestones={upcomingMilestones ?? []} />
         </div>

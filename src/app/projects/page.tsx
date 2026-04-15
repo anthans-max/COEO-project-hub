@@ -13,7 +13,7 @@ export default async function ProjectsPage() {
   return (
     <>
       <Topbar title="Projects" />
-      <div className="pt-8 pb-7 px-8 flex-1">
+      <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1">
         <PlaceholderNotice />
         <ProjectsTable initialData={projects ?? []} />
       </div>

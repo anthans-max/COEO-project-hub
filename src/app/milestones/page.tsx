@@ -22,7 +22,7 @@ export default async function MilestonesPage() {
   return (
     <>
       <Topbar title="Milestones" />
-      <div className="pt-8 pb-7 px-8 flex-1">
+      <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1">
         <MilestonesList initialData={mapped} projects={(projects ?? []) as { id: string; name: string }[]} />
       </div>
     </>
