@@ -48,16 +48,18 @@ export function Highlights() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
       {highlights.map((h) => (
-        <div key={h.title} className="p-4 border border-border rounded-[10px] bg-white">
-          <div
-            className="w-[28px] h-[28px] rounded-[8px] flex items-center justify-center mb-[10px]"
-            style={{ background: h.bg }}
-          >
-            {h.icon}
+        <div key={h.title} className="p-[14px] border border-border rounded-[10px] bg-white">
+          <div className="flex items-center gap-2 mb-[10px]">
+            <div
+              className="w-[28px] h-[28px] rounded-[8px] flex items-center justify-center shrink-0"
+              style={{ background: h.bg }}
+            >
+              {h.icon}
+            </div>
+            <div className="text-[12px] text-[#6B6560]">{h.project}</div>
           </div>
           <div className="text-[15px] font-medium text-primary mb-1">{h.title}</div>
           <div className="text-[14px] text-[#6B6560] leading-[1.5]">{h.desc}</div>
-          <div className="text-[12px] text-[#6B6560] mt-2 pt-2 border-t border-border">{h.project}</div>
         </div>
       ))}
     </div>
