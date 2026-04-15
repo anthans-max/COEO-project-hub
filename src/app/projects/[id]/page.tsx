@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Topbar } from "@/components/layout/topbar";
+import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
+import { ProjectEditAction } from "@/components/projects/project-edit-action";
 import { ActionsList } from "@/components/actions/actions-list";
 import { MeetingNotesList } from "@/components/meeting-notes/meeting-notes-list";
 import type { Project, Action, MeetingNote } from "@/lib/types";
@@ -29,13 +31,19 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <>
-      <Topbar title={project.name}>
+      <Topbar
+        title={project.name}
+        badge={<Badge status={project.status} />}
+        subtitle={project.notes ?? undefined}
+        hideDate
+      >
         <Link
           href="/projects"
-          className="text-[13px] text-text-muted hover:text-primary self-center mr-2"
+          className="text-[15px] text-text-muted hover:text-primary self-center mr-2"
         >
           ← Back to projects
         </Link>
+        <ProjectEditAction initialProject={project} />
       </Topbar>
       <div className="pt-8 pb-7 px-8 flex-1 overflow-x-auto">
         <ProjectDetailHeader initialProject={project} />

@@ -1,15 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { EditProjectDialog } from "./edit-project-dialog";
-import { createClient } from "@/lib/supabase/browser";
-import { useToast } from "@/components/ui/toast";
 import { useProjects } from "@/lib/hooks/use-projects";
-import { useRouter } from "next/navigation";
 import type { Project } from "@/lib/types";
 
 interface Props {
@@ -17,89 +9,51 @@ interface Props {
 }
 
 export function ProjectDetailHeader({ initialProject }: Props) {
-  const [projects, setProjects] = useProjects([initialProject]);
+  const [projects] = useProjects([initialProject]);
   const project = projects.find((p) => p.id === initialProject.id) ?? initialProject;
-  const [editing, setEditing] = useState<Project | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const router = useRouter();
-  const toast = useToast();
 
-  const handleSave = (updated: Project) => {
-    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-  };
-
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("coeo_projects").delete().eq("id", deleteId);
-    if (error) {
-      toast.error("Failed to delete project");
-      return;
-    }
-    router.push("/projects");
-  };
+  const cols = "grid grid-cols-2 md:grid-cols-5 gap-x-6";
 
   return (
-    <>
-      <Card className="p-6 mb-4 bg-cream">
-        <div className="flex items-start justify-between gap-6 mb-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-[18px] font-medium text-primary">{project.name}</h1>
-              <Badge status={project.status} />
-            </div>
-            {project.notes && (
-              <div className="text-[13px] text-text-muted mt-1">{project.notes}</div>
-            )}
+    <Card className="mb-4">
+      <div className={`${cols} bg-cream px-5 py-[10px] border-b border-border`}>
+        <Label>Owner</Label>
+        <Label>Current phase</Label>
+        <Label>Next phase</Label>
+        <Label>Key risk</Label>
+        <Label>Progress</Label>
+      </div>
+      <div className={`${cols} bg-white px-5 py-[14px] gap-y-3`}>
+        <Value>{project.owner ?? "Unassigned"}</Value>
+        <Value>{project.phase_current ?? "—"}</Value>
+        <Value>{project.phase_next ?? "—"}</Value>
+        <Value risk={!!project.key_risk}>{project.key_risk ?? "—"}</Value>
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-[6px] bg-cream rounded-sm overflow-hidden">
+            <div
+              className="h-full bg-primary rounded-sm transition-all"
+              style={{ width: `${project.progress}%` }}
+            />
           </div>
-          <div className="shrink-0">
-            <Button onClick={() => setEditing(project)}>Edit project</Button>
-          </div>
+          <span className="text-[15px] text-text-secondary">{project.progress}%</span>
         </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-3 pt-4 border-t border-border">
-          <Meta label="Owner" value={project.owner ?? "Unassigned"} />
-          <Meta label="Current phase" value={project.phase_current ?? "—"} />
-          <Meta label="Next phase" value={project.phase_next ?? "—"} />
-          <Meta label="Key risk" value={project.key_risk ?? "—"} risk={!!project.key_risk} />
-          <div>
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1">Progress</div>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-[6px] bg-white rounded-sm overflow-hidden">
-                <div className="h-full bg-primary rounded-sm transition-all" style={{ width: `${project.progress}%` }} />
-              </div>
-              <span className="text-[13px] text-text-secondary">{project.progress}%</span>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <EditProjectDialog
-        project={editing}
-        onClose={() => setEditing(null)}
-        onSave={handleSave}
-        onDelete={(id) => {
-          setEditing(null);
-          setDeleteId(id);
-        }}
-      />
-
-      <ConfirmDialog
-        open={!!deleteId}
-        title="Delete project"
-        message="Are you sure you want to delete this project? This cannot be undone."
-        onConfirm={handleDelete}
-        onCancel={() => setDeleteId(null)}
-      />
-    </>
+      </div>
+    </Card>
   );
 }
 
-function Meta({ label, value, risk }: { label: string; value: string; risk?: boolean }) {
+function Label({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1">{label}</div>
-      <div className={`text-[13px] ${risk ? "text-destructive" : "text-text-primary"}`}>{value}</div>
+    <div className="text-[11px] font-semibold text-text-secondary tracking-[0.07em] uppercase">
+      {children}
+    </div>
+  );
+}
+
+function Value({ children, risk }: { children: React.ReactNode; risk?: boolean }) {
+  return (
+    <div className={`text-[15px] ${risk ? "text-destructive" : "text-text-primary"}`}>
+      {children}
     </div>
   );
 }
