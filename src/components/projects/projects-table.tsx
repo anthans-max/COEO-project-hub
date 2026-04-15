@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Card, CardHeader } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,7 @@ export function ProjectsTable({ initialData }: Props) {
   const [editProject, setEditProject] = useState<Project | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const toast = useToast();
+  const router = useRouter();
 
   const statusOptions = ["All", ...PROJECT_STATUSES];
   const filtered = statusFilter === "All" ? projects : projects.filter((p) => p.status === statusFilter);
@@ -49,6 +49,8 @@ export function ProjectsTable({ initialData }: Props) {
     }
   };
 
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
+
   return (
     <>
       <div className="flex justify-between items-start mb-4">
@@ -56,55 +58,84 @@ export function ProjectsTable({ initialData }: Props) {
         <Button onClick={() => setShowAdd(true)}>+ Add project</Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase flex-1 min-w-[160px]">Project</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[110px]">Owner</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[90px]">Status</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[72px] text-right">Progress</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[180px]">Current phase</div>
-          <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[120px]"></div>
-        </CardHeader>
-        {filtered.map((project) => (
-          <div
-            key={project.id}
-            className="flex items-center gap-3 px-4 py-[11px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
-          >
-            <div className="flex-1 min-w-[160px]">
-              <Link
-                href={`/projects/${project.id}`}
-                className="text-[15px] font-medium text-text-primary hover:text-accent hover:underline underline-offset-2"
-              >
-                {project.name}
-              </Link>
+      {filtered.length === 0 ? (
+        <div className="py-8 text-center text-[15px] text-text-muted border border-border rounded-card bg-white">
+          No projects found
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {filtered.map((project) => (
+            <div
+              key={project.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => router.push(`/projects/${project.id}`)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  router.push(`/projects/${project.id}`);
+                }
+              }}
+              className="bg-white border-[0.5px] border-border rounded-card p-5 cursor-pointer hover:bg-cream/60 hover:border-[#C8C0B4] transition-colors flex flex-col gap-3"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="text-[15px] font-medium text-text-primary min-w-0 truncate">
+                  {project.name}
+                </div>
+                <div className="shrink-0">
+                  <Badge status={project.status} />
+                </div>
+              </div>
+
               {project.notes && (
-                <div className="text-[15px] text-text-muted mt-1">{project.notes}</div>
+                <div
+                  className="text-[13px] text-text-muted overflow-hidden"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {project.notes}
+                </div>
               )}
+
+              <div className="text-[13px] text-text-muted">
+                {project.owner || "Unassigned"}
+              </div>
+
+              <ProgressBar value={project.progress} />
+
+              <div className="flex items-end justify-between gap-3 mt-1">
+                <div className="text-[12px] text-text-muted min-w-0 truncate">
+                  {project.phase_current || "—"}
+                </div>
+                <div className="flex gap-2 shrink-0" onClick={stop}>
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditProject(project);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteId(project.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="text-[13px] text-text-secondary w-[110px] shrink-0">
-              {project.owner || "Unassigned"}
-            </div>
-            <div className="w-[90px] shrink-0">
-              <Badge status={project.status} />
-            </div>
-            <ProgressBar value={project.progress} />
-            <div className="w-[180px] shrink-0 text-[13px] text-text-muted">
-              {project.phase_current || "—"}
-            </div>
-            <div className="w-[120px] shrink-0 flex justify-end gap-2">
-              <Button size="sm" onClick={() => setEditProject(project)}>
-                Edit
-              </Button>
-              <Button variant="destructive" size="sm" onClick={() => setDeleteId(project.id)}>
-                Delete
-              </Button>
-            </div>
-          </div>
-        ))}
-        {filtered.length === 0 && (
-          <div className="py-8 text-center text-[15px] text-text-muted">No projects found</div>
-        )}
-      </Card>
+          ))}
+        </div>
+      )}
 
       <AddProjectDialog
         open={showAdd}
