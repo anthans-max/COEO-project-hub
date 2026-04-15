@@ -14,8 +14,8 @@ const highlights: Highlight[] = [
         <path d="M3 8.5L6.5 12L13 4" stroke="#27AE60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    title: "Data Warehouse Phase 1 nearing completion",
-    desc: "Foundational KPIs and reports on track. StarRocks platform operational.",
+    title: "Data Warehouse Phase 2 in progress",
+    desc: "Foundational KPIs and reports on track. Initial build and StarRocks database operational.",
     project: "Data Warehouse",
   },
   {
@@ -26,8 +26,8 @@ const highlights: Highlight[] = [
         <path d="M8 5.5V8.5L10 10" stroke="#2980B9" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
-    title: "Customer Portal requirements gathering underway",
-    desc: "Conceptual planning complete. Service and inventory requirements now being defined.",
+    title: "Customer Portal requirements gathering and POC underway",
+    desc: "POC demos planned by end of month by Technovate and Nextian.",
     project: "Customer Portal",
   },
   {
@@ -38,8 +38,8 @@ const highlights: Highlight[] = [
         <path d="M5.5 9.5H10.5" stroke="#7B68EE" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
-    title: "Salesforce discovery kicked off with SETGO",
-    desc: "Mamata leading the current-state assessment. Key architecture decision targeted for May 30.",
+    title: "Salesforce discovery discussions being faciliated by SETGO",
+    desc: "Discussions being held with COEO project and operational stakeholders to gather feedback",
     project: "Salesforce Discovery",
   },
 ];
