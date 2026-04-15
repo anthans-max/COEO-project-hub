@@ -1,70 +1,124 @@
+import Link from "next/link";
 import { Topbar } from "@/components/layout/topbar";
 import { createClient } from "@/lib/supabase/server";
-import { MetricCard } from "@/components/ui/metric-card";
+import { HeroBar } from "@/components/dashboard/hero-bar";
+import { Highlights } from "@/components/dashboard/highlights";
+import { DashboardRoadmap } from "@/components/dashboard/dashboard-roadmap";
 import { ProjectStatusTable } from "@/components/dashboard/project-status-table";
-import { ActionsWidget } from "@/components/dashboard/actions-widget";
-import { MilestonesWidget } from "@/components/dashboard/milestones-widget";
-import { PlaceholderNotice } from "@/components/ui/placeholder-notice";
+import { RecentMeetings } from "@/components/dashboard/recent-meetings";
+import { FeaturedSystems } from "@/components/dashboard/featured-systems";
+import type { Project, ProjectPhase, Milestone, MeetingNote, System } from "@/lib/types";
+
+const FEATURED_SYSTEM_NAMES = ["Salesforce", "Customer Portal", "Rev.io", "Data Warehouse"];
 
 export default async function DashboardPage() {
   const supabase = await createClient();
 
   const [
-    { count: projectCount },
-    { count: actionCount },
-    { data: upcomingMilestones },
-    { data: projects },
-    { data: actions },
+    { data: projectsData },
+    { data: phasesData },
+    { data: milestonesData },
+    { data: meetingsData },
+    { data: systemsData },
   ] = await Promise.all([
-    supabase.from("coeo_projects").select("*", { count: "exact", head: true }).neq("status", "Complete"),
-    supabase.from("coeo_actions").select("*", { count: "exact", head: true }).neq("status", "Complete"),
-    supabase.from("coeo_milestones").select("*").neq("status", "Complete").order("due_date").limit(5),
-    supabase.from("coeo_projects").select("*").neq("status", "Complete").order("sort_order").limit(5),
-    supabase.from("coeo_actions").select("*").neq("status", "Complete").order("sort_order").limit(5),
+    supabase.from("coeo_projects").select("*").order("sort_order"),
+    supabase.from("coeo_project_phases").select("*"),
+    supabase.from("coeo_milestones").select("*"),
+    supabase
+      .from("coeo_meeting_notes")
+      .select("*, coeo_projects(name)")
+      .order("date", { ascending: false, nullsFirst: false })
+      .limit(5),
+    supabase.from("coeo_systems").select("*").in("name", FEATURED_SYSTEM_NAMES),
   ]);
 
-  const milestoneCount = upcomingMilestones?.length ?? 0;
+  const projects = (projectsData ?? []) as Project[];
+  const phases = (phasesData ?? []) as ProjectPhase[];
+  const milestones = (milestonesData ?? []) as Milestone[];
+  const systems = (systemsData ?? []) as System[];
+
+  const meetings = ((meetingsData ?? []) as Array<MeetingNote & { coeo_projects?: { name: string } | null }>).map(
+    ({ coeo_projects, ...rest }) => ({ ...rest, project_name: coeo_projects?.name ?? undefined })
+  );
+
+  const top5 = projects.slice(0, 5);
+  const activeCount = projects.filter((p) => p.status !== "Complete").length;
+  const ownerCount = new Set(projects.map((p) => p.owner).filter(Boolean)).size;
+  const upcomingMilestoneCount = milestones.filter(
+    (m) => m.status === "Upcoming" || m.status === "At Risk"
+  ).length;
+  const inProgressCount = projects.filter((p) => p.status === "In Progress").length;
+
+  const featuredSystems = FEATURED_SYSTEM_NAMES
+    .map((name) => systems.find((s) => s.name === name))
+    .filter((s): s is System => Boolean(s));
 
   return (
     <>
       <Topbar title="Dashboard" />
       <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1">
-        <PlaceholderNotice />
-        {/* Metric cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-[10px] mb-7">
-          <MetricCard label="Active projects" value={projectCount ?? 0} sub={`${projects?.filter(p => p.status === 'In Progress').length ?? 0} in progress`} />
-          <MetricCard label="Open actions" value={actionCount ?? 0} />
-          <MetricCard label="Milestones (30d)" value={milestoneCount} sub="Upcoming" />
-          <MetricCard label="Open questions" value={6} sub="3 high priority" />
+        <HeroBar
+          activeCount={activeCount}
+          ownerCount={ownerCount}
+          upcomingMilestoneCount={upcomingMilestoneCount}
+          inProgressCount={inProgressCount}
+        />
+
+        <Section title="Key highlights">
+          <Highlights />
+        </Section>
+
+        <Section title="Portfolio roadmap" linkLabel="View full roadmap" href="/projects/roadmap">
+          <DashboardRoadmap projects={top5} phases={phases} milestones={milestones} />
+        </Section>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div>
+            <SectionHeader title="Project status" linkLabel="View all" href="/projects" />
+            <ProjectStatusTable projects={top5} />
+          </div>
+          <div>
+            <SectionHeader title="Recent meetings" linkLabel="View all" href="/projects" />
+            <RecentMeetings meetings={meetings} />
+          </div>
         </div>
 
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <div className="flex justify-between items-center mb-[10px]">
-              <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Project status</div>
-              <a href="/projects" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer shrink-0">View all</a>
-            </div>
-            <ProjectStatusTable projects={projects ?? []} />
-          </div>
-          <div>
-            <div className="flex justify-between items-center mb-[10px]">
-              <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Open actions</div>
-              <a href="/actions" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer shrink-0">View all</a>
-            </div>
-            <ActionsWidget actions={actions ?? []} />
-          </div>
-        </div>
-
-        {/* Upcoming milestones */}
-        <div className="mt-6">
-          <div className="flex justify-between items-center mb-[10px]">
-            <div className="text-[11px] font-semibold text-primary tracking-[0.07em] uppercase">Upcoming milestones</div>
-            <a href="/milestones" className="text-[13px] text-text-muted underline underline-offset-2 cursor-pointer shrink-0">View all</a>
-          </div>
-          <MilestonesWidget milestones={upcomingMilestones ?? []} />
-        </div>
+        <Section title="Systems landscape" linkLabel="View all systems" href="/systems">
+          <FeaturedSystems systems={featuredSystems} />
+        </Section>
       </div>
     </>
+  );
+}
+
+function Section({
+  title,
+  linkLabel,
+  href,
+  children,
+}: {
+  title: string;
+  linkLabel?: string;
+  href?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-5">
+      <SectionHeader title={title} linkLabel={linkLabel} href={href} />
+      {children}
+    </div>
+  );
+}
+
+function SectionHeader({ title, linkLabel, href }: { title: string; linkLabel?: string; href?: string }) {
+  return (
+    <div className="flex items-center justify-between mb-2.5">
+      <div className="text-[12px] font-semibold text-primary tracking-[0.05em] uppercase">{title}</div>
+      {linkLabel && href && (
+        <Link href={href} className="text-[12px] text-text-muted hover:text-primary shrink-0">
+          {linkLabel}
+        </Link>
+      )}
+    </div>
   );
 }

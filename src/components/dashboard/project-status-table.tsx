@@ -1,8 +1,4 @@
-"use client";
-
-import { Card, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ProgressBar } from "@/components/ui/progress-bar";
+import Link from "next/link";
 import type { Project } from "@/lib/types";
 
 interface Props {
@@ -11,27 +7,38 @@ interface Props {
 
 export function ProjectStatusTable({ projects }: Props) {
   return (
-    <Card>
-      <CardHeader>
-        <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase flex-1">Project</div>
-        <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[110px]">Owner</div>
-        <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[90px]">Status</div>
-        <div className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase w-[72px] text-right">Progress</div>
-      </CardHeader>
-      {projects.map((project) => (
-        <div
-          key={project.id}
-          className="flex items-center gap-3 px-4 py-[11px] border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]"
-        >
-          <div className="flex-1">
-            <div className="text-[15px] font-medium text-text-primary">{project.name}</div>
-            <div className="text-[13px] text-text-muted mt-[1px]">{project.phase_current}</div>
-          </div>
-          <div className="text-[13px] text-text-secondary w-[110px] shrink-0">{project.owner}</div>
-          <Badge status={project.status} />
-          <ProgressBar value={project.progress} color={project.status === 'In Progress' && project.progress < 30 ? '#F4821F' : '#0A2342'} />
-        </div>
-      ))}
-    </Card>
+    <div className="bg-white border border-border rounded-[10px] overflow-hidden">
+      <table className="w-full border-collapse">
+        <thead className="bg-cream">
+          <tr>
+            <th className="px-3.5 py-2 text-[10px] font-medium text-text-muted uppercase tracking-[0.03em] text-left">Project</th>
+            <th className="px-3.5 py-2 text-[10px] font-medium text-text-muted uppercase tracking-[0.03em] text-left">Phase</th>
+            <th className="px-3.5 py-2 text-[10px] font-medium text-text-muted uppercase tracking-[0.03em] text-left">Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          {projects.map((p) => (
+            <tr key={p.id} className="border-b border-border last:border-b-0 hover:bg-cream transition-colors">
+              <td className="p-0">
+                <Link href={`/projects/${p.id}`} className="block px-3.5 py-2.5 text-[13px] font-medium text-primary">
+                  {p.name}
+                </Link>
+              </td>
+              <td className="px-3.5 py-2.5">
+                <span className="inline-block text-[10px] font-medium px-2.5 py-0.5 rounded-[8px] bg-cream text-text-muted whitespace-nowrap">
+                  {p.phase_current ?? "—"}
+                </span>
+              </td>
+              <td className="px-3.5 py-2.5 text-[13px] text-primary">
+                <span className="inline-block w-[60px] h-[5px] bg-border rounded-[3px] align-middle mr-2 overflow-hidden">
+                  <span className="block h-full bg-primary rounded-[3px]" style={{ width: `${p.progress}%` }} />
+                </span>
+                {p.progress}%
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

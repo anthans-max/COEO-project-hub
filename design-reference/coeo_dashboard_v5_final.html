@@ -1,0 +1,217 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #0A2342;
+  --orange: #F4821F;
+  --cream: #F5F0E8;
+  --border: #E8E2D9;
+  --muted: #8A7E6E;
+  --green: #27AE60;
+}
+h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+.db { padding: 1rem 0; font-family: 'DM Sans', sans-serif; color: var(--navy); }
+.page-title { font-size: 22px; font-weight: 600; }
+.page-date { font-size: 13px; color: var(--muted); margin-top: 2px; margin-bottom: 20px; }
+.hero-bar { background: var(--navy); border-radius: 10px; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.hero-left { display: flex; align-items: baseline; gap: 12px; }
+.hero-num { font-size: 36px; font-weight: 600; color: white; }
+.hero-text { font-size: 15px; color: rgba(255,255,255,0.65); }
+.hero-right { display: flex; gap: 24px; }
+.hero-stat { text-align: center; }
+.hero-stat-num { font-size: 20px; font-weight: 600; color: white; }
+.hero-stat-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.section { margin-bottom: 20px; }
+.s-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.s-title { font-size: 12px; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
+.s-link { font-size: 12px; color: var(--muted); cursor: pointer; }
+.s-link:hover { color: var(--navy); }
+.card { background: white; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.highlights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.highlight-card { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: white; }
+.hl-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.hl-icon svg { width: 14px; height: 14px; }
+.hl-title { font-size: 13px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
+.hl-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.hl-proj { font-size: 10px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.gantt-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: white; }
+.gantt-head { display: grid; grid-template-columns: 130px repeat(4, 1fr); background: var(--cream); border-bottom: 1px solid var(--border); }
+.gantt-head-label { padding: 8px 12px; font-size: 10px; font-weight: 500; color: var(--muted); text-transform: uppercase; }
+.gantt-q { padding: 8px 0; font-size: 11px; font-weight: 500; color: var(--muted); text-align: center; border-left: 1px solid var(--border); }
+.gantt-row { display: grid; grid-template-columns: 130px 1fr; border-bottom: 1px solid var(--border); align-items: center; min-height: 36px; cursor: pointer; }
+.gantt-row:last-child { border-bottom: none; }
+.gantt-row:hover .gantt-r-label { color: var(--orange); }
+.gantt-r-label { padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.15s; }
+.gantt-r-bars { position: relative; height: 30px; }
+.g-gl { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.g-b { position: absolute; height: 18px; top: 6px; border-radius: 4px; font-size: 9px; font-weight: 500; color: white; display: flex; align-items: center; padding: 0 6px; overflow: hidden; white-space: nowrap; }
+.g-b.navy { background: var(--navy); }
+.g-b.gray { background: #C8C3BA; color: var(--muted); }
+.g-dia { position: absolute; width: 7px; height: 7px; background: var(--orange); transform: rotate(45deg); top: 11px; z-index: 2; }
+.g-today { position: absolute; top: 0; bottom: 0; width: 1.5px; background: var(--orange); opacity: 0.5; z-index: 1; }
+.gantt-legend { display: flex; gap: 12px; padding: 6px 12px; border-top: 1px solid var(--border); font-size: 10px; color: var(--muted); align-items: center; }
+.gl-i { display: flex; align-items: center; gap: 3px; }
+.gl-sw { width: 8px; height: 8px; border-radius: 2px; }
+.gl-d { width: 5px; height: 5px; background: var(--orange); transform: rotate(45deg); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl thead { background: var(--cream); }
+.tbl th { padding: 8px 14px; font-size: 10px; font-weight: 500; color: var(--muted); text-transform: uppercase; text-align: left; letter-spacing: 0.3px; }
+.tbl td { padding: 10px 14px; font-size: 13px; color: var(--navy); border-bottom: 1px solid var(--border); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: var(--cream); cursor: pointer; }
+.proj-name { font-weight: 500; }
+.pbar-w { width: 60px; height: 5px; background: #E8E2D9; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 5px; }
+.pbar-f { height: 100%; border-radius: 3px; background: var(--navy); }
+.phase-badge { font-size: 10px; font-weight: 500; padding: 2px 10px; border-radius: 8px; background: var(--cream); color: var(--muted); white-space: nowrap; }
+.meeting-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.meeting-row:last-child { border-bottom: none; }
+.meeting-row:hover { background: var(--cream); }
+.mtg-date { font-size: 11px; color: var(--muted); min-width: 48px; }
+.mtg-topic { font-size: 12px; color: var(--navy); font-weight: 500; flex: 1; line-height: 1.3; }
+.mtg-proj { font-size: 10px; padding: 2px 8px; border-radius: 8px; background: var(--cream); color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+.sys-cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.sys-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: border-color 0.15s; background: white; }
+.sys-card:hover { border-color: var(--navy); }
+.sys-card-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+.sys-card-desc { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+.sys-card-badge { display: inline-block; font-size: 9px; font-weight: 500; padding: 3px 10px; border-radius: 10px; margin-top: 10px; }
+.badge-active { background: #E8F5E9; color: #1B5E20; }
+.badge-discovery { background: #E3F2FD; color: #1565C0; }
+.badge-progress { background: #FFF8E1; color: #8B6914; }
+.badge-pending { background: var(--cream); color: var(--muted); }
+</style>
+<h2 class="sr-only">COEO executive dashboard with highlights, portfolio roadmap, project status, meetings, and systems landscape</h2>
+<div class="db">
+  <div>
+    <div class="page-title">Dashboard</div>
+    <div class="page-date">Wednesday, April 15, 2026</div>
+  </div>
+
+  <div class="hero-bar">
+    <div class="hero-left">
+      <div class="hero-num">10</div>
+      <div class="hero-text">active projects across the IT portfolio</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat"><div class="hero-stat-num">2</div><div class="hero-stat-label">Owners</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">Upcoming milestones</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-label">In progress</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-header"><div class="s-title">Key highlights</div></div>
+    <div class="highlights-grid">
+      <div class="highlight-card">
+        <div class="hl-icon" style="background:#E8F5E9;"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="#27AE60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="hl-title">Data Warehouse Phase 1 nearing completion</div>
+        <div class="hl-desc">Foundational KPIs and reports on track. StarRocks platform operational.</div>
+        <div class="hl-proj">Data Warehouse</div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon" style="background:#E3F2FD;"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="#2980B9" stroke-width="1.5"/><path d="M8 5.5V8.5L10 10" stroke="#2980B9" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="hl-title">Customer Portal requirements gathering underway</div>
+        <div class="hl-desc">Conceptual planning complete. Service and inventory requirements now being defined.</div>
+        <div class="hl-proj">Customer Portal</div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon" style="background:#F3E5F5;"><svg viewBox="0 0 16 16" fill="none"><path d="M4 12L8 4L12 12" stroke="#7B68EE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9.5H10.5" stroke="#7B68EE" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="hl-title">Salesforce discovery kicked off with SETGO</div>
+        <div class="hl-desc">Mamata leading the current-state assessment. Key architecture decision targeted for May 30.</div>
+        <div class="hl-proj">Salesforce Discovery</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-header"><div class="s-title">Portfolio roadmap</div><div class="s-link">View full roadmap</div></div>
+    <div class="gantt-wrap">
+      <div class="gantt-head">
+        <div class="gantt-head-label">Project</div>
+        <div class="gantt-q">Q1 2026</div><div class="gantt-q">Q2 2026</div><div class="gantt-q">Q3 2026</div><div class="gantt-q">Q4 2026</div>
+      </div>
+      <div class="gantt-row"><div class="gantt-r-label">Data Warehouse</div><div class="gantt-r-bars"><div class="g-gl" style="left:25%"></div><div class="g-gl" style="left:50%"></div><div class="g-gl" style="left:75%"></div><div class="g-b navy" style="left:1%;width:24%;">Ph 1</div><div class="g-b gray" style="left:25%;width:25%;">Ph 2 - Secondary KPIs</div><div class="g-b gray" style="left:50%;width:50%;">Ph 3 - BSS Migration</div><div class="g-dia" style="left:24%"></div><div class="g-dia" style="left:49%"></div><div class="g-today" style="left:29%"></div></div></div>
+      <div class="gantt-row"><div class="gantt-r-label">Customer Portal</div><div class="gantt-r-bars"><div class="g-gl" style="left:25%"></div><div class="g-gl" style="left:50%"></div><div class="g-gl" style="left:75%"></div><div class="g-b navy" style="left:1%;width:24%;">Planning</div><div class="g-b gray" style="left:25%;width:25%;">Prototype / POC</div><div class="g-b gray" style="left:50%;width:50%;">Development</div><div class="g-dia" style="left:37%"></div><div class="g-dia" style="left:66%"></div></div></div>
+      <div class="gantt-row"><div class="gantt-r-label">Salesforce Discovery</div><div class="gantt-r-bars"><div class="g-gl" style="left:25%"></div><div class="g-gl" style="left:50%"></div><div class="g-gl" style="left:75%"></div><div class="g-b navy" style="left:8%;width:42%;">Discovery & Design</div><div class="g-b gray" style="left:50%;width:50%;">Implementation</div></div></div>
+      <div class="gantt-row"><div class="gantt-r-label">Enterprise Middleware</div><div class="gantt-r-bars"><div class="g-gl" style="left:25%"></div><div class="g-gl" style="left:50%"></div><div class="g-gl" style="left:75%"></div><div class="g-b gray" style="left:25%;width:50%;">Assessment</div></div></div>
+      <div class="gantt-row"><div class="gantt-r-label">Provisioning Portal</div><div class="gantt-r-bars"><div class="g-gl" style="left:25%"></div><div class="g-gl" style="left:50%"></div><div class="g-gl" style="left:75%"></div><div class="g-b gray" style="left:25%;width:25%;">API Updates</div><div class="g-b gray" style="left:50%;width:50%;">Enhancements</div></div></div>
+      <div class="gantt-legend"><div class="gl-i"><div class="gl-sw" style="background:var(--navy)"></div> In progress</div><div class="gl-i"><div class="gl-sw" style="background:#C8C3BA"></div> Upcoming</div><div class="gl-i"><div class="gl-d"></div> Milestone</div></div>
+    </div>
+  </div>
+
+  <div class="section two-col">
+    <div>
+      <div class="s-header"><div class="s-title">Project status</div><div class="s-link">View all</div></div>
+      <div class="card">
+        <table class="tbl">
+          <thead><tr><th>Project</th><th>Phase</th><th>Progress</th></tr></thead>
+          <tbody>
+            <tr><td><div class="proj-name">Data Warehouse</div></td><td><span class="phase-badge">Secondary KPIs</span></td><td><span class="pbar-w"><span class="pbar-f" style="width:27%"></span></span>27%</td></tr>
+            <tr><td><div class="proj-name">Customer Portal</div></td><td><span class="phase-badge">Prototype / POC</span></td><td><span class="pbar-w"><span class="pbar-f" style="width:25%"></span></span>25%</td></tr>
+            <tr><td><div class="proj-name">SF Discovery</div></td><td><span class="phase-badge">Discovery</span></td><td><span class="pbar-w"><span class="pbar-f" style="width:20%"></span></span>20%</td></tr>
+            <tr><td><div class="proj-name">SF Maintenance</div></td><td><span class="phase-badge">Ongoing</span></td><td><span class="pbar-w"><span class="pbar-f" style="width:40%"></span></span>40%</td></tr>
+            <tr><td><div class="proj-name">Enterprise Middleware</div></td><td><span class="phase-badge">Assessment</span></td><td><span class="pbar-w"><span class="pbar-f" style="width:5%"></span></span>5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="s-header"><div class="s-title">Recent meetings</div><div class="s-link">View all</div></div>
+      <div class="card">
+        <div class="meeting-row"><div class="mtg-date">Apr 14</div><div class="mtg-topic">Project Requirements — Service / Inventory</div><div class="mtg-proj">Portal</div></div>
+        <div class="meeting-row"><div class="mtg-date">Apr 13</div><div class="mtg-topic">IT Portfolio Kickoff & Landscape Review</div><div class="mtg-proj">All</div></div>
+        <div class="meeting-row"><div class="mtg-date">Apr 11</div><div class="mtg-topic">Salesforce Current-State Assessment</div><div class="mtg-proj">SF Disc.</div></div>
+        <div class="meeting-row"><div class="mtg-date">Apr 9</div><div class="mtg-topic">Data Warehouse Phase 1 Review</div><div class="mtg-proj">DW</div></div>
+        <div class="meeting-row"><div class="mtg-date">Apr 7</div><div class="mtg-topic">Provisioning Portal API Scope</div><div class="mtg-proj">Prov.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="s-header"><div class="s-title">Systems landscape</div><div class="s-link">View all systems</div></div>
+    <div class="sys-cards-grid">
+      <div class="sys-card">
+        <div class="sys-card-name">Salesforce</div>
+        <div class="sys-card-desc">CRM & Customer Platform</div>
+        <div class="sys-card-badge badge-discovery">Discovery underway</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">StarRocks</div>
+        <div class="sys-card-desc">Data Warehouse Database</div>
+        <div class="sys-card-badge badge-active">Active</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">n8n</div>
+        <div class="sys-card-desc">Integration & Workflow Automation</div>
+        <div class="sys-card-badge badge-active">Active</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">Customer Portal</div>
+        <div class="sys-card-desc">Self-service customer portal</div>
+        <div class="sys-card-badge badge-progress">In progress</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">BSS / Billing</div>
+        <div class="sys-card-desc">Billing support system</div>
+        <div class="sys-card-badge badge-active">Active</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">SQL Server</div>
+        <div class="sys-card-desc">Legacy Data Layer</div>
+        <div class="sys-card-badge badge-pending">Decision pending</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">Zoho CRM</div>
+        <div class="sys-card-desc">Acquisition CRM</div>
+        <div class="sys-card-badge badge-pending">Decision pending</div>
+      </div>
+      <div class="sys-card">
+        <div class="sys-card-name">Jira</div>
+        <div class="sys-card-desc">Project task tracker</div>
+        <div class="sys-card-badge badge-pending">Decision pending</div>
+      </div>
+    </div>
+  </div>
+</div>
