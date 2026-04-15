@@ -22,10 +22,10 @@ export function FeaturedSystems({ systems }: Props) {
           href="/systems"
           className="block border border-border rounded-[10px] p-3.5 bg-white hover:border-primary transition-colors"
         >
-          <div className="text-[14px] font-semibold text-primary">{s.name}</div>
-          {s.subtitle && <div className="text-[11px] text-text-muted mt-[3px] leading-[1.4]">{s.subtitle}</div>}
+          <div className="text-[16px] font-semibold text-primary">{s.name}</div>
+          {s.subtitle && <div className="text-[13px] text-[#6B6560] mt-[3px] leading-[1.4]">{s.subtitle}</div>}
           <span
-            className={`inline-block text-[9px] font-medium px-2.5 py-[3px] rounded-[10px] mt-2.5 ${badgeClasses(s.status)}`}
+            className={`inline-block text-[11px] font-medium px-2.5 py-[3px] rounded-[10px] mt-2.5 ${badgeClasses(s.status)}`}
           >
             {s.status}
           </span>

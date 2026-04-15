@@ -55,9 +55,9 @@ export function Highlights() {
           >
             {h.icon}
           </div>
-          <div className="text-[13px] font-medium text-primary mb-1">{h.title}</div>
-          <div className="text-[12px] text-text-muted leading-[1.5]">{h.desc}</div>
-          <div className="text-[10px] text-text-muted mt-2 pt-2 border-t border-border">{h.project}</div>
+          <div className="text-[15px] font-medium text-primary mb-1">{h.title}</div>
+          <div className="text-[14px] text-[#6B6560] leading-[1.5]">{h.desc}</div>
+          <div className="text-[12px] text-[#6B6560] mt-2 pt-2 border-t border-border">{h.project}</div>
         </div>
       ))}
     </div>

@@ -29,12 +29,12 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
   return (
     <div className="border border-border rounded-[10px] overflow-hidden bg-white">
       <div className="grid grid-cols-[130px_1fr] bg-cream border-b border-border">
-        <div className="px-3 py-2 text-[10px] font-medium text-text-muted uppercase tracking-[0.05em]">Project</div>
+        <div className="px-3 py-2 text-[12px] font-medium text-text-muted uppercase tracking-[0.05em]">Project</div>
         <div className="grid grid-cols-4">
           {quarters.map((q, i) => (
             <div
               key={q.label}
-              className="py-2 text-[11px] font-medium text-text-muted text-center"
+              className="py-2 text-[13px] font-medium text-text-muted text-center"
               style={{ borderLeft: i === 0 ? undefined : "1px solid #E8E2D9" }}
             >
               {q.label}
@@ -53,7 +53,7 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
             href={`/projects/${project.id}`}
             className="grid grid-cols-[130px_1fr] border-b border-border last:border-b-0 items-center min-h-[36px] group"
           >
-            <div className="px-3 py-1 text-[12px] font-medium text-primary truncate group-hover:text-accent transition-colors">
+            <div className="px-3 py-1 text-[14px] font-medium text-primary truncate group-hover:text-accent transition-colors">
               {project.name}
             </div>
             <div className="relative h-[30px]">
@@ -70,12 +70,12 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
                 return (
                   <div
                     key={ph.id}
-                    className="absolute h-[18px] top-[6px] rounded-[4px] text-[9px] font-medium flex items-center px-1.5 overflow-hidden whitespace-nowrap"
+                    className="absolute h-[18px] top-[6px] rounded-[4px] text-[11px] font-medium flex items-center px-1.5 overflow-hidden whitespace-nowrap"
                     style={{
                       left: `${left}%`,
                       width: `${width}%`,
                       background: isInProgress ? "#0A2342" : "#C8C3BA",
-                      color: isInProgress ? "white" : "#8A7E6E",
+                      color: isInProgress ? "white" : "#6B6560",
                     }}
                   >
                     {ph.name}
@@ -101,7 +101,7 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
         );
       })}
 
-      <div className="flex gap-3 px-3 py-1.5 border-t border-border text-[10px] text-text-muted items-center">
+      <div className="flex gap-3 px-3 py-1.5 border-t border-border text-[12px] text-[#6B6560] items-center">
         <div className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-[2px] bg-primary" /> In progress
         </div>

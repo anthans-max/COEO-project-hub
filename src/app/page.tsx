@@ -113,9 +113,9 @@ function Section({
 function SectionHeader({ title, linkLabel, href }: { title: string; linkLabel?: string; href?: string }) {
   return (
     <div className="flex items-center justify-between mb-2.5">
-      <div className="text-[12px] font-semibold text-primary tracking-[0.05em] uppercase">{title}</div>
+      <div className="text-[13px] font-semibold text-primary tracking-[0.05em] uppercase">{title}</div>
       {linkLabel && href && (
-        <Link href={href} className="text-[12px] text-text-muted hover:text-primary shrink-0">
+        <Link href={href} className="text-[13px] text-text-muted hover:text-primary shrink-0">
           {linkLabel}
         </Link>
       )}
