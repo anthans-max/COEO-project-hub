@@ -142,6 +142,9 @@ export function EditActionDialog({ action, projects, onClose, onSave }: Props) {
               <option value="">None</option>
               {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
+            <p className="text-[11px] text-text-muted mt-1">
+              Changing this will move the action to the selected project.
+            </p>
           </div>
 
           <div>

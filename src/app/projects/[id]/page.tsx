@@ -18,12 +18,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes] = await Promise.all([
+  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes] = await Promise.all([
     supabase.from("coeo_projects").select("*").eq("id", id).single(),
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
     supabase.from("coeo_project_phases").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_milestones").select("*").eq("project_id", id).order("due_date"),
+    supabase.from("coeo_projects").select("id, name").order("sort_order"),
   ]);
 
   const project = projectRes.data as Project | null;
@@ -33,6 +34,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const notes = (notesRes.data ?? []) as MeetingNote[];
   const phases = (phasesRes.data ?? []) as ProjectPhase[];
   const milestones = (milestonesRes.data ?? []) as Milestone[];
+  const allProjects = (allProjectsRes.data ?? []) as { id: string; name: string }[];
 
   return (
     <>
@@ -63,7 +65,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <section>
             <ActionsList
               initialData={actions}
-              projects={[{ id: project.id, name: project.name }]}
+              projects={allProjects}
               lockProjectId={project.id}
               hideFilters
               title="Action items"
