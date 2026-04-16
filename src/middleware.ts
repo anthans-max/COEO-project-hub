@@ -2,9 +2,8 @@
 // HTTP Basic Auth for the Coeo Project Hub.
 // Credentials come from environment variables set in Vercel.
 //
-// Placement: this file must live at the PROJECT ROOT
-// (same level as next.config.mjs, package.json, tsconfig.json).
-// Do NOT put it inside src/ — Next.js won't detect it there.
+// Placement: this project uses the src/ directory, so middleware
+// must live at src/middleware.ts for Next.js to detect it.
 
 import { NextResponse, type NextRequest } from 'next/server';
 
