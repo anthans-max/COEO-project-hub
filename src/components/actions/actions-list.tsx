@@ -21,15 +21,22 @@ interface ProjectOption {
   name: string;
 }
 
+interface PersonOption {
+  id: string;
+  name: string;
+  initials: string | null;
+}
+
 interface Props {
   initialData: Action[];
   projects: ProjectOption[];
+  people: PersonOption[];
   lockProjectId?: string;
   hideFilters?: boolean;
   title?: string;
 }
 
-export function ActionsList({ initialData, projects, lockProjectId, hideFilters, title }: Props) {
+export function ActionsList({ initialData, projects, people, lockProjectId, hideFilters, title }: Props) {
   const [actions, setActions] = useRealtime("coeo_actions", initialData);
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState(lockProjectId ?? "All");
@@ -195,6 +202,7 @@ export function ActionsList({ initialData, projects, lockProjectId, hideFilters,
       <AddActionDialog
         open={showAdd}
         projects={projects}
+        people={people}
         onClose={() => setShowAdd(false)}
         onAdd={(action) => setActions((prev) => [...prev, action])}
         defaultProjectId={lockProjectId}
@@ -204,6 +212,7 @@ export function ActionsList({ initialData, projects, lockProjectId, hideFilters,
       <EditActionDialog
         action={editAction}
         projects={projects}
+        people={people}
         onClose={() => setEditAction(null)}
         onSave={handleEditSave}
       />

@@ -12,16 +12,23 @@ interface ProjectOption {
   name: string;
 }
 
+interface PersonOption {
+  id: string;
+  name: string;
+  initials: string | null;
+}
+
 interface Props {
   open: boolean;
   projects: ProjectOption[];
+  people: PersonOption[];
   onClose: () => void;
   onAdd: (action: Action) => void;
   defaultProjectId?: string;
   lockProject?: boolean;
 }
 
-export function AddActionDialog({ open, projects, onClose, onAdd, defaultProjectId, lockProject }: Props) {
+export function AddActionDialog({ open, projects, people, onClose, onAdd, defaultProjectId, lockProject }: Props) {
   const [form, setForm] = useState({
     description: "",
     owner: "",
@@ -39,6 +46,15 @@ export function AddActionDialog({ open, projects, onClose, onAdd, defaultProject
 
   const set = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
+
+  const onOwnerChange = (name: string) => {
+    const match = people.find((p) => p.name === name);
+    setForm((prev) => ({
+      ...prev,
+      owner: name,
+      owner_initials: match?.initials ?? "",
+    }));
+  };
 
   const resetForm = () =>
     setForm({ description: "", owner: "", owner_initials: "", status: "Open", priority: "Medium", due_date: "", project_id: defaultProjectId ?? "", notes: "" });
@@ -97,11 +113,14 @@ export function AddActionDialog({ open, projects, onClose, onAdd, defaultProject
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Owner</label>
-              <input type="text" value={form.owner} onChange={(e) => set("owner", e.target.value)} className={inputClass} />
+              <select value={form.owner} onChange={(e) => onOwnerChange(e.target.value)} className={inputClass}>
+                <option value="">Select owner...</option>
+                {people.map((p) => <option key={p.id} value={p.name}>{p.name}</option>)}
+              </select>
             </div>
             <div>
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Owner initials</label>
-              <input type="text" value={form.owner_initials} onChange={(e) => set("owner_initials", e.target.value)} maxLength={2} className={inputClass} placeholder="e.g. AS" />
+              <input type="text" value={form.owner_initials} readOnly maxLength={2} className={`${inputClass} bg-gray-50 text-text-muted cursor-not-allowed`} placeholder="Auto" />
             </div>
           </div>
 

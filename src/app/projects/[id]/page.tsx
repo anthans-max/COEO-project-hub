@@ -18,13 +18,14 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes] = await Promise.all([
+  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes] = await Promise.all([
     supabase.from("coeo_projects").select("*").eq("id", id).single(),
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
     supabase.from("coeo_project_phases").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_milestones").select("*").eq("project_id", id).order("due_date"),
     supabase.from("coeo_projects").select("id, name").order("sort_order"),
+    supabase.from("coeo_people").select("id, name, initials").order("name"),
   ]);
 
   const project = projectRes.data as Project | null;
@@ -35,6 +36,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const phases = (phasesRes.data ?? []) as ProjectPhase[];
   const milestones = (milestonesRes.data ?? []) as Milestone[];
   const allProjects = (allProjectsRes.data ?? []) as { id: string; name: string }[];
+  const people = (peopleRes.data ?? []) as { id: string; name: string; initials: string | null }[];
 
   return (
     <>
@@ -66,6 +68,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <ActionsList
               initialData={actions}
               projects={allProjects}
+              people={people}
               lockProjectId={project.id}
               hideFilters
               title="Action items"
