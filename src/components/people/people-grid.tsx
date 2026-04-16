@@ -121,7 +121,7 @@ export function PeopleGrid({ initialData }: Props) {
                 {groupPeople.map((person) => (
                   <div
                     key={person.id}
-                    className="bg-cream border border-border rounded-card p-4 group relative h-full"
+                    className="bg-cream border border-border rounded-card p-4 group relative h-full min-h-[220px]"
                   >
                     <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
