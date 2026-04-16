@@ -117,11 +117,11 @@ export function PeopleGrid({ initialData }: Props) {
               {group.description}
             </div>
             {groupPeople.length > 0 ? (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3 items-stretch">
                 {groupPeople.map((person) => (
                   <div
                     key={person.id}
-                    className="bg-cream border border-border rounded-card p-4 group relative"
+                    className="bg-cream border border-border rounded-card p-4 group relative h-full"
                   >
                     <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
