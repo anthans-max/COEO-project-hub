@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Topbar } from "@/components/layout/topbar";
 import { createClient } from "@/lib/supabase/server";
+import { DraftDisclaimer } from "@/components/dashboard/draft-disclaimer";
 import { HeroBar } from "@/components/dashboard/hero-bar";
 import { Highlights } from "@/components/dashboard/highlights";
 import { DashboardRoadmap } from "@/components/dashboard/dashboard-roadmap";
@@ -57,6 +58,7 @@ export default async function DashboardPage() {
     <>
       <Topbar title="Dashboard" />
       <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1">
+        <DraftDisclaimer />
         <HeroBar
           activeCount={activeCount}
           ownerCount={ownerCount}
