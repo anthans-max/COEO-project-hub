@@ -8,7 +8,7 @@ import { DashboardRoadmap } from "@/components/dashboard/dashboard-roadmap";
 import { ProjectStatusTable } from "@/components/dashboard/project-status-table";
 import { RecentMeetings } from "@/components/dashboard/recent-meetings";
 import { FeaturedSystems } from "@/components/dashboard/featured-systems";
-import type { Project, ProjectPhase, Milestone, MeetingNote, System } from "@/lib/types";
+import type { Project, ProjectPhase, Milestone, MeetingNote, System, KeyHighlight } from "@/lib/types";
 
 const FEATURED_SYSTEM_NAMES = ["Salesforce", "Customer Portal", "Rev.io", "Data Warehouse"];
 
@@ -21,6 +21,7 @@ export default async function DashboardPage() {
     { data: milestonesData },
     { data: meetingsData },
     { data: systemsData },
+    { data: highlightsData },
   ] = await Promise.all([
     supabase.from("coeo_projects").select("*").order("sort_order"),
     supabase.from("coeo_project_phases").select("*"),
@@ -31,12 +32,14 @@ export default async function DashboardPage() {
       .order("date", { ascending: false, nullsFirst: false })
       .limit(5),
     supabase.from("coeo_systems").select("*").in("name", FEATURED_SYSTEM_NAMES),
+    supabase.from("coeo_key_highlights").select("*").order("sort_order"),
   ]);
 
   const projects = (projectsData ?? []) as Project[];
   const phases = (phasesData ?? []) as ProjectPhase[];
   const milestones = (milestonesData ?? []) as Milestone[];
   const systems = (systemsData ?? []) as System[];
+  const highlights = (highlightsData ?? []) as KeyHighlight[];
 
   const meetings = ((meetingsData ?? []) as Array<MeetingNote & { coeo_projects?: { name: string } | null }>).map(
     ({ coeo_projects, ...rest }) => ({ ...rest, project_name: coeo_projects?.name ?? undefined })
@@ -67,7 +70,7 @@ export default async function DashboardPage() {
         />
 
         <Section title="Key highlights">
-          <Highlights />
+          <Highlights initialData={highlights} />
         </Section>
 
         <Section title="Portfolio roadmap" linkLabel="View full roadmap" href="/projects/roadmap">

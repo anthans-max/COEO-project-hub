@@ -140,6 +140,16 @@ export interface Person {
   updated_at: string;
 }
 
+export interface KeyHighlight {
+  id: string;
+  category: string;
+  headline: string;
+  body: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PmoTrackerRow {
   id: string;
   item_no: number | null;
