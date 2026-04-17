@@ -8,7 +8,9 @@ import { ProjectEditAction } from "@/components/projects/project-edit-action";
 import { ActionsList } from "@/components/actions/actions-list";
 import { MeetingNotesList } from "@/components/meeting-notes/meeting-notes-list";
 import { ProjectTimelineRow } from "@/components/projects/project-timeline-row";
-import type { Project, Action, MeetingNote, ProjectPhase, Milestone } from "@/lib/types";
+import { PmoTrackerUpload } from "@/components/pmo/pmo-tracker-upload";
+import { PmoTrackerTable } from "@/components/pmo/pmo-tracker-table";
+import type { Project, Action, MeetingNote, ProjectPhase, Milestone, PmoTrackerRow } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -18,7 +20,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes] = await Promise.all([
+  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes, pmoRes] = await Promise.all([
     supabase.from("coeo_projects").select("*").eq("id", id).single(),
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
@@ -26,6 +28,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     supabase.from("coeo_milestones").select("*").eq("project_id", id).order("due_date"),
     supabase.from("coeo_projects").select("id, name").order("sort_order"),
     supabase.from("coeo_people").select("id, name, initials").order("name"),
+    supabase.from("coeo_pmo_tracker").select("*").order("item_no"),
   ]);
 
   const project = projectRes.data as Project | null;
@@ -37,6 +40,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const milestones = (milestonesRes.data ?? []) as Milestone[];
   const allProjects = (allProjectsRes.data ?? []) as { id: string; name: string }[];
   const people = (peopleRes.data ?? []) as { id: string; name: string; initials: string | null }[];
+  const pmoRows = (pmoRes.data ?? []) as PmoTrackerRow[];
+  const isPmoProject = project.name === "PMO";
 
   return (
     <>
@@ -62,6 +67,18 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           initialPhases={phases}
           initialMilestones={milestones}
         />
+
+        {isPmoProject && (
+          <section className="mb-6">
+            <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border">
+              <span className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+                PMO Tracker
+              </span>
+              <PmoTrackerUpload />
+            </div>
+            <PmoTrackerTable rows={pmoRows} />
+          </section>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <section>

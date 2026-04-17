@@ -139,3 +139,20 @@ export interface Person {
   created_at: string;
   updated_at: string;
 }
+
+export interface PmoTrackerRow {
+  id: string;
+  item_no: number | null;
+  category: string | null;
+  project_description: string | null;
+  project_objectives: string | null;
+  timing: string | null;
+  rcg_owner: string | null;
+  coeo_support: string | null;
+  third_party_support: string | null;
+  project_start: string | null;
+  project_complete: string | null;
+  project_status: string | null;
+  comments_updates: string | null;
+  uploaded_at: string;
+}

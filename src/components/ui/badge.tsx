@@ -8,6 +8,7 @@ const variantStyles: Record<string, string> = {
   gray: "bg-badge-gray-bg text-badge-gray-text",
   red: "bg-badge-red-bg text-badge-red-text",
   navy: "bg-primary text-white",
+  cream: "bg-cream text-primary border border-border",
 };
 
 interface BadgeProps {
