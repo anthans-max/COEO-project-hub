@@ -76,7 +76,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </span>
               <PmoTrackerUpload />
             </div>
-            <PmoTrackerTable rows={pmoRows} />
+            <PmoTrackerTable initialRows={pmoRows} />
           </section>
         )}
 

@@ -2,11 +2,17 @@
 
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { EditPmoTrackerDialog } from "./edit-pmo-tracker-dialog";
+import { useRealtime } from "@/lib/hooks/use-realtime";
+import { createClient } from "@/lib/supabase/browser";
+import { useToast } from "@/components/ui/toast";
 import type { PmoTrackerRow } from "@/lib/types";
 
 interface Props {
-  rows: PmoTrackerRow[];
+  initialRows: PmoTrackerRow[];
 }
 
 const DATE_PREFIX_RE = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4}):/;
@@ -90,7 +96,30 @@ function CommentCell({ text }: { text: string | null }) {
   );
 }
 
-export function PmoTrackerTable({ rows }: Props) {
+export function PmoTrackerTable({ initialRows }: Props) {
+  const [rows, setRows] = useRealtime<PmoTrackerRow>("coeo_pmo_tracker", initialRows);
+  const [editRow, setEditRow] = useState<PmoTrackerRow | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const toast = useToast();
+
+  const handleEditSave = (updated: PmoTrackerRow) => {
+    setRows((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const original = rows.find((r) => r.id === deleteId);
+    setRows((prev) => prev.filter((r) => r.id !== deleteId));
+    setDeleteId(null);
+
+    const supabase = createClient();
+    const { error } = await supabase.from("coeo_pmo_tracker").delete().eq("id", deleteId);
+    if (error) {
+      if (original) setRows((prev) => [...prev, original]);
+      toast.error("Failed to delete PMO tracker item");
+    }
+  };
+
   if (rows.length === 0) {
     return (
       <Card className="p-8 text-center text-[14px] text-text-muted">
@@ -112,7 +141,7 @@ export function PmoTrackerTable({ rows }: Props) {
       </div>
       <Card className="bg-white">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse min-w-[900px]">
+          <table className="w-full border-collapse min-w-[1040px]">
             <thead>
               <tr className="bg-cream border-b border-border">
                 <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[48px]">#</th>
@@ -123,6 +152,7 @@ export function PmoTrackerTable({ rows }: Props) {
                 <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[130px]">COEO Support</th>
                 <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[130px]">Target Complete</th>
                 <th className="text-left text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3">Comments / Updates</th>
+                <th className="text-right text-[12px] font-semibold text-text-secondary tracking-[0.07em] uppercase px-4 py-3 w-[140px]">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -144,12 +174,32 @@ export function PmoTrackerTable({ rows }: Props) {
                   <td className="px-4 py-3">
                     <CommentCell text={r.comments_updates} />
                   </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2 shrink-0 justify-end">
+                      <Button size="sm" onClick={() => setEditRow(r)}>Edit</Button>
+                      <Button variant="destructive" size="sm" onClick={() => setDeleteId(r.id)}>Delete</Button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </Card>
+
+      <EditPmoTrackerDialog
+        row={editRow}
+        onClose={() => setEditRow(null)}
+        onSave={handleEditSave}
+      />
+
+      <ConfirmDialog
+        open={!!deleteId}
+        title="Delete item"
+        message="Delete this item?"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteId(null)}
+      />
     </>
   );
 }
