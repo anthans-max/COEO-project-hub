@@ -48,6 +48,8 @@ export function ActionsList({ initialData, projects, people, lockProjectId, hide
 
   const statusOptions = ["All", "Open", "In Progress", "Complete", "Blocked"];
 
+  const projectNameById = new Map(projects.map((p) => [p.id, p.name]));
+
   const peopleInScope = Array.from(
     new Set(
       actions
@@ -180,6 +182,11 @@ export function ActionsList({ initialData, projects, people, lockProjectId, hide
                       </div>
                     )}
                   </div>
+                  {!lockProjectId && action.project_id && projectNameById.get(action.project_id) && (
+                    <span className="text-[11px] font-medium px-2 py-[2px] rounded-pill bg-[#E8E2D9] text-[#6B6560] shrink-0 whitespace-nowrap">
+                      {projectNameById.get(action.project_id)}
+                    </span>
+                  )}
                   <Badge status={action.priority} variant={action.priority === "High" ? "red" : action.priority === "Low" ? "gray" : "amber"} />
                   <span className="text-[10px] font-semibold text-text-secondary bg-cream px-2 py-[2px] rounded-pill shrink-0">
                     {action.owner_initials}
