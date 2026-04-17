@@ -1,0 +1,13 @@
+-- ============================================================
+-- Drop coeo_actions (description, owner) unique constraint.
+--
+-- Added in 003_seed_idempotency.sql so 002_seed.sql could use
+-- ON CONFLICT (description, owner) DO NOTHING. In practice this
+-- blocks legitimate edits: the meeting-notes extractor frequently
+-- produces multiple rows that share a section-derived description
+-- (e.g. "Agreed next steps"), so reassigning one to an owner who
+-- already has another row with the same description fails with
+-- 23505 and the UI silently reverts via the optimistic-update
+-- error branch.
+-- ============================================================
+alter table coeo_actions drop constraint if exists coeo_actions_desc_owner_key;
