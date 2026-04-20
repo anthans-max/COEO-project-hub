@@ -61,3 +61,19 @@ export function formatLongDate(date: string | Date | null | undefined): string {
     year: "numeric",
   });
 }
+
+export function formatRelativeTime(date: string | Date | null | undefined): string {
+  if (!date) return "";
+  const then = new Date(date).getTime();
+  if (Number.isNaN(then)) return "";
+  const diffMs = Date.now() - then;
+  const sec = Math.max(0, Math.floor(diffMs / 1000));
+  if (sec < 60) return "just now";
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h ago`;
+  const day = Math.floor(hr / 24);
+  if (day < 7) return `${day}d ago`;
+  return formatShortDate(date);
+}

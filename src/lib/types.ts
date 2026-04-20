@@ -48,6 +48,17 @@ export interface Action {
   project_name?: string;
 }
 
+export interface ActionLogEntry {
+  id: string;
+  action_id: string;
+  body: string;
+  author_person_id: string | null;
+  author_name: string | null;
+  author_initials: string | null;
+  author_color: string | null;
+  created_at: string;
+}
+
 export interface System {
   id: string;
   name: string;

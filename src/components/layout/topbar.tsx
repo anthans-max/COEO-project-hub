@@ -1,5 +1,8 @@
+"use client";
+
 import { formatLongDate } from "@/lib/utils";
 import { MobileMenuButton } from "./mobile-menu-button";
+import { CurrentUserPicker } from "./current-user-picker";
 
 interface TopbarProps {
   title: string;
@@ -39,6 +42,7 @@ export function Topbar({ title, children, subtitle, badge, hideDate }: TopbarPro
       </div>
       <div className="flex gap-2 items-center self-center md:self-start shrink-0">
         {children}
+        <CurrentUserPicker />
       </div>
     </div>
   );

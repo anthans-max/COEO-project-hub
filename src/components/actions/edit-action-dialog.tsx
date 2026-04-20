@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import { ACTION_STATUSES, ACTION_PRIORITIES } from "@/lib/constants";
 import type { Action } from "@/lib/types";
+import { ActionActivityLog } from "./action-activity-log";
 
 interface ProjectOption {
   id: string;
@@ -170,6 +171,8 @@ export function EditActionDialog({ action, projects, people, onClose, onSave }: 
             <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Notes</label>
             <textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} rows={2} className={inputClass} />
           </div>
+
+          <ActionActivityLog actionId={action.id} />
 
           <div className="flex justify-end gap-2 mt-3">
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
