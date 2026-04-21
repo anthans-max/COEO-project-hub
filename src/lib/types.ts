@@ -221,3 +221,11 @@ export interface ProgramBudgetRow {
   created_at: string;
   updated_at: string;
 }
+
+export interface ProgramSetting {
+  id: string;
+  key: string;
+  value: string | null;
+  created_at: string;
+  updated_at: string;
+}
