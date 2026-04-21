@@ -11,11 +11,18 @@ interface ProjectOption {
   name: string;
 }
 
+interface PersonOption {
+  id: string;
+  name: string;
+  initials: string | null;
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
   onAdd: (milestone: Milestone) => void;
   projects: ProjectOption[];
+  people: PersonOption[];
   defaultProjectId?: string;
   lockProject?: boolean;
 }
@@ -25,6 +32,7 @@ export function AddMilestoneDialog({
   onClose,
   onAdd,
   projects,
+  people,
   defaultProjectId,
   lockProject,
 }: Props) {
@@ -92,13 +100,16 @@ export function AddMilestoneDialog({
             className={inputClass}
             autoFocus
           />
-          <input
-            type="text"
-            placeholder="Owner"
+          <select
             value={owner}
             onChange={(e) => setOwner(e.target.value)}
             className={inputClass}
-          />
+          >
+            <option value="">Unassigned</option>
+            {people.map((p) => (
+              <option key={p.id} value={p.name}>{p.name}</option>
+            ))}
+          </select>
           <input
             type="date"
             value={dueDate}

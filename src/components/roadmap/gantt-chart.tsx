@@ -14,9 +14,16 @@ import { useToast } from "@/components/ui/toast";
 import { GANTT_BAR_COLORS } from "@/lib/constants";
 import type { Project, Milestone } from "@/lib/types";
 
+interface PersonOption {
+  id: string;
+  name: string;
+  initials: string | null;
+}
+
 interface Props {
   initialProjects: Project[];
   initialMilestones: Milestone[];
+  people: PersonOption[];
   hideAddProject?: boolean;
 }
 
@@ -41,7 +48,7 @@ function todayPercent(): number {
   return dateToPercent(new Date());
 }
 
-export function GanttChart({ initialProjects, initialMilestones, hideAddProject }: Props) {
+export function GanttChart({ initialProjects, initialMilestones, people, hideAddProject }: Props) {
   const [projects, setProjects] = useProjects(initialProjects);
   const [milestones, setMilestones] = useRealtime("coeo_milestones", initialMilestones);
 
@@ -258,6 +265,7 @@ export function GanttChart({ initialProjects, initialMilestones, hideAddProject 
         onClose={() => setShowAddMilestone(false)}
         onAdd={(milestone) => setMilestones((prev) => [...prev, milestone])}
         projects={projectOptions}
+        people={people}
       />
 
       {/* Edit Milestone */}

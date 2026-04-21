@@ -6,9 +6,10 @@ import type { Milestone } from "@/lib/types";
 export default async function RoadmapPage() {
   const supabase = await createClient();
 
-  const [{ data: projects }, { data: milestones }] = await Promise.all([
+  const [{ data: projects }, { data: milestones }, { data: people }] = await Promise.all([
     supabase.from("coeo_projects").select("*").order("sort_order"),
     supabase.from("coeo_milestones").select("*, coeo_projects(name)").order("due_date"),
+    supabase.from("coeo_people").select("id, name, initials").order("name"),
   ]);
 
   const mappedMilestones: Milestone[] = (milestones ?? []).map((m) => {
@@ -23,7 +24,11 @@ export default async function RoadmapPage() {
     <>
       <Topbar title="Roadmap" />
       <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1 overflow-x-auto">
-        <GanttChart initialProjects={projects ?? []} initialMilestones={mappedMilestones} />
+        <GanttChart
+          initialProjects={projects ?? []}
+          initialMilestones={mappedMilestones}
+          people={(people ?? []) as { id: string; name: string; initials: string | null }[]}
+        />
       </div>
     </>
   );

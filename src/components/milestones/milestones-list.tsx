@@ -19,12 +19,19 @@ interface ProjectOption {
   name: string;
 }
 
+interface PersonOption {
+  id: string;
+  name: string;
+  initials: string | null;
+}
+
 interface Props {
   initialData: Milestone[];
   projects: ProjectOption[];
+  people: PersonOption[];
 }
 
-export function MilestonesList({ initialData, projects }: Props) {
+export function MilestonesList({ initialData, projects, people }: Props) {
   const [milestones, setMilestones] = useRealtime("coeo_milestones", initialData);
   const [projectFilter, setProjectFilter] = useState("All");
   const [showAdd, setShowAdd] = useState(false);
@@ -146,6 +153,7 @@ export function MilestonesList({ initialData, projects }: Props) {
       <AddMilestoneDialog
         open={showAdd}
         projects={projects}
+        people={people}
         onClose={() => setShowAdd(false)}
         onAdd={(ms) => setMilestones((prev) => [...prev, ms])}
       />

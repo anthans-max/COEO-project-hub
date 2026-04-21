@@ -66,6 +66,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           projectId={project.id}
           initialPhases={phases}
           initialMilestones={milestones}
+          people={people}
         />
 
         {isPmoProject && (

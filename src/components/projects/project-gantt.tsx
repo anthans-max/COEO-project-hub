@@ -15,10 +15,17 @@ import { AddPhaseDialog } from "./add-phase-dialog";
 import { AddMilestoneDialog } from "@/components/milestones/add-milestone-dialog";
 import type { Milestone, ProjectPhase } from "@/lib/types";
 
+interface PersonOption {
+  id: string;
+  name: string;
+  initials: string | null;
+}
+
 interface Props {
   projectId: string;
   initialPhases: ProjectPhase[];
   initialMilestones: Milestone[];
+  people: PersonOption[];
 }
 
 type Zoom = "quarter" | "month";
@@ -28,7 +35,7 @@ function parseDate(s: string): Date {
   return new Date(y, m - 1, d);
 }
 
-export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Props) {
+export function ProjectGantt({ projectId, initialPhases, initialMilestones, people }: Props) {
   const [phases, setPhases] = useProjectPhases(initialPhases);
   const [milestones, setMilestones] = useRealtime<Milestone>("coeo_milestones", initialMilestones);
   const projectPhases = phases
@@ -308,6 +315,7 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
       <AddMilestoneDialog
         open={showAddMilestone}
         projects={[{ id: projectId, name: "This project" }]}
+        people={people}
         defaultProjectId={projectId}
         lockProject
         onClose={() => setShowAddMilestone(false)}
