@@ -56,7 +56,7 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
       >
         <div>
           <div
-            className="text-[12px] font-extrabold inline-block rounded-[5px] tracking-[0.04em]"
+            className="text-sm font-extrabold inline-block rounded-[5px] tracking-[0.04em]"
             style={{
               color: "#0f2744",
               background: "#f0f4fa",
@@ -67,16 +67,16 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
           </div>
         </div>
         <div>
-          <div className="text-[14px] font-bold text-primary mb-1 pr-[140px]">
+          <div className="text-base font-bold text-primary mb-1 pr-[140px]">
             {decision.title}
           </div>
           {decision.detail && (
-            <p className="text-[12px] m-0 mb-2 leading-[1.6]" style={{ color: "#5a6a7e" }}>
+            <p className="text-base m-0 mb-2 leading-[1.6]" style={{ color: "#5a6a7e" }}>
               {decision.detail}
             </p>
           )}
           {decision.impact && (
-            <div className="text-[11px] mb-[6px]" style={{ color: "#8a9ab5" }}>
+            <div className="text-sm mb-[6px]" style={{ color: "#8a9ab5" }}>
               <strong style={{ color: "#5a6a7e" }}>Impact if unresolved: </strong>
               {decision.impact}
             </div>
@@ -91,17 +91,17 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
         </div>
         <div>
           <div
-            className="text-[11px] tracking-[0.06em] font-bold uppercase mb-[3px]"
+            className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
             style={{ color: "#8a9ab5" }}
           >
             Owner
           </div>
-          <div className="text-[12px] leading-[1.5]" style={{ color: "#3a4a5e" }}>
+          <div className="text-base leading-[1.5]" style={{ color: "#3a4a5e" }}>
             {decision.owner ?? "—"}
           </div>
           <div className="mt-3">
             <div
-              className="text-[11px] tracking-[0.06em] font-bold uppercase mb-[3px]"
+              className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
               style={{ color: "#8a9ab5" }}
             >
               Status
@@ -111,7 +111,7 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
               onChange={(e) =>
                 onStatusChange(e.target.value as ProgramDecision["status"])
               }
-              className="text-[11px] font-bold rounded-[4px] outline-none cursor-pointer"
+              className="text-sm font-bold rounded-[4px] outline-none cursor-pointer"
               style={{
                 background: statusStyle.bg,
                 color: statusStyle.color,
@@ -129,13 +129,13 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
         </div>
         <div>
           <div
-            className="text-[11px] tracking-[0.06em] font-bold uppercase mb-[3px]"
+            className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
             style={{ color: "#8a9ab5" }}
           >
             Target
           </div>
           <div
-            className="text-[12px] font-bold inline-block rounded-[4px]"
+            className="text-sm font-bold inline-block rounded-[4px]"
             style={{
               color: "#c87d2f",
               background: "#fdf4e8",

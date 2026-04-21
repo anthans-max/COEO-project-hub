@@ -99,7 +99,7 @@ export function ThemesList({ initialThemes, initialDecisions }: Props) {
           }}
         />
         <div
-          className="text-[11px] font-bold tracking-[0.12em] uppercase mb-[10px]"
+          className="text-sm font-bold tracking-[0.12em] uppercase mb-[10px]"
           style={{ color: "#c87d2f" }}
         >
           Program Vision
@@ -121,7 +121,7 @@ export function ThemesList({ initialThemes, initialDecisions }: Props) {
               >
                 {val}
               </div>
-              <div className="text-[11px] tracking-[0.06em]" style={{ color: "#8a9ab5" }}>
+              <div className="text-sm tracking-[0.06em]" style={{ color: "#8a9ab5" }}>
                 {lbl}
               </div>
             </div>
@@ -162,12 +162,12 @@ export function ThemesList({ initialThemes, initialDecisions }: Props) {
         }}
       >
         <div
-          className="text-[11px] font-bold tracking-[0.1em] uppercase mb-[6px]"
+          className="text-sm font-bold tracking-[0.1em] uppercase mb-[6px]"
           style={{ color: "#8a9ab5" }}
         >
           Theme Dependency Note
         </div>
-        <p className="text-[13px] m-0 leading-[1.6]" style={{ color: "#5a6a7e" }}>
+        <p className="text-base m-0 leading-[1.6]" style={{ color: "#5a6a7e" }}>
           Themes T-01 and T-02 are foundational — Data Quality and System Integration must mature
           before Operational Visibility (T-03) is reliable, which in turn must exist before
           Customer Self-Service (T-04) is credible. This sequencing is reflected in the program

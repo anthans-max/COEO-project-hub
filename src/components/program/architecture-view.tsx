@@ -114,12 +114,10 @@ export function ArchitectureView({ themes }: Props) {
       <div className="flex flex-col gap-3 mb-8">
         <div className="text-center pb-1">
           <div
-            className="inline-block rounded-pill"
+            className="inline-block rounded-pill text-sm font-bold"
             style={{
               background: "#0f2744",
               color: "#e8edf4",
-              fontSize: 12,
-              fontWeight: 700,
               padding: "8px 24px",
               letterSpacing: "0.08em",
             }}
@@ -148,17 +146,17 @@ export function ArchitectureView({ themes }: Props) {
                 <div className="flex items-start gap-4 flex-wrap">
                   <div style={{ minWidth: 200 }}>
                     <div
-                      className="text-[11px] font-bold tracking-[0.1em] uppercase mb-1"
+                      className="text-sm font-bold tracking-[0.1em] uppercase mb-1"
                       style={{ color: layer.color }}
                     >
                       {layer.label}
                     </div>
-                    <div className="text-[12px] leading-[1.5]" style={{ color: "#6a7a8e" }}>
+                    <div className="text-base leading-[1.5]" style={{ color: "#6a7a8e" }}>
                       {layer.note}
                     </div>
                     {layer.warning && (
                       <div
-                        className="mt-2 text-[11px] font-bold inline-block rounded"
+                        className="mt-2 text-sm font-bold inline-block rounded"
                         style={{
                           color: "#c87d2f",
                           background: "#fdf4e8",
@@ -174,10 +172,8 @@ export function ArchitectureView({ themes }: Props) {
                     {layer.modules.map((m) => (
                       <div
                         key={m}
-                        className="rounded-[6px]"
+                        className="rounded-[6px] text-sm font-semibold"
                         style={{
-                          fontSize: 12,
-                          fontWeight: 600,
                           color: layer.color,
                           background: layer.bg,
                           border: `1px solid ${layer.color}30`,
@@ -209,7 +205,7 @@ export function ArchitectureView({ themes }: Props) {
         }}
       >
         <div
-          className="text-[11px] font-bold tracking-[0.1em] uppercase mb-3"
+          className="text-sm font-bold tracking-[0.1em] uppercase mb-3"
           style={{ color: "#8a9ab5" }}
         >
           Data Sources — Ingested via Data Warehouse (n8n / FTP / API)
@@ -218,10 +214,8 @@ export function ArchitectureView({ themes }: Props) {
           {DATA_SOURCES.map((s) => (
             <div
               key={s}
-              className="rounded-[6px]"
+              className="rounded-[6px] text-sm font-semibold"
               style={{
-                fontSize: 12,
-                fontWeight: 600,
                 color: "#0f2744",
                 background: "#fff",
                 border: "1px solid #d8e0ec",
@@ -239,13 +233,13 @@ export function ArchitectureView({ themes }: Props) {
         style={{ background: "#fff", border: "1px solid #e8ecf2", padding: "20px 24px" }}
       >
         <div
-          className="text-[11px] font-bold tracking-[0.1em] uppercase mb-4"
+          className="text-sm font-bold tracking-[0.1em] uppercase mb-4"
           style={{ color: "#8a9ab5" }}
         >
           Workstream Contributions to Architecture Layers
         </div>
         {workstreams.length === 0 ? (
-          <div className="py-6 text-center text-[13px] text-text-muted">
+          <div className="py-6 text-center text-base text-text-muted">
             No workstreams mapped yet — add workstreams to themes on the Strategy page to populate
             this grid.
           </div>
@@ -261,7 +255,7 @@ export function ArchitectureView({ themes }: Props) {
                   padding: "14px 16px",
                 }}
               >
-                <div className="text-[13px] font-bold text-primary mb-2">{w}</div>
+                <div className="text-base font-bold text-primary mb-2">{w}</div>
                 <div className="flex flex-wrap gap-1">
                   {workstreamMap[w].map((code) => (
                     <ThemeTag key={code} code={code} themes={themes} />

@@ -149,7 +149,7 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
             >
               {val}
             </div>
-            <div className="text-[11px] tracking-[0.06em] mt-[2px]" style={{ color: "#8a9ab5" }}>
+            <div className="text-sm tracking-[0.06em] mt-[2px]" style={{ color: "#8a9ab5" }}>
               {lbl}
             </div>
           </div>
@@ -160,7 +160,7 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setFilter("all")}
-            className="text-[11px] font-bold rounded-[4px] cursor-pointer tracking-[0.06em]"
+            className="text-sm font-bold rounded-[4px] cursor-pointer tracking-[0.06em]"
             style={{
               padding: "5px 12px",
               border: `1px solid ${filter === "all" ? "#0f2744" : "#d8e0ec"}`,
@@ -177,7 +177,7 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
               <button
                 key={t.code}
                 onClick={() => setFilter(t.code)}
-                className="text-[11px] font-bold rounded-[4px] cursor-pointer tracking-[0.04em]"
+                className="text-sm font-bold rounded-[4px] cursor-pointer tracking-[0.04em]"
                 style={{
                   padding: "5px 12px",
                   border: `1px solid ${active ? color : "#d8e0ec"}`,

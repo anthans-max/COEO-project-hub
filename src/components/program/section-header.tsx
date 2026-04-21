@@ -7,7 +7,7 @@ interface SectionHeaderProps {
 export function SectionHeader({ label, title, subtitle }: SectionHeaderProps) {
   return (
     <div className="mb-8">
-      <div className="text-[11px] font-bold tracking-[0.12em] uppercase mb-[6px]" style={{ color: "#c87d2f" }}>
+      <div className="text-sm font-bold tracking-[0.12em] uppercase mb-[6px]" style={{ color: "#c87d2f" }}>
         {label}
       </div>
       <h1

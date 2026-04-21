@@ -70,13 +70,13 @@ export function ThemeCard({ theme, expanded, decisions, onToggle, onEdit, onDele
         </div>
         <div className="flex-1 min-w-0 pr-[100px]">
           <div className="flex items-center gap-2 mb-[3px]">
-            <span className="text-[10px] font-bold tracking-[0.1em]" style={{ color }}>
+            <span className="text-sm font-bold tracking-[0.1em]" style={{ color }}>
               {theme.code}
             </span>
           </div>
-          <div className="text-[15px] font-bold text-primary leading-[1.3]">{theme.title}</div>
+          <div className="text-lg font-bold text-primary leading-[1.3]">{theme.title}</div>
           {!expanded && theme.description && (
-            <p className="text-[12px] m-0 mt-[6px] leading-[1.5]" style={{ color: "#6a7a8e" }}>
+            <p className="text-base m-0 mt-[6px] leading-[1.5]" style={{ color: "#6a7a8e" }}>
               {theme.description.length > 100
                 ? theme.description.substring(0, 100) + "…"
                 : theme.description}
@@ -98,28 +98,28 @@ export function ThemeCard({ theme, expanded, decisions, onToggle, onEdit, onDele
         >
           <div>
             <div
-              className="text-[11px] font-bold tracking-[0.08em] uppercase mb-2"
+              className="text-sm font-bold tracking-[0.08em] uppercase mb-2"
               style={{ color: "#8a9ab5" }}
             >
               Description
             </div>
-            <p className="text-[13px] m-0 leading-[1.7]" style={{ color: "#3a4a5e" }}>
+            <p className="text-base m-0 leading-[1.7]" style={{ color: "#3a4a5e" }}>
               {theme.description}
             </p>
           </div>
           <div>
             <div
-              className="text-[11px] font-bold tracking-[0.08em] uppercase mb-2"
+              className="text-sm font-bold tracking-[0.08em] uppercase mb-2"
               style={{ color: "#8a9ab5" }}
             >
               Key Outcomes
             </div>
             {theme.outcomes.map((o, i) => (
               <div key={i} className="flex gap-2 mb-2 items-start">
-                <span className="text-[12px] shrink-0 mt-[2px]" style={{ color }}>
+                <span className="text-base shrink-0 mt-[2px]" style={{ color }}>
                   →
                 </span>
-                <span className="text-[12px] leading-[1.5]" style={{ color: "#3a4a5e" }}>
+                <span className="text-base leading-[1.5]" style={{ color: "#3a4a5e" }}>
                   {o}
                 </span>
               </div>
@@ -127,7 +127,7 @@ export function ThemeCard({ theme, expanded, decisions, onToggle, onEdit, onDele
           </div>
           <div>
             <div
-              className="text-[11px] font-bold tracking-[0.08em] uppercase mb-2"
+              className="text-sm font-bold tracking-[0.08em] uppercase mb-2"
               style={{ color: "#8a9ab5" }}
             >
               Contributing Workstreams
@@ -136,7 +136,7 @@ export function ThemeCard({ theme, expanded, decisions, onToggle, onEdit, onDele
               {theme.workstreams.map((w) => (
                 <span
                   key={w}
-                  className="text-[12px] text-primary rounded-[4px] inline-block"
+                  className="text-sm text-primary rounded-[4px] inline-block"
                   style={{
                     background: "#f4f6fa",
                     padding: "4px 8px",
@@ -150,7 +150,7 @@ export function ThemeCard({ theme, expanded, decisions, onToggle, onEdit, onDele
             {linkedDecisions.length > 0 && (
               <div>
                 <div
-                  className="text-[11px] font-bold tracking-[0.08em] uppercase mb-[6px]"
+                  className="text-sm font-bold tracking-[0.08em] uppercase mb-[6px]"
                   style={{ color: "#8a9ab5" }}
                 >
                   Linked Decisions
@@ -159,7 +159,7 @@ export function ThemeCard({ theme, expanded, decisions, onToggle, onEdit, onDele
                   {linkedDecisions.map((d) => (
                     <span
                       key={d.id}
-                      className="text-[11px] font-semibold rounded-[3px] inline-block"
+                      className="text-sm font-semibold rounded-[3px] inline-block"
                       style={{
                         color,
                         background: bg,

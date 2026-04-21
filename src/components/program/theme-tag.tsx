@@ -27,7 +27,7 @@ export function ThemeTag({ code, themes, label }: ThemeTagProps) {
 
   return (
     <span
-      className="inline-block text-[10px] font-bold tracking-[0.04em] mr-1 mb-1 rounded-[3px] px-[7px] py-[2px] border"
+      className="inline-block text-sm font-bold tracking-[0.04em] mr-1 mb-1 rounded-[3px] px-[7px] py-[2px] border"
       style={{
         background: `${color}18`,
         color,

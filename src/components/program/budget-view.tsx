@@ -148,13 +148,13 @@ export function BudgetView({ initialRows }: Props) {
         </div>
         <div>
           <div
-            className="text-[13px] font-bold mb-1"
+            className="text-base font-bold mb-1"
             style={{ color: "#7c4d1e" }}
           >
             Budget framework in preparation
           </div>
           <p
-            className="text-[12px] m-0 leading-[1.6]"
+            className="text-base m-0 leading-[1.6]"
             style={{ color: "#7c4d1e" }}
           >
             This section will capture phase-level investment allocations, vendor cost estimates,
@@ -170,7 +170,7 @@ export function BudgetView({ initialRows }: Props) {
       >
         <div className="flex items-center justify-between mb-4">
           <div
-            className="text-[12px] font-bold tracking-[0.1em] uppercase"
+            className="text-sm font-bold tracking-[0.1em] uppercase"
             style={{ color: "#8a9ab5" }}
           >
             Phase Allocation Framework
@@ -180,7 +180,7 @@ export function BudgetView({ initialRows }: Props) {
           </Button>
         </div>
         {phases.length === 0 ? (
-          <div className="py-6 text-center text-[13px] text-text-muted">
+          <div className="py-6 text-center text-base text-text-muted">
             No phases yet. Click &quot;+ Add phase&quot; to create one.
           </div>
         ) : (
@@ -207,7 +207,7 @@ export function BudgetView({ initialRows }: Props) {
                   >
                     <Trash2 size={12} />
                   </button>
-                  <div className="text-[13px] font-bold text-primary mb-1">
+                  <div className="text-base font-bold text-primary mb-1">
                     <InlineEdit
                       value={p.name}
                       onSave={(v) => updateField(p, "name", v)}
@@ -215,7 +215,7 @@ export function BudgetView({ initialRows }: Props) {
                     />
                   </div>
                   <div
-                    className="text-[11px] font-bold mb-[10px]"
+                    className="text-sm font-bold mb-[10px]"
                     style={{ color: "#c87d2f" }}
                   >
                     <InlineEdit
@@ -230,12 +230,12 @@ export function BudgetView({ initialRows }: Props) {
                         {items.map((item, i) => (
                           <div key={i} className="flex gap-2 items-start">
                             <span
-                              className="text-[10px] mt-[3px] shrink-0"
+                              className="text-sm mt-[3px] shrink-0"
                               style={{ color: "#c8d4e4" }}
                             >
                               —
                             </span>
-                            <span className="text-[12px]" style={{ color: "#5a6a7e" }}>
+                            <span className="text-base" style={{ color: "#5a6a7e" }}>
                               {item}
                             </span>
                           </div>
@@ -243,7 +243,7 @@ export function BudgetView({ initialRows }: Props) {
                       </div>
                     )}
                     <div
-                      className="text-[10px] font-semibold tracking-[0.08em] uppercase mb-1"
+                      className="text-sm font-semibold tracking-[0.08em] uppercase mb-1"
                       style={{ color: "#8a9ab5" }}
                     >
                       Line items (one per line)
@@ -253,7 +253,7 @@ export function BudgetView({ initialRows }: Props) {
                       onSave={(v) => updateField(p, "notes", v || null)}
                       placeholder="One item per line"
                       multiline
-                      className="text-[12px]"
+                      className="text-base"
                     />
                   </div>
                   <div
@@ -264,7 +264,7 @@ export function BudgetView({ initialRows }: Props) {
                       padding: "8px 12px",
                     }}
                   >
-                    <div className="text-[11px]" style={{ color: "#aab5c5" }}>
+                    <div className="text-sm" style={{ color: "#aab5c5" }}>
                       <InlineEdit
                         value={p.estimated_cost ? `Budget ${p.estimated_cost}` : "Budget TBC"}
                         onSave={(v) => {
@@ -287,7 +287,7 @@ export function BudgetView({ initialRows }: Props) {
       >
         <div className="flex items-center justify-between mb-4">
           <div
-            className="text-[12px] font-bold tracking-[0.1em] uppercase"
+            className="text-sm font-bold tracking-[0.1em] uppercase"
             style={{ color: "#8a9ab5" }}
           >
             Workstream Estimates
@@ -302,7 +302,7 @@ export function BudgetView({ initialRows }: Props) {
               {["Workstream", "Vendor(s)", "Phase", "Est. Cost", "Notes", ""].map((h, i) => (
                 <th
                   key={i}
-                  className="text-[11px] font-bold tracking-[0.08em] uppercase text-left"
+                  className="text-sm font-bold tracking-[0.08em] uppercase text-left"
                   style={{
                     color: "#8a9ab5",
                     padding: "0 12px 10px 0",
@@ -322,7 +322,7 @@ export function BudgetView({ initialRows }: Props) {
                 style={{ borderBottom: "1px solid #f0f4f8" }}
               >
                 <td
-                  className="text-[13px] font-semibold text-primary"
+                  className="text-base font-semibold text-primary"
                   style={{ padding: "12px 12px 12px 0" }}
                 >
                   <InlineEdit
@@ -332,7 +332,7 @@ export function BudgetView({ initialRows }: Props) {
                   />
                 </td>
                 <td
-                  className="text-[12px]"
+                  className="text-base"
                   style={{ color: "#5a6a7e", padding: "12px 12px 12px 0" }}
                 >
                   <InlineEdit
@@ -342,7 +342,7 @@ export function BudgetView({ initialRows }: Props) {
                   />
                 </td>
                 <td
-                  className="text-[12px]"
+                  className="text-base"
                   style={{ color: "#5a6a7e", padding: "12px 12px 12px 0" }}
                 >
                   <InlineEdit
@@ -353,7 +353,7 @@ export function BudgetView({ initialRows }: Props) {
                 </td>
                 <td style={{ padding: "12px 12px 12px 0" }}>
                   <span
-                    className="text-[11px] rounded-[4px] inline-block"
+                    className="text-sm rounded-[4px] inline-block"
                     style={{
                       color: "#aab5c5",
                       background: "#f8f9fc",
@@ -369,7 +369,7 @@ export function BudgetView({ initialRows }: Props) {
                   </span>
                 </td>
                 <td
-                  className="text-[11px]"
+                  className="text-sm"
                   style={{ color: "#8a9ab5", padding: "12px 12px 12px 0" }}
                 >
                   <InlineEdit
@@ -393,7 +393,7 @@ export function BudgetView({ initialRows }: Props) {
               <tr>
                 <td
                   colSpan={6}
-                  className="py-6 text-center text-[13px] text-text-muted"
+                  className="py-6 text-center text-base text-text-muted"
                 >
                   No workstreams yet. Click &quot;+ Add workstream&quot; to create one.
                 </td>
