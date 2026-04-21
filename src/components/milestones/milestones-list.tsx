@@ -145,6 +145,7 @@ export function MilestonesList({ initialData, projects }: Props) {
 
       <AddMilestoneDialog
         open={showAdd}
+        projects={projects}
         onClose={() => setShowAdd(false)}
         onAdd={(ms) => setMilestones((prev) => [...prev, ms])}
       />

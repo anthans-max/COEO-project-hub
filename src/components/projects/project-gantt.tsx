@@ -12,6 +12,7 @@ import { useRealtime } from "@/lib/hooks/use-realtime";
 import { GanttBar } from "./gantt-bar";
 import { GanttMilestone } from "./gantt-milestone";
 import { AddPhaseDialog } from "./add-phase-dialog";
+import { AddMilestoneDialog } from "@/components/milestones/add-milestone-dialog";
 import type { Milestone, ProjectPhase } from "@/lib/types";
 
 interface Props {
@@ -29,12 +30,20 @@ function parseDate(s: string): Date {
 
 export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Props) {
   const [phases, setPhases] = useProjectPhases(initialPhases);
-  const [milestones] = useRealtime<Milestone>("coeo_milestones", initialMilestones);
-  const projectPhases = phases.filter((p) => p.project_id === projectId).sort((a, b) => a.sort_order - b.sort_order);
+  const [milestones, setMilestones] = useRealtime<Milestone>("coeo_milestones", initialMilestones);
+  const projectPhases = phases
+    .filter((p) => p.project_id === projectId)
+    .sort((a, b) => {
+      if (!a.start_date && !b.start_date) return a.sort_order - b.sort_order;
+      if (!a.start_date) return 1;
+      if (!b.start_date) return -1;
+      return a.start_date.localeCompare(b.start_date);
+    });
   const projectMilestones = milestones.filter((m) => m.project_id === projectId);
 
   const [zoom, setZoom] = useState<Zoom>("quarter");
   const [showAdd, setShowAdd] = useState(false);
+  const [showAddMilestone, setShowAddMilestone] = useState(false);
   const [editing, setEditing] = useState<ProjectPhase | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -146,6 +155,9 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
                 Month
               </ZoomPill>
             </div>
+            <Button size="sm" variant="ghost" onClick={() => setShowAddMilestone(true)}>
+              + Add milestone
+            </Button>
             <Button size="sm" onClick={() => setShowAdd(true)}>
               + Add phase
             </Button>
@@ -291,6 +303,15 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones }: Pr
         projectId={projectId}
         onClose={() => setShowAdd(false)}
         onAdd={handleAdd}
+      />
+
+      <AddMilestoneDialog
+        open={showAddMilestone}
+        projects={[{ id: projectId, name: "This project" }]}
+        defaultProjectId={projectId}
+        lockProject
+        onClose={() => setShowAddMilestone(false)}
+        onAdd={(m) => setMilestones((prev) => (prev.some((x) => x.id === m.id) ? prev : [m, ...prev]))}
       />
 
       <AddPhaseDialog
