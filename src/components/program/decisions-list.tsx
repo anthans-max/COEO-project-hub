@@ -145,7 +145,7 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
           >
             <div
               className="text-[24px] font-extrabold"
-              style={{ color: col, fontFamily: "'Georgia', serif" }}
+              style={{ color: col }}
             >
               {val}
             </div>

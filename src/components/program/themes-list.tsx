@@ -106,7 +106,7 @@ export function ThemesList({ initialThemes, initialDecisions }: Props) {
         </div>
         <p
           className="text-[16px] m-0 mb-4 leading-[1.7] max-w-[760px]"
-          style={{ color: "#e8edf4", fontFamily: "'Georgia', serif" }}
+          style={{ color: "#e8edf4" }}
         >
           To build a unified, API-first technology platform that gives Coeo customers full
           visibility and control over their services, while eliminating the fragmented internal
@@ -117,7 +117,7 @@ export function ThemesList({ initialThemes, initialDecisions }: Props) {
             <div key={lbl}>
               <div
                 className="text-[22px] font-extrabold"
-                style={{ color: "#c87d2f", fontFamily: "'Georgia', serif" }}
+                style={{ color: "#c87d2f" }}
               >
                 {val}
               </div>

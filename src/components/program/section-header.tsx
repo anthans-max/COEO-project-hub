@@ -10,10 +10,7 @@ export function SectionHeader({ label, title, subtitle }: SectionHeaderProps) {
       <div className="text-sm font-bold tracking-[0.12em] uppercase mb-[6px]" style={{ color: "#c87d2f" }}>
         {label}
       </div>
-      <h1
-        className="text-[26px] font-bold text-primary m-0 mb-2 tracking-[-0.02em]"
-        style={{ fontFamily: "'Georgia', serif" }}
-      >
+      <h1 className="text-[26px] font-bold text-primary m-0 mb-2 tracking-[-0.02em]">
         {title}
       </h1>
       {subtitle && (
