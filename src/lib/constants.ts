@@ -54,6 +54,18 @@ export const VENDOR_STATUSES = [
   "Former",
 ] as const;
 
+export const DECISION_STATUSES = ["open", "in_progress", "resolved"] as const;
+export type DecisionStatus = (typeof DECISION_STATUSES)[number];
+
+export const DECISION_STATUS_LABELS: Record<DecisionStatus, string> = {
+  open: "Open",
+  in_progress: "In Progress",
+  resolved: "Resolved",
+};
+
+export const BUDGET_CATEGORIES = ["phase", "workstream"] as const;
+export type BudgetCategory = (typeof BUDGET_CATEGORIES)[number];
+
 // Maps status strings to badge color variants
 export const STATUS_BADGE_MAP: Record<string, string> = {
   // Project statuses
@@ -78,6 +90,10 @@ export const STATUS_BADGE_MAP: Record<string, string> = {
   // Vendor statuses
   "Evaluating": "amber",
   "Former": "gray",
+  // Program decision statuses
+  "open": "amber",
+  "in_progress": "blue",
+  "resolved": "green",
 };
 
 // Gantt bar colors by project status

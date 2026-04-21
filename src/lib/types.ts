@@ -177,3 +177,47 @@ export interface PmoTrackerRow {
   comments_updates: string | null;
   uploaded_at: string;
 }
+
+export interface ProgramTheme {
+  id: string;
+  code: string;
+  title: string;
+  icon: string | null;
+  color: string | null;
+  bg_color: string | null;
+  description: string | null;
+  workstreams: string[];
+  outcomes: string[];
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProgramDecision {
+  id: string;
+  code: string;
+  title: string;
+  detail: string | null;
+  impact: string | null;
+  owner: string | null;
+  target_quarter: string | null;
+  theme_codes: string[];
+  status: "open" | "in_progress" | "resolved";
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProgramBudgetRow {
+  id: string;
+  category: "phase" | "workstream";
+  name: string;
+  vendor: string | null;
+  phase: string | null;
+  target_dates: string | null;
+  estimated_cost: string | null;
+  notes: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
