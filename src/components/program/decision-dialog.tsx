@@ -22,7 +22,7 @@ type FormState = {
   detail: string;
   impact: string;
   owner: string;
-  target_quarter: string;
+  target_month: string;
   theme_codes: string[];
   status: ProgramDecision["status"];
   sort_order: number;
@@ -34,7 +34,7 @@ const blank: FormState = {
   detail: "",
   impact: "",
   owner: "",
-  target_quarter: "Q2 2026",
+  target_month: "May 2026",
   theme_codes: [],
   status: "open",
   sort_order: 0,
@@ -61,7 +61,7 @@ export function DecisionDialog({
         detail: decision.detail ?? "",
         impact: decision.impact ?? "",
         owner: decision.owner ?? "",
-        target_quarter: decision.target_quarter ?? "",
+        target_month: decision.target_month ?? "",
         theme_codes: decision.theme_codes,
         status: decision.status,
         sort_order: decision.sort_order,
@@ -96,7 +96,7 @@ export function DecisionDialog({
       detail: form.detail.trim() || null,
       impact: form.impact.trim() || null,
       owner: form.owner.trim() || null,
-      target_quarter: form.target_quarter.trim() || null,
+      target_month: form.target_month.trim() || null,
       theme_codes: form.theme_codes,
       status: form.status,
       sort_order: Number(form.sort_order) || 0,
@@ -216,13 +216,13 @@ export function DecisionDialog({
             </div>
             <div>
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">
-                Target quarter
+                Target month
               </label>
               <input
                 type="text"
-                value={form.target_quarter}
-                onChange={(e) => set("target_quarter", e.target.value)}
-                placeholder="Q2 2026"
+                value={form.target_month}
+                onChange={(e) => set("target_month", e.target.value)}
+                placeholder="May 2026"
                 className={inputClass}
               />
             </div>

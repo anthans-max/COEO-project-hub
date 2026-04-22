@@ -132,7 +132,7 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
             className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
             style={{ color: "#8a9ab5" }}
           >
-            Target
+            Target month
           </div>
           <div
             className="text-sm font-bold inline-block rounded-[4px]"
@@ -142,7 +142,7 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
               padding: "3px 8px",
             }}
           >
-            {decision.target_quarter ?? "—"}
+            {decision.target_month ?? "—"}
           </div>
         </div>
       </div>

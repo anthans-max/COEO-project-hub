@@ -66,7 +66,7 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
       "Owner: Business",
       "#1a6b5c",
     ],
-    ["Q2 2026", "Target Quarter", "#c87d2f"],
+    ["Q2 2026", "Target Month", "#c87d2f"],
   ];
 
   const sortedThemes = useMemo(

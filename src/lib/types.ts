@@ -200,7 +200,7 @@ export interface ProgramDecision {
   detail: string | null;
   impact: string | null;
   owner: string | null;
-  target_quarter: string | null;
+  target_month: string | null;
   theme_codes: string[];
   status: "open" | "in_progress" | "resolved";
   sort_order: number;
