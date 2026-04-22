@@ -155,7 +155,6 @@ export function ThemesList({
     [String(themes.length), "Strategic Themes"],
     ["3", "Core Workstreams"],
     [String(openDecisionCount), "Open Decisions"],
-    ["Q3 2026", "Phase 1 Target"],
   ];
 
   return (
