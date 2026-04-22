@@ -209,6 +209,20 @@ export interface ProgramDecision {
   updated_at: string;
 }
 
+export interface ArchitectureLayer {
+  id: string;
+  layer_id: string;
+  label: string;
+  color: string;
+  bg_color: string;
+  modules: string[];
+  note: string | null;
+  decision_codes: string[];
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ProgramBudgetRow {
   id: string;
   category: "phase" | "workstream";
