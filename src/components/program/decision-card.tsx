@@ -53,7 +53,7 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
 
       <div
         className="grid gap-4 items-start"
-        style={{ gridTemplateColumns: "80px 1fr 180px 140px" }}
+        style={{ gridTemplateColumns: "80px 1fr 160px 110px 160px 120px" }}
       >
         <div>
           <div
@@ -91,57 +91,23 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
           )}
         </div>
         <div>
-          {decision.source_project.length > 0 && (
-            <div className="mb-3">
-              <div
-                className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
-                style={{ color: "#8a9ab5" }}
-              >
-                Source project
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {decision.source_project.map((name) => (
-                  <SourceProjectTag key={name} name={name} />
-                ))}
-              </div>
-            </div>
-          )}
           <div
             className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
             style={{ color: "#8a9ab5" }}
           >
-            Owner
+            Source project
           </div>
-          <div className="text-base leading-[1.5]" style={{ color: "#3a4a5e" }}>
-            {decision.owner ?? "—"}
-          </div>
-          <div className="mt-3">
-            <div
-              className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
-              style={{ color: "#8a9ab5" }}
-            >
-              Status
-            </div>
-            <select
-              value={decision.status}
-              onChange={(e) =>
-                onStatusChange(e.target.value as ProgramDecision["status"])
-              }
-              className="text-sm font-bold rounded-[4px] outline-none cursor-pointer"
-              style={{
-                background: statusStyle.bg,
-                color: statusStyle.color,
-                border: `1px solid ${statusStyle.border}`,
-                padding: "3px 8px",
-              }}
-            >
-              {DECISION_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {DECISION_STATUS_LABELS[s]}
-                </option>
+          {decision.source_project.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {decision.source_project.map((name) => (
+                <SourceProjectTag key={name} name={name} />
               ))}
-            </select>
-          </div>
+            </div>
+          ) : (
+            <div className="text-base leading-[1.5]" style={{ color: "#3a4a5e" }}>
+              —
+            </div>
+          )}
         </div>
         <div>
           <div
@@ -160,6 +126,44 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
           >
             {decision.target_month ?? "—"}
           </div>
+        </div>
+        <div>
+          <div
+            className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
+            style={{ color: "#8a9ab5" }}
+          >
+            Owner
+          </div>
+          <div className="text-base leading-[1.5]" style={{ color: "#3a4a5e" }}>
+            {decision.owner ?? "—"}
+          </div>
+        </div>
+        <div>
+          <div
+            className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
+            style={{ color: "#8a9ab5" }}
+          >
+            Status
+          </div>
+          <select
+            value={decision.status}
+            onChange={(e) =>
+              onStatusChange(e.target.value as ProgramDecision["status"])
+            }
+            className="text-sm font-bold rounded-[4px] outline-none cursor-pointer"
+            style={{
+              background: statusStyle.bg,
+              color: statusStyle.color,
+              border: `1px solid ${statusStyle.border}`,
+              padding: "3px 8px",
+            }}
+          >
+            {DECISION_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {DECISION_STATUS_LABELS[s]}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
