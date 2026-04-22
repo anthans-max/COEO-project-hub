@@ -114,7 +114,7 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
             className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
             style={{ color: "#8a9ab5" }}
           >
-            Target month
+            Target timeframe
           </div>
           <div
             className="text-sm font-bold inline-block rounded-[4px]"

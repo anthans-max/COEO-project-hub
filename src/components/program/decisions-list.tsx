@@ -44,29 +44,16 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
       ? 1
       : Math.max(...decisions.map((d) => d.sort_order)) + 1;
 
-  const ownerCount = (match: (owner: string | null) => boolean) =>
-    decisions.filter((d) => match(d.owner)).length;
+  const primaryOwner = (owner: string | null) =>
+    (owner ?? "").split("/")[0].trim().toLowerCase();
+  const itCount = decisions.filter((d) => primaryOwner(d.owner) === "coeo it")
+    .length;
+  const businessCount = decisions.length - itCount;
 
   const summaryStats: [string, string, string][] = [
     [String(decisions.length), "Total Decisions", "#0f2744"],
-    [
-      String(ownerCount((o) => (o ?? "").toLowerCase().includes("coeo it"))),
-      "Owner: Coeo IT",
-      "#1e4d8c",
-    ],
-    [
-      String(
-        ownerCount(
-          (o) =>
-            !!o &&
-            (o.toLowerCase().includes("business") ||
-              o.toLowerCase().includes("sales"))
-        )
-      ),
-      "Owner: Business",
-      "#1a6b5c",
-    ],
-    ["Q2 2026", "Target Month", "#c87d2f"],
+    [String(itCount), "Owner: Coeo IT", "#1e4d8c"],
+    [String(businessCount), "Owner: Business", "#1a6b5c"],
   ];
 
   const sortedThemes = useMemo(
@@ -131,7 +118,7 @@ export function DecisionsList({ initialDecisions, initialThemes }: Props) {
 
       <div
         className="grid gap-3 mb-7"
-        style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+        style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
       >
         {summaryStats.map(([val, lbl, col]) => (
           <div

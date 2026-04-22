@@ -229,7 +229,7 @@ export function DecisionDialog({
             </div>
             <div>
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">
-                Target month
+                Target timeframe
               </label>
               <input
                 type="text"
