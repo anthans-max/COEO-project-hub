@@ -89,15 +89,23 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
               ))}
             </div>
           )}
-          {decision.source_project.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1">
-              {decision.source_project.map((name) => (
-                <SourceProjectTag key={name} name={name} />
-              ))}
-            </div>
-          )}
         </div>
         <div>
+          {decision.source_project.length > 0 && (
+            <div className="mb-3">
+              <div
+                className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
+                style={{ color: "#8a9ab5" }}
+              >
+                Source project
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {decision.source_project.map((name) => (
+                  <SourceProjectTag key={name} name={name} />
+                ))}
+              </div>
+            </div>
+          )}
           <div
             className="text-sm tracking-[0.06em] font-bold uppercase mb-[3px]"
             style={{ color: "#8a9ab5" }}
