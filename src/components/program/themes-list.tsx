@@ -118,8 +118,6 @@ export function ThemesList({
     [themes]
   );
 
-  const openDecisionCount = decisions.filter((d) => d.status === "open").length;
-
   const nextSortOrder =
     themes.length === 0 ? 1 : Math.max(...themes.map((t) => t.sort_order)) + 1;
 
@@ -153,8 +151,6 @@ export function ThemesList({
 
   const visionStats: [string, string][] = [
     [String(themes.length), "Strategic Themes"],
-    ["3", "Core Workstreams"],
-    [String(openDecisionCount), "Open Decisions"],
   ];
 
   return (
