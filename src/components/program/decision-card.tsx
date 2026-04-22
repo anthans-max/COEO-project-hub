@@ -3,6 +3,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { DECISION_STATUSES, DECISION_STATUS_LABELS } from "@/lib/constants";
 import { ThemeTag } from "./theme-tag";
+import { SourceProjectTag } from "./source-project-tag";
 import type { ProgramDecision, ProgramTheme } from "@/lib/types";
 
 interface Props {
@@ -85,6 +86,13 @@ export function DecisionCard({ decision, themes, onStatusChange, onEdit, onDelet
             <div className="flex flex-wrap gap-1">
               {decision.theme_codes.map((code) => (
                 <ThemeTag key={code} code={code} themes={themes} />
+              ))}
+            </div>
+          )}
+          {decision.source_project.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {decision.source_project.map((name) => (
+                <SourceProjectTag key={name} name={name} />
               ))}
             </div>
           )}

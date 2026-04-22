@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
-import { DECISION_STATUSES, DECISION_STATUS_LABELS } from "@/lib/constants";
+import { DECISION_STATUSES, DECISION_STATUS_LABELS, SOURCE_PROJECTS } from "@/lib/constants";
 import type { ProgramDecision, ProgramTheme } from "@/lib/types";
 
 interface Props {
@@ -24,6 +24,7 @@ type FormState = {
   owner: string;
   target_month: string;
   theme_codes: string[];
+  source_project: string[];
   status: ProgramDecision["status"];
   sort_order: number;
 };
@@ -36,6 +37,7 @@ const blank: FormState = {
   owner: "",
   target_month: "May 2026",
   theme_codes: [],
+  source_project: [],
   status: "open",
   sort_order: 0,
 };
@@ -63,6 +65,7 @@ export function DecisionDialog({
         owner: decision.owner ?? "",
         target_month: decision.target_month ?? "",
         theme_codes: decision.theme_codes,
+        source_project: decision.source_project,
         status: decision.status,
         sort_order: decision.sort_order,
       });
@@ -85,6 +88,15 @@ export function DecisionDialog({
     }));
   };
 
+  const toggleSourceProject = (name: string) => {
+    setForm((prev) => ({
+      ...prev,
+      source_project: prev.source_project.includes(name)
+        ? prev.source_project.filter((p) => p !== name)
+        : [...prev.source_project, name],
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.code.trim() || !form.title.trim()) return;
@@ -98,6 +110,7 @@ export function DecisionDialog({
       owner: form.owner.trim() || null,
       target_month: form.target_month.trim() || null,
       theme_codes: form.theme_codes,
+      source_project: form.source_project,
       status: form.status,
       sort_order: Number(form.sort_order) || 0,
     };
@@ -257,6 +270,28 @@ export function DecisionDialog({
                 onChange={(e) => set("sort_order", Number(e.target.value))}
                 className={inputClass}
               />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-2 block">
+              Source project
+            </label>
+            <div className="flex flex-col gap-[6px] max-h-[180px] overflow-y-auto pr-2">
+              {SOURCE_PROJECTS.map((name) => (
+                <label
+                  key={name}
+                  className="flex items-center gap-2 text-[14px] text-primary cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.source_project.includes(name)}
+                    onChange={() => toggleSourceProject(name)}
+                    className="accent-primary"
+                  />
+                  <span>{name}</span>
+                </label>
+              ))}
             </div>
           </div>
 

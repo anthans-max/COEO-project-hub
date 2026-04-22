@@ -66,6 +66,16 @@ export const DECISION_STATUS_LABELS: Record<DecisionStatus, string> = {
 export const BUDGET_CATEGORIES = ["phase", "workstream"] as const;
 export type BudgetCategory = (typeof BUDGET_CATEGORIES)[number];
 
+export const SOURCE_PROJECTS = [
+  "Customer Portal",
+  "Salesforce Discovery",
+  "Salesforce Maintenance",
+  "Data Warehouse",
+  "Enterprise Middleware",
+  "Operational State Consolidation",
+  "Provisioning Portal",
+] as const;
+
 // Maps status strings to badge color variants
 export const STATUS_BADGE_MAP: Record<string, string> = {
   // Project statuses

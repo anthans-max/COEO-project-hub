@@ -202,6 +202,7 @@ export interface ProgramDecision {
   owner: string | null;
   target_month: string | null;
   theme_codes: string[];
+  source_project: string[];
   status: "open" | "in_progress" | "resolved";
   sort_order: number;
   created_at: string;
