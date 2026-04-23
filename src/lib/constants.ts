@@ -66,6 +66,23 @@ export const DECISION_STATUS_LABELS: Record<DecisionStatus, string> = {
 export const BUDGET_CATEGORIES = ["phase", "workstream"] as const;
 export type BudgetCategory = (typeof BUDGET_CATEGORIES)[number];
 
+export const AI_MATURITIES = ["exploratory", "planned", "pilot", "live"] as const;
+export type AiMaturity = (typeof AI_MATURITIES)[number];
+
+export const AI_MATURITY_LABELS: Record<AiMaturity, string> = {
+  exploratory: "Exploratory",
+  planned: "Planned",
+  pilot: "Pilot",
+  live: "Live",
+};
+
+export const AI_MATURITY_BADGE_VARIANT: Record<AiMaturity, string> = {
+  exploratory: "blue",
+  planned: "gray",
+  pilot: "amber",
+  live: "green",
+};
+
 export const SOURCE_PROJECTS = [
   "Customer Portal",
   "Salesforce Discovery",

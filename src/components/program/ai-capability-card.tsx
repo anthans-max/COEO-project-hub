@@ -1,57 +1,91 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ThemeTag } from "./theme-tag";
 import {
-  MATURITY_BADGE_VARIANT,
-  MATURITY_LABEL,
-  type AiCapability,
-} from "@/lib/data/ai-capabilities";
-import type { ArchitectureLayer, ProgramTheme } from "@/lib/types";
+  AI_MATURITY_BADGE_VARIANT,
+  AI_MATURITY_LABELS,
+} from "@/lib/constants";
+import type { AiCapability, ArchitectureLayer, ProgramTheme } from "@/lib/types";
 
 interface Props {
   capability: AiCapability;
   themes: ProgramTheme[];
   layers: ArchitectureLayer[];
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-export function AiCapabilityCard({ capability, themes, layers }: Props) {
-  const matchedLayers = (capability.architecture_layers ?? [])
+export function AiCapabilityCard({
+  capability,
+  themes,
+  layers,
+  onEdit,
+  onDelete,
+}: Props) {
+  const matchedLayers = capability.architecture_layers
     .map((id) => layers.find((l) => l.layer_id === id))
     .filter((l): l is ArchitectureLayer => !!l);
 
   return (
     <div
-      className="bg-white rounded-card h-full flex flex-col"
+      className="bg-white rounded-card h-full flex flex-col group relative"
       style={{
         border: "1px solid #e8ecf2",
         padding: "18px 20px",
         boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
       }}
     >
-      <div className="flex items-start justify-between gap-3 mb-2">
+      <div
+        className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onEdit}
+          className="text-[10px] font-medium text-white bg-primary px-2 py-[3px] rounded-pill hover:bg-primary/90 flex items-center gap-1"
+          title="Edit capability"
+        >
+          <Pencil size={10} />
+          Edit
+        </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="text-[10px] font-medium text-white bg-destructive px-2 py-[3px] rounded-pill hover:bg-destructive/90 flex items-center gap-1"
+          title="Delete capability"
+        >
+          <Trash2 size={10} />
+          Delete
+        </button>
+      </div>
+
+      <div className="flex items-start justify-between gap-3 mb-2 pr-[110px]">
         <div className="text-[15px] font-bold text-primary leading-[1.35]">
           {capability.title}
         </div>
         <Badge
-          status={MATURITY_LABEL[capability.maturity]}
-          variant={MATURITY_BADGE_VARIANT[capability.maturity]}
+          status={AI_MATURITY_LABELS[capability.maturity]}
+          variant={AI_MATURITY_BADGE_VARIANT[capability.maturity]}
         />
       </div>
 
-      <p
-        className="text-sm m-0 leading-[1.6] flex-1"
-        style={{ color: "#3a4a5e" }}
-      >
-        {capability.description}
-      </p>
+      {capability.description && (
+        <p
+          className="text-sm m-0 leading-[1.6] flex-1"
+          style={{ color: "#3a4a5e" }}
+        >
+          {capability.description}
+        </p>
+      )}
 
-      {(capability.dependencies?.length || matchedLayers.length > 0) && (
+      {(capability.dependencies.length > 0 || matchedLayers.length > 0) && (
         <div
           className="mt-4 pt-3 flex flex-col gap-2"
           style={{ borderTop: "1px solid #f0f2f6" }}
         >
-          {capability.dependencies && capability.dependencies.length > 0 && (
+          {capability.dependencies.length > 0 && (
             <div className="flex items-center gap-2 flex-wrap">
               <span
                 className="text-[11px] font-bold tracking-[0.08em] uppercase"

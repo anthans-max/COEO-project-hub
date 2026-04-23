@@ -244,3 +244,16 @@ export interface ProgramSetting {
   created_at: string;
   updated_at: string;
 }
+
+export interface AiCapability {
+  id: string;
+  title: string;
+  description: string | null;
+  theme_code: string;
+  maturity: "exploratory" | "planned" | "pilot" | "live";
+  dependencies: string[];
+  architecture_layers: string[];
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}

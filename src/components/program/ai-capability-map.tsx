@@ -1,22 +1,30 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRealtime } from "@/lib/hooks/use-realtime";
+import { createClient } from "@/lib/supabase/browser";
+import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { SectionHeader } from "./section-header";
 import { AiCapabilityCard } from "./ai-capability-card";
-import type { AiCapability } from "@/lib/data/ai-capabilities";
-import type { ArchitectureLayer, ProgramTheme } from "@/lib/types";
+import { AiCapabilityDialog } from "./ai-capability-dialog";
+import type {
+  AiCapability,
+  ArchitectureLayer,
+  ProgramTheme,
+} from "@/lib/types";
 
 interface Props {
   initialThemes: ProgramTheme[];
   initialLayers: ArchitectureLayer[];
-  capabilities: AiCapability[];
+  initialCapabilities: AiCapability[];
 }
 
 export function AiCapabilityMap({
   initialThemes,
   initialLayers,
-  capabilities,
+  initialCapabilities,
 }: Props) {
   const [themes] = useRealtime<ProgramTheme>(
     "coeo_program_themes",
@@ -26,6 +34,16 @@ export function AiCapabilityMap({
     "coeo_architecture_layers",
     initialLayers
   );
+  const [capabilities, setCapabilities] = useRealtime<AiCapability>(
+    "coeo_ai_capabilities",
+    initialCapabilities
+  );
+  const [showAdd, setShowAdd] = useState(false);
+  const [editCapability, setEditCapability] = useState<AiCapability | null>(
+    null
+  );
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const toast = useToast();
 
   const sortedThemes = useMemo(
     () => [...themes].sort((a, b) => a.sort_order - b.sort_order),
@@ -34,11 +52,45 @@ export function AiCapabilityMap({
 
   const capabilitiesByTheme = useMemo(() => {
     const map: Record<string, AiCapability[]> = {};
-    for (const cap of capabilities) {
+    for (const cap of [...capabilities].sort(
+      (a, b) => a.sort_order - b.sort_order
+    )) {
       (map[cap.theme_code] ??= []).push(cap);
     }
     return map;
   }, [capabilities]);
+
+  const nextSortOrder =
+    capabilities.length === 0
+      ? 1
+      : Math.max(...capabilities.map((c) => c.sort_order)) + 1;
+
+  const handleSave = (capability: AiCapability) => {
+    setCapabilities((prev) => {
+      const idx = prev.findIndex((c) => c.id === capability.id);
+      if (idx === -1) return [...prev, capability];
+      const next = [...prev];
+      next[idx] = capability;
+      return next;
+    });
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const original = capabilities.find((c) => c.id === deleteId);
+    setCapabilities((prev) => prev.filter((c) => c.id !== deleteId));
+    setDeleteId(null);
+
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("coeo_ai_capabilities")
+      .delete()
+      .eq("id", deleteId);
+    if (error) {
+      if (original) setCapabilities((prev) => [...prev, original]);
+      toast.error("Failed to delete capability");
+    }
+  };
 
   return (
     <>
@@ -47,6 +99,10 @@ export function AiCapabilityMap({
         title="AI Capability Map"
         subtitle="Where AI adds value against each strategic theme. Capabilities are illustrative of direction, not a committed delivery backlog — use them to frame conversations about where AI investment pays off soonest."
       />
+
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setShowAdd(true)}>+ Add capability</Button>
+      </div>
 
       <div className="flex flex-col gap-8">
         {sortedThemes.map((theme) => {
@@ -90,6 +146,8 @@ export function AiCapabilityMap({
                       capability={cap}
                       themes={themes}
                       layers={layers}
+                      onEdit={() => setEditCapability(cap)}
+                      onDelete={() => setDeleteId(cap.id)}
                     />
                   ))}
                 </div>
@@ -132,12 +190,40 @@ export function AiCapabilityMap({
         </div>
         <p className="text-base m-0 leading-[1.6]" style={{ color: "#5a6a7e" }}>
           Each capability is tagged with a maturity signal and, where relevant, the themes it
-          depends on and the architecture layers it sits in. T-03 and T-04 capabilities are the
-          furthest along conceptually because the underlying workstreams are already in motion;
-          most others remain exploratory until the data quality and integration foundations (T-01,
-          T-02) mature.
+          depends on and the architecture layers it sits in. Maturity reflects where a capability
+          sits today — most will remain exploratory until the data quality and integration
+          foundations (T-01, T-02) mature and business sponsors for individual capabilities are
+          confirmed.
         </p>
       </div>
+
+      <AiCapabilityDialog
+        open={showAdd}
+        capability={null}
+        themes={themes}
+        layers={layers}
+        onClose={() => setShowAdd(false)}
+        onSave={handleSave}
+        nextSortOrder={nextSortOrder}
+      />
+
+      <AiCapabilityDialog
+        open={!!editCapability}
+        capability={editCapability}
+        themes={themes}
+        layers={layers}
+        onClose={() => setEditCapability(null)}
+        onSave={handleSave}
+        nextSortOrder={nextSortOrder}
+      />
+
+      <ConfirmDialog
+        open={!!deleteId}
+        title="Delete capability"
+        message="This will permanently remove it from the AI Capability Map. This cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteId(null)}
+      />
     </>
   );
 }
