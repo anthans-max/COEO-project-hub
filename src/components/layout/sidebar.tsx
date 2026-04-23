@@ -9,6 +9,7 @@ import {
   Flag,
   CheckSquare,
   Target,
+  Sparkles,
   Layers,
   GitPullRequestArrow,
   PoundSterling,
@@ -43,6 +44,7 @@ const navSections = [
       { name: "Architecture", href: "/program/architecture", icon: Layers },
       { name: "Decisions", href: "/program/decisions", icon: GitPullRequestArrow },
       { name: "Budget", href: "/program/budget", icon: PoundSterling },
+      { name: "AI Capability Map", href: "/program/ai-capabilities", icon: Sparkles },
     ],
   },
   {
