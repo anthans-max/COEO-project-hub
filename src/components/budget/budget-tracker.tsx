@@ -29,7 +29,15 @@ const moneyFmt = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
+const moneyFmtPrecise = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 const formatMoney = (n: number) => moneyFmt.format(n);
+const formatMoneyPrecise = (n: number) => moneyFmtPrecise.format(n);
 
 const ymKey = (y: number, m: number) => y * 100 + m;
 
@@ -41,6 +49,7 @@ export function BudgetTracker({ projectId, budgetAmount, initialEntries }: Props
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetDraft, setBudgetDraft] = useState(budgetAmount != null ? String(budgetAmount) : "");
 
+  const [expanded, setExpanded] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [addDefaults, setAddDefaults] = useState<{
     entry_type?: BudgetEntryType;
@@ -141,17 +150,23 @@ export function BudgetTracker({ projectId, budgetAmount, initialEntries }: Props
     }
   };
 
+  const tileBase = "border border-border rounded-card bg-white px-3 py-2 min-w-[160px]";
+  const tileLabel = "text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-1";
+  const tileValue = "text-[18px] font-semibold text-text-primary leading-tight";
+
   return (
     <>
-      <Card className="p-4 mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-1">Budget</div>
-            {editingBudget ? (
-              <div className="flex items-center gap-2">
+      <div className="flex flex-wrap gap-3 mb-3">
+        <div className={tileBase}>
+          <div className={tileLabel}>Budget</div>
+          {editingBudget ? (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center border border-border rounded-card focus-within:border-accent">
+                <span className="pl-2 text-text-muted text-[15px]">$</span>
                 <input
                   type="number"
                   step="0.01"
+                  min="0"
                   autoFocus
                   value={budgetDraft}
                   onChange={(e) => setBudgetDraft(e.target.value)}
@@ -159,52 +174,66 @@ export function BudgetTracker({ projectId, budgetAmount, initialEntries }: Props
                     if (e.key === "Enter") saveBudget();
                     if (e.key === "Escape") cancelBudgetEdit();
                   }}
-                  className="border border-border rounded-card px-2 py-1 text-[15px] outline-none focus:border-accent w-28"
+                  className="px-2 py-1 text-[15px] outline-none w-24 bg-transparent"
                 />
-                <Button size="sm" onClick={saveBudget}>Save</Button>
-                <Button size="sm" variant="ghost" onClick={cancelBudgetEdit}>Cancel</Button>
               </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="text-[20px] font-semibold text-text-primary">
-                  {budget != null ? formatMoney(budget) : "—"}
-                </div>
-                <button
-                  type="button"
-                  onClick={startBudgetEdit}
-                  aria-label="Edit budget"
-                  className="text-text-muted hover:text-primary text-[12px]"
-                >
-                  ✎
-                </button>
-              </div>
-            )}
-          </div>
-          <div>
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-1">Actuals to date</div>
-            <div className="text-[20px] font-semibold text-text-primary">{formatMoney(actualsToDate)}</div>
-          </div>
-          <div>
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-1">Forecast remaining</div>
-            <div className="text-[20px] font-semibold text-text-primary">{formatMoney(forecastRemaining)}</div>
-          </div>
-          <div>
-            <div className="text-[10px] font-semibold text-text-secondary tracking-[0.1em] uppercase mb-1">Variance</div>
-            <div
-              className={`text-[20px] font-semibold ${
-                variance >= 0 ? "text-badge-green-text" : "text-badge-red-text"
-              }`}
-            >
-              {formatMoney(variance)}
+              <Button size="sm" onClick={saveBudget}>Save</Button>
+              <Button size="sm" variant="ghost" onClick={cancelBudgetEdit}>Cancel</Button>
             </div>
+          ) : budget != null ? (
+            <div className="flex items-center gap-2">
+              <div className={tileValue}>{formatMoneyPrecise(budget)}</div>
+              <button
+                type="button"
+                onClick={startBudgetEdit}
+                aria-label="Edit budget"
+                className="text-text-muted hover:text-primary text-[12px]"
+              >
+                ✎
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={startBudgetEdit}
+              className="text-[15px] text-accent hover:underline underline-offset-2 font-medium"
+            >
+              Set budget
+            </button>
+          )}
+        </div>
+        <div className={tileBase}>
+          <div className={tileLabel}>Actuals to date</div>
+          <div className={tileValue}>{formatMoney(actualsToDate)}</div>
+        </div>
+        <div className={tileBase}>
+          <div className={tileLabel}>Forecast remaining</div>
+          <div className={tileValue}>{formatMoney(forecastRemaining)}</div>
+        </div>
+        <div className={tileBase}>
+          <div className={tileLabel}>Variance</div>
+          <div
+            className={`${tileValue} ${
+              variance >= 0 ? "text-badge-green-text" : "text-badge-red-text"
+            }`}
+          >
+            {formatMoney(variance)}
           </div>
         </div>
-      </Card>
-
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => openAdd()}>+ Add entry</Button>
       </div>
 
+      <div className="flex items-center justify-between mb-3">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="text-[13px] font-medium text-text-secondary hover:text-primary"
+        >
+          {expanded ? "Hide breakdown ▴" : "Show monthly breakdown ▾"}
+        </button>
+        {expanded && <Button onClick={() => openAdd()}>+ Add entry</Button>}
+      </div>
+
+      {expanded && (
       <Card>
         <table className="w-full text-[13px]">
           <thead>
@@ -265,6 +294,7 @@ export function BudgetTracker({ projectId, budgetAmount, initialEntries }: Props
           </tbody>
         </table>
       </Card>
+      )}
 
       <AddBudgetEntryDialog
         open={showAdd}

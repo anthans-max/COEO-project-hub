@@ -75,19 +75,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           people={people}
         />
 
-        <section className="mb-6">
-          <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border">
-            <span className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
-              Budget
-            </span>
-          </div>
-          <BudgetTracker
-            projectId={project.id}
-            budgetAmount={project.budget_amount}
-            initialEntries={budgetEntries}
-          />
-        </section>
-
         {isPmoProject && (
           <section className="mb-6">
             <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border">
@@ -129,6 +116,19 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </span>
           </div>
           <DocsList projectId={project.id} initialData={docs} />
+        </section>
+
+        <section className="mt-6">
+          <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border">
+            <span className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+              Budget
+            </span>
+          </div>
+          <BudgetTracker
+            projectId={project.id}
+            budgetAmount={project.budget_amount}
+            initialEntries={budgetEntries}
+          />
         </section>
       </div>
     </>
