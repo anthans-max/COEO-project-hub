@@ -27,6 +27,7 @@ export function AddBudgetEntryDialog({ open, projectId, defaults, onClose, onAdd
     period_year: String(defaults?.period_year ?? today.getFullYear()),
     period_month: String(defaults?.period_month ?? today.getMonth() + 1),
     amount: "",
+    description: "",
     notes: "",
   });
   const [saving, setSaving] = useState(false);
@@ -40,6 +41,7 @@ export function AddBudgetEntryDialog({ open, projectId, defaults, onClose, onAdd
       period_year: String(today.getFullYear()),
       period_month: String(today.getMonth() + 1),
       amount: "",
+      description: "",
       notes: "",
     });
 
@@ -62,6 +64,7 @@ export function AddBudgetEntryDialog({ open, projectId, defaults, onClose, onAdd
         period_year: year,
         period_month: month,
         amount,
+        description: form.description.trim() || null,
         notes: form.notes.trim() || null,
       })
       .select()
@@ -141,6 +144,16 @@ export function AddBudgetEntryDialog({ open, projectId, defaults, onClose, onAdd
               className={input}
               placeholder="0.00"
               autoFocus
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Description</label>
+            <input
+              type="text"
+              value={form.description}
+              onChange={(e) => set("description", e.target.value)}
+              className={input}
+              placeholder="e.g. Vendor invoice for discovery services"
             />
           </div>
           <div>

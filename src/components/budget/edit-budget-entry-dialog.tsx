@@ -25,6 +25,7 @@ export function EditBudgetEntryDialog({ entry, onClose, onSave, onDelete }: Prop
     period_year: "",
     period_month: "",
     amount: "",
+    description: "",
     notes: "",
   });
   const [saving, setSaving] = useState(false);
@@ -37,6 +38,7 @@ export function EditBudgetEntryDialog({ entry, onClose, onSave, onDelete }: Prop
         period_year: String(entry.period_year),
         period_month: String(entry.period_month),
         amount: String(entry.amount ?? ""),
+        description: entry.description ?? "",
         notes: entry.notes ?? "",
       });
     }
@@ -60,6 +62,7 @@ export function EditBudgetEntryDialog({ entry, onClose, onSave, onDelete }: Prop
       period_year: year,
       period_month: month,
       amount,
+      description: form.description.trim() || null,
       notes: form.notes.trim() || null,
     };
     const updated: BudgetEntry = { ...entry, ...payload };
@@ -141,6 +144,16 @@ export function EditBudgetEntryDialog({ entry, onClose, onSave, onDelete }: Prop
               value={form.amount}
               onChange={(e) => set("amount", e.target.value)}
               className={input}
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Description</label>
+            <input
+              type="text"
+              value={form.description}
+              onChange={(e) => set("description", e.target.value)}
+              className={input}
+              placeholder="e.g. Vendor invoice for discovery services"
             />
           </div>
           <div>

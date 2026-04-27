@@ -23,6 +23,7 @@ export interface BudgetEntry {
   period_year: number;
   period_month: number;
   amount: number;
+  description: string | null;
   notes: string | null;
   created_at: string;
 }

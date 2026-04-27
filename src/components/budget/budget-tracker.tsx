@@ -239,6 +239,7 @@ export function BudgetTracker({ projectId, budgetAmount, initialEntries }: Props
           <thead>
             <tr className="bg-cream text-text-secondary border-b border-border">
               <th className="px-4 py-2 text-left font-semibold tracking-[0.07em] uppercase text-[10px]">Month</th>
+              <th className="px-4 py-2 text-left font-semibold tracking-[0.07em] uppercase text-[10px]">Description</th>
               <th className="px-4 py-2 text-right font-semibold tracking-[0.07em] uppercase text-[10px]">Actual</th>
               <th className="px-4 py-2 text-right font-semibold tracking-[0.07em] uppercase text-[10px]">Forecast</th>
               <th className="px-4 py-2 text-right font-semibold tracking-[0.07em] uppercase text-[10px]">Variance</th>
@@ -252,10 +253,26 @@ export function BudgetTracker({ projectId, budgetAmount, initialEntries }: Props
                 actualAmt != null || forecastAmt != null
                   ? (actualAmt ?? 0) - (forecastAmt ?? 0)
                   : null;
+              const actualDesc = row.actual?.description?.trim() || null;
+              const forecastDesc = row.forecast?.description?.trim() || null;
               return (
                 <tr key={`${row.year}-${row.month}`} className="border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
-                  <td className="px-4 py-2 text-text-primary">
+                  <td className="px-4 py-2 text-text-primary whitespace-nowrap">
                     {MONTHS[row.month - 1]} {row.year}
+                  </td>
+                  <td className="px-4 py-2 text-text-secondary text-[12px] max-w-[280px]">
+                    {actualDesc && forecastDesc ? (
+                      <div className="flex flex-col gap-0.5">
+                        <span><span className="text-text-muted">Actual:</span> {actualDesc}</span>
+                        <span><span className="text-text-muted">Forecast:</span> {forecastDesc}</span>
+                      </div>
+                    ) : actualDesc ? (
+                      actualDesc
+                    ) : forecastDesc ? (
+                      forecastDesc
+                    ) : (
+                      <span className="text-text-muted">—</span>
+                    )}
                   </td>
                   <td
                     className="px-4 py-2 text-right cursor-pointer text-text-primary"
