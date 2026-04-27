@@ -13,6 +13,18 @@ export interface Project {
   sort_order: number;
   created_at: string;
   updated_at: string;
+  budget_amount: number | null;
+}
+
+export interface BudgetEntry {
+  id: string;
+  project_id: string;
+  entry_type: "actual" | "forecast";
+  period_year: number;
+  period_month: number;
+  amount: number;
+  notes: string | null;
+  created_at: string;
 }
 
 export interface Milestone {
@@ -133,6 +145,9 @@ export interface Doc {
   sort_order: number;
   created_at: string;
   updated_at: string;
+  file_path: string | null;
+  file_size: number | null;
+  mime_type: string | null;
 }
 
 export interface Person {

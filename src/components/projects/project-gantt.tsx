@@ -63,7 +63,7 @@ export function ProjectGantt({ projectId, initialPhases, initialMilestones, peop
 
   const { rangeStart, rangeEnd, columns, groupHeaders } = useMemo(() => {
     // Use a deterministic anchor for SSR so server and client first render match.
-    const today = mounted ? new Date() : new Date(2026, 3, 1);
+    const today = mounted ? new Date() : new Date(new Date().getFullYear(), 0, 1);
     if (zoom === "quarter") {
       // Full calendar year of the current year: Q1–Q4, 12 month columns.
       const start = new Date(today.getFullYear(), 0, 1);

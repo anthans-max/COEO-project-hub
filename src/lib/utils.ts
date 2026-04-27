@@ -62,6 +62,19 @@ export function formatLongDate(date: string | Date | null | undefined): string {
   });
 }
 
+export function formatBytes(n: number | null | undefined): string {
+  if (n === null || n === undefined || Number.isNaN(n)) return "";
+  if (n < 1024) return `${n} B`;
+  const units = ["KB", "MB", "GB", "TB"];
+  let v = n / 1024;
+  let i = 0;
+  while (v >= 1024 && i < units.length - 1) {
+    v /= 1024;
+    i++;
+  }
+  return `${v < 10 ? v.toFixed(1) : Math.round(v)} ${units[i]}`;
+}
+
 export function formatRelativeTime(date: string | Date | null | undefined): string {
   if (!date) return "";
   const then = new Date(date).getTime();

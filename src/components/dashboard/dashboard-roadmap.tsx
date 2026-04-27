@@ -1,21 +1,6 @@
 import Link from "next/link";
+import { deriveQuarters } from "@/lib/gantt-utils";
 import type { Project, ProjectPhase, Milestone } from "@/lib/types";
-
-const quarters = [
-  { label: "Q1 2026", start: new Date("2026-01-01"), end: new Date("2026-03-31") },
-  { label: "Q2 2026", start: new Date("2026-04-01"), end: new Date("2026-06-30") },
-  { label: "Q3 2026", start: new Date("2026-07-01"), end: new Date("2026-09-30") },
-  { label: "Q4 2026", start: new Date("2026-10-01"), end: new Date("2026-12-31") },
-];
-
-const timelineStart = quarters[0].start.getTime();
-const timelineEnd = quarters[quarters.length - 1].end.getTime();
-const timelineRange = timelineEnd - timelineStart;
-
-function dateToPercent(date: string | Date): number {
-  const d = new Date(date).getTime();
-  return Math.max(0, Math.min(100, ((d - timelineStart) / timelineRange) * 100));
-}
 
 interface Props {
   projects: Project[];
@@ -24,6 +9,14 @@ interface Props {
 }
 
 export function DashboardRoadmap({ projects, phases, milestones }: Props) {
+  const quarters = deriveQuarters(projects);
+  const timelineStart = quarters[0].start.getTime();
+  const timelineEnd = quarters[quarters.length - 1].end.getTime();
+  const timelineRange = timelineEnd - timelineStart;
+  const dateToPercent = (date: string | Date): number => {
+    const d = new Date(date).getTime();
+    return Math.max(0, Math.min(100, ((d - timelineStart) / timelineRange) * 100));
+  };
   const todayPct = dateToPercent(new Date());
 
   const visibleProjects = projects.filter(
@@ -34,7 +27,7 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
     <div className="border border-border rounded-[10px] overflow-hidden bg-white">
       <div className="grid grid-cols-[130px_1fr] bg-cream border-b border-border">
         <div className="px-3 py-2 text-[12px] font-medium text-text-muted uppercase tracking-[0.05em]">Project</div>
-        <div className="grid grid-cols-4">
+        <div className="grid" style={{ gridTemplateColumns: `repeat(${quarters.length}, minmax(0, 1fr))` }}>
           {quarters.map((q, i) => (
             <div
               key={q.label}
@@ -61,8 +54,14 @@ export function DashboardRoadmap({ projects, phases, milestones }: Props) {
               {project.name}
             </div>
             <div className="relative h-[30px]">
-              {[25, 50, 75].map((left) => (
-                <div key={left} className="absolute top-0 bottom-0 w-px bg-border" style={{ left: `${left}%` }} />
+              {quarters.map((_, i) => (
+                i > 0 && (
+                  <div
+                    key={i}
+                    className="absolute top-0 bottom-0 w-px bg-border"
+                    style={{ left: `${(i / quarters.length) * 100}%` }}
+                  />
+                )
               ))}
 
               {projPhases.map((ph) => {

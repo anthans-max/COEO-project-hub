@@ -12,6 +12,7 @@ import { useProjects } from "@/lib/hooks/use-projects";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import { GANTT_BAR_COLORS } from "@/lib/constants";
+import { deriveQuarters } from "@/lib/gantt-utils";
 import type { Project, Milestone } from "@/lib/types";
 
 interface PersonOption {
@@ -27,27 +28,6 @@ interface Props {
   hideAddProject?: boolean;
 }
 
-// Quarter boundaries for 2026
-const quarters = [
-  { label: "Q1 2026", start: new Date("2026-01-01"), end: new Date("2026-03-31") },
-  { label: "Q2 2026", start: new Date("2026-04-01"), end: new Date("2026-06-30") },
-  { label: "Q3 2026", start: new Date("2026-07-01"), end: new Date("2026-09-30") },
-  { label: "Q4 2026", start: new Date("2026-10-01"), end: new Date("2026-12-31") },
-];
-
-const timelineStart = quarters[0].start.getTime();
-const timelineEnd = quarters[quarters.length - 1].end.getTime();
-const timelineRange = timelineEnd - timelineStart;
-
-function dateToPercent(date: string | Date): number {
-  const d = new Date(date).getTime();
-  return Math.max(0, Math.min(100, ((d - timelineStart) / timelineRange) * 100));
-}
-
-function todayPercent(): number {
-  return dateToPercent(new Date());
-}
-
 export function GanttChart({ initialProjects, initialMilestones, people, hideAddProject }: Props) {
   const [projects, setProjects] = useProjects(initialProjects);
   const [milestones, setMilestones] = useRealtime("coeo_milestones", initialMilestones);
@@ -61,7 +41,15 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
   const [deleteMilestoneId, setDeleteMilestoneId] = useState<string | null>(null);
   const toast = useToast();
 
-  const todayPct = todayPercent();
+  const quarters = deriveQuarters(projects);
+  const timelineStart = quarters[0].start.getTime();
+  const timelineEnd = quarters[quarters.length - 1].end.getTime();
+  const timelineRange = timelineEnd - timelineStart;
+  const dateToPercent = (date: string | Date): number => {
+    const d = new Date(date).getTime();
+    return Math.max(0, Math.min(100, ((d - timelineStart) / timelineRange) * 100));
+  };
+  const todayPct = dateToPercent(new Date());
 
   const projectOptions = projects.map((p) => ({ id: p.id, name: p.name }));
 
@@ -178,7 +166,7 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
               <div className="flex-1 relative h-[56px] flex items-center">
                 {/* Quarter dividers */}
                 {quarters.map((_, i) => (
-                  i > 0 && <div key={i} className="absolute top-0 bottom-0 border-l border-border" style={{ left: `${(i / 4) * 100}%` }} />
+                  i > 0 && <div key={i} className="absolute top-0 bottom-0 border-l border-border" style={{ left: `${(i / quarters.length) * 100}%` }} />
                 ))}
 
                 {/* Today line */}

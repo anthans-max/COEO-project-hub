@@ -31,17 +31,24 @@ export function EditDocDialog({ doc, onClose, onSave, onDelete }: Props) {
 
   if (!doc) return null;
   const set = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
+  const isUpload = doc.file_path != null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim()) return;
     setSaving(true);
-    const payload = {
-      title: form.title.trim(),
-      url: form.url.trim() || null,
-      notes: form.notes.trim() || null,
-      date: form.date || null,
-    };
+    const payload = isUpload
+      ? {
+          title: form.title.trim(),
+          notes: form.notes.trim() || null,
+          date: form.date || null,
+        }
+      : {
+          title: form.title.trim(),
+          url: form.url.trim() || null,
+          notes: form.notes.trim() || null,
+          date: form.date || null,
+        };
     const updated = { ...doc, ...payload };
     onSave(updated);
     onClose();
@@ -68,10 +75,12 @@ export function EditDocDialog({ doc, onClose, onSave, onDelete }: Props) {
             <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Title</label>
             <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} className={input} />
           </div>
-          <div>
-            <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">URL</label>
-            <input type="url" value={form.url} onChange={(e) => set("url", e.target.value)} className={input} />
-          </div>
+          {!isUpload && (
+            <div>
+              <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">URL</label>
+              <input type="url" value={form.url} onChange={(e) => set("url", e.target.value)} className={input} />
+            </div>
+          )}
           <div>
             <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Date</label>
             <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} className={input} />

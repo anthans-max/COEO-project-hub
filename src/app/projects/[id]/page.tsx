@@ -10,7 +10,9 @@ import { MeetingNotesList } from "@/components/meeting-notes/meeting-notes-list"
 import { ProjectTimelineRow } from "@/components/projects/project-timeline-row";
 import { PmoTrackerUpload } from "@/components/pmo/pmo-tracker-upload";
 import { PmoTrackerTable } from "@/components/pmo/pmo-tracker-table";
-import type { Project, Action, MeetingNote, ProjectPhase, Milestone, PmoTrackerRow } from "@/lib/types";
+import { DocsList } from "@/components/docs/docs-list";
+import { BudgetTracker } from "@/components/budget/budget-tracker";
+import type { Project, Action, MeetingNote, ProjectPhase, Milestone, PmoTrackerRow, Doc, BudgetEntry } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -20,7 +22,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes, pmoRes] = await Promise.all([
+  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes, pmoRes, docsRes, budgetRes] = await Promise.all([
     supabase.from("coeo_projects").select("*").eq("id", id).single(),
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
@@ -29,6 +31,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     supabase.from("coeo_projects").select("id, name").order("sort_order"),
     supabase.from("coeo_people").select("id, name, initials").order("name"),
     supabase.from("coeo_pmo_tracker").select("*").order("item_no"),
+    supabase.from("coeo_docs").select("*").eq("project_id", id).order("date", { ascending: false }),
+    supabase.from("coeo_budget_entries").select("*").eq("project_id", id).order("period_year").order("period_month"),
   ]);
 
   const project = projectRes.data as Project | null;
@@ -41,6 +45,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const allProjects = (allProjectsRes.data ?? []) as { id: string; name: string }[];
   const people = (peopleRes.data ?? []) as { id: string; name: string; initials: string | null }[];
   const pmoRows = (pmoRes.data ?? []) as PmoTrackerRow[];
+  const docs = (docsRes.data ?? []) as Doc[];
+  const budgetEntries = (budgetRes.data ?? []) as BudgetEntry[];
   const isPmoProject = project.name === "PMO";
 
   return (
@@ -68,6 +74,19 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           initialMilestones={milestones}
           people={people}
         />
+
+        <section className="mb-6">
+          <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border">
+            <span className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+              Budget
+            </span>
+          </div>
+          <BudgetTracker
+            projectId={project.id}
+            budgetAmount={project.budget_amount}
+            initialEntries={budgetEntries}
+          />
+        </section>
 
         {isPmoProject && (
           <section className="mb-6">
@@ -102,6 +121,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             />
           </section>
         </div>
+
+        <section className="mt-6">
+          <div className="flex items-center justify-between mb-[10px] pb-[6px] border-b border-border">
+            <span className="text-[11px] font-semibold text-text-secondary tracking-[0.1em] uppercase">
+              Documents
+            </span>
+          </div>
+          <DocsList projectId={project.id} initialData={docs} />
+        </section>
       </div>
     </>
   );

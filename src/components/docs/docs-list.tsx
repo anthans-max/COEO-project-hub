@@ -9,7 +9,7 @@ import { EditDocDialog } from "./edit-doc-dialog";
 import { useDocs } from "@/lib/hooks/use-docs";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatBytes } from "@/lib/utils";
 import type { Doc } from "@/lib/types";
 
 interface Props {
@@ -35,10 +35,32 @@ export function DocsList({ projectId, initialData }: Props) {
     setDocs((prev) => prev.filter((d) => d.id !== deleteId));
     setDeleteId(null);
     const supabase = createClient();
+    if (original?.file_path) {
+      // Best-effort storage cleanup; surface but don't block on failure.
+      const rm = await supabase.storage.from("project-docs").remove([original.file_path]);
+      if (rm.error) toast.error("File could not be removed from storage");
+    }
     const { error } = await supabase.from("coeo_docs").delete().eq("id", deleteId);
     if (error) {
       if (original) setDocs((prev) => [...prev, original]);
       toast.error("Failed to delete doc");
+    }
+  };
+
+  const handleDownload = async (doc: Doc) => {
+    if (!doc.file_path) return;
+    try {
+      const res = await fetch(
+        `/api/projects/${doc.project_id}/docs/signed-url?file_path=${encodeURIComponent(doc.file_path)}`,
+      );
+      if (!res.ok) {
+        toast.error("Failed to generate download link");
+        return;
+      }
+      const { url } = (await res.json()) as { url: string };
+      window.open(url, "_blank", "noopener");
+    } catch {
+      toast.error("Failed to generate download link");
     }
   };
 
@@ -52,27 +74,39 @@ export function DocsList({ projectId, initialData }: Props) {
         <Card className="p-8 text-center text-[15px] text-text-muted">No docs yet</Card>
       ) : (
         <Card>
-          {docs.map((d) => (
-            <div key={d.id} className="flex items-start gap-3 px-4 py-3 border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
-              <div className="flex-1 min-w-0">
-                {d.url ? (
-                  <a href={d.url} target="_blank" rel="noreferrer" className="text-[15px] font-medium text-text-primary hover:text-accent hover:underline underline-offset-2">
-                    {d.title}
-                  </a>
-                ) : (
-                  <div className="text-[15px] font-medium text-text-primary">{d.title}</div>
-                )}
-                <div className="text-[12px] text-text-muted mt-[2px]">
-                  {d.date ? formatDate(d.date) : "No date"}
+          {docs.map((d) => {
+            const isUpload = d.file_path != null;
+            return (
+              <div key={d.id} className="flex items-start gap-3 px-4 py-3 border-b border-border-light last:border-b-0 hover:bg-[#FDFCFA]">
+                <div className="flex-1 min-w-0">
+                  {isUpload ? (
+                    <div className="text-[15px] font-medium text-text-primary">{d.title}</div>
+                  ) : d.url ? (
+                    <a href={d.url} target="_blank" rel="noreferrer" className="text-[15px] font-medium text-text-primary hover:text-accent hover:underline underline-offset-2">
+                      {d.title}
+                    </a>
+                  ) : (
+                    <div className="text-[15px] font-medium text-text-primary">{d.title}</div>
+                  )}
+                  <div className="text-[12px] text-text-muted mt-[2px]">
+                    {isUpload
+                      ? [formatBytes(d.file_size), d.mime_type].filter(Boolean).join(" · ") || "Uploaded file"
+                      : d.date
+                      ? formatDate(d.date)
+                      : "No date"}
+                  </div>
+                  {d.notes && <div className="text-[13px] text-text-secondary mt-1">{d.notes}</div>}
                 </div>
-                {d.notes && <div className="text-[13px] text-text-secondary mt-1">{d.notes}</div>}
+                <div className="flex gap-2 shrink-0">
+                  {isUpload && (
+                    <Button size="sm" onClick={() => handleDownload(d)}>Download</Button>
+                  )}
+                  <Button size="sm" onClick={() => setEditing(d)}>Edit</Button>
+                  <Button variant="destructive" size="sm" onClick={() => setDeleteId(d.id)}>Delete</Button>
+                </div>
               </div>
-              <div className="flex gap-2 shrink-0">
-                <Button size="sm" onClick={() => setEditing(d)}>Edit</Button>
-                <Button variant="destructive" size="sm" onClick={() => setDeleteId(d.id)}>Delete</Button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </Card>
       )}
 

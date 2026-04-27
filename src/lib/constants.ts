@@ -66,6 +66,9 @@ export const DECISION_STATUS_LABELS: Record<DecisionStatus, string> = {
 export const BUDGET_CATEGORIES = ["phase", "workstream"] as const;
 export type BudgetCategory = (typeof BUDGET_CATEGORIES)[number];
 
+export const BUDGET_ENTRY_TYPES = ["actual", "forecast"] as const;
+export type BudgetEntryType = (typeof BUDGET_ENTRY_TYPES)[number];
+
 export const AI_MATURITIES = ["exploratory", "planned", "pilot", "live"] as const;
 export type AiMaturity = (typeof AI_MATURITIES)[number];
 
