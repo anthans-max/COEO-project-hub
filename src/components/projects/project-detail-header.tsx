@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { useProjects } from "@/lib/hooks/use-projects";
 import type { Project } from "@/lib/types";
@@ -9,7 +10,8 @@ interface Props {
 }
 
 export function ProjectDetailHeader({ initialProject }: Props) {
-  const [projects] = useProjects([initialProject]);
+  const seed = useMemo(() => [initialProject], [initialProject]);
+  const [projects] = useProjects(seed);
   const project = projects.find((p) => p.id === initialProject.id) ?? initialProject;
 
   const cols = "grid grid-cols-2 md:grid-cols-5 gap-x-6";
