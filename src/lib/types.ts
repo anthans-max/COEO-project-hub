@@ -177,6 +177,13 @@ export interface KeyHighlight {
   updated_at: string;
 }
 
+export interface ProjectHighlight {
+  id: string;
+  project_id: string;
+  bullets: string[];
+  updated_at: string;
+}
+
 export interface PmoTrackerRow {
   id: string;
   item_no: number | null;

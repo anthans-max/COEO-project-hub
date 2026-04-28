@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 import { ProjectDetailHeader } from "@/components/projects/project-detail-header";
 import { ProjectEditAction } from "@/components/projects/project-edit-action";
+import { ProjectHighlights } from "@/components/projects/project-highlights";
 import { ActionsList } from "@/components/actions/actions-list";
 import { MeetingNotesList } from "@/components/meeting-notes/meeting-notes-list";
 import { ProjectTimelineRow } from "@/components/projects/project-timeline-row";
@@ -12,7 +13,7 @@ import { PmoTrackerUpload } from "@/components/pmo/pmo-tracker-upload";
 import { PmoTrackerTable } from "@/components/pmo/pmo-tracker-table";
 import { DocsList } from "@/components/docs/docs-list";
 import { BudgetTracker } from "@/components/budget/budget-tracker";
-import type { Project, Action, MeetingNote, ProjectPhase, Milestone, PmoTrackerRow, Doc, BudgetEntry } from "@/lib/types";
+import type { Project, Action, MeetingNote, ProjectPhase, Milestone, PmoTrackerRow, Doc, BudgetEntry, ProjectHighlight } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -22,7 +23,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes, pmoRes, docsRes, budgetRes] = await Promise.all([
+  const [projectRes, actionsRes, notesRes, phasesRes, milestonesRes, allProjectsRes, peopleRes, pmoRes, docsRes, budgetRes, highlightRes] = await Promise.all([
     supabase.from("coeo_projects").select("*").eq("id", id).single(),
     supabase.from("coeo_actions").select("*").eq("project_id", id).order("sort_order"),
     supabase.from("coeo_meeting_notes").select("*").eq("project_id", id),
@@ -33,6 +34,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     supabase.from("coeo_pmo_tracker").select("*").order("item_no"),
     supabase.from("coeo_docs").select("*").eq("project_id", id).order("date", { ascending: false }),
     supabase.from("coeo_budget_entries").select("*").eq("project_id", id).order("period_year").order("period_month"),
+    supabase.from("coeo_project_highlights").select("*").eq("project_id", id).maybeSingle(),
   ]);
 
   const project = projectRes.data as Project | null;
@@ -47,6 +49,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const pmoRows = (pmoRes.data ?? []) as PmoTrackerRow[];
   const docs = (docsRes.data ?? []) as Doc[];
   const budgetEntries = (budgetRes.data ?? []) as BudgetEntry[];
+  const highlight = (highlightRes.data ?? null) as ProjectHighlight | null;
   const isPmoProject = project.name === "PMO";
 
   return (
@@ -67,6 +70,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       </Topbar>
       <div className="pt-6 md:pt-8 pb-7 px-4 md:px-8 flex-1 overflow-x-auto">
         <ProjectDetailHeader initialProject={project} />
+
+        <ProjectHighlights projectId={project.id} initialHighlight={highlight} />
 
         <ProjectTimelineRow
           projectId={project.id}
