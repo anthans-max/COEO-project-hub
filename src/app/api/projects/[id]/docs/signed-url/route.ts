@@ -9,6 +9,7 @@ export async function GET(
 ) {
   const { id } = await params;
   const filePath = req.nextUrl.searchParams.get("file_path");
+  const wantsDownload = req.nextUrl.searchParams.get("download") === "1";
 
   if (!filePath) {
     return NextResponse.json({ error: "file_path required" }, { status: 400 });
@@ -21,19 +22,33 @@ export async function GET(
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) {
-    return NextResponse.json({ error: "server not configured" }, { status: 500 });
+    const missing = !url ? "NEXT_PUBLIC_SUPABASE_URL" : "SUPABASE_SERVICE_ROLE_KEY";
+    console.error(`[signed-url] missing env: ${missing}`);
+    return NextResponse.json(
+      { error: `Server misconfigured: ${missing} not set` },
+      { status: 500 },
+    );
   }
 
   const supabase = createClient(url, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
+  // For downloads, supply the filename so Supabase sets
+  // content-disposition: attachment; filename="..." on the response.
+  const filename = filePath.split("/").pop() ?? "download";
+  const options = wantsDownload ? { download: filename } : undefined;
+
   const { data, error } = await supabase.storage
     .from("project-docs")
-    .createSignedUrl(filePath, SIGNED_URL_TTL_SECONDS);
+    .createSignedUrl(filePath, SIGNED_URL_TTL_SECONDS, options);
 
   if (error || !data?.signedUrl) {
-    return NextResponse.json({ error: "could not create signed url" }, { status: 500 });
+    console.error("[signed-url] createSignedUrl failed:", { filePath, error });
+    return NextResponse.json(
+      { error: error?.message ?? "could not create signed url" },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ url: data.signedUrl });

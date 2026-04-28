@@ -47,21 +47,44 @@ export function DocsList({ projectId, initialData }: Props) {
     }
   };
 
-  const handleDownload = async (doc: Doc) => {
-    if (!doc.file_path) return;
+  const fetchSignedUrl = async (doc: Doc, asDownload: boolean): Promise<string | null> => {
+    if (!doc.file_path) return null;
     try {
+      const params = new URLSearchParams({ file_path: doc.file_path });
+      if (asDownload) params.set("download", "1");
       const res = await fetch(
-        `/api/projects/${doc.project_id}/docs/signed-url?file_path=${encodeURIComponent(doc.file_path)}`,
+        `/api/projects/${doc.project_id}/docs/signed-url?${params.toString()}`,
       );
       if (!res.ok) {
-        toast.error("Failed to generate download link");
-        return;
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        toast.error(body.error || "Failed to generate download link");
+        return null;
       }
       const { url } = (await res.json()) as { url: string };
-      window.open(url, "_blank", "noopener");
+      return url;
     } catch {
       toast.error("Failed to generate download link");
+      return null;
     }
+  };
+
+  const handleView = async (doc: Doc) => {
+    const url = await fetchSignedUrl(doc, false);
+    if (url) window.open(url, "_blank", "noopener");
+  };
+
+  const handleDownload = async (doc: Doc) => {
+    const url = await fetchSignedUrl(doc, true);
+    if (!url) return;
+    // Server set content-disposition: attachment via the `download` option
+    // on createSignedUrl, so any navigation to this URL triggers a download.
+    const a = document.createElement("a");
+    a.href = url;
+    a.rel = "noopener";
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   return (
@@ -99,7 +122,10 @@ export function DocsList({ projectId, initialData }: Props) {
                 </div>
                 <div className="flex gap-2 shrink-0">
                   {isUpload && (
-                    <Button size="sm" onClick={() => handleDownload(d)}>Download</Button>
+                    <>
+                      <Button size="sm" onClick={() => handleView(d)}>View</Button>
+                      <Button size="sm" onClick={() => handleDownload(d)}>Download</Button>
+                    </>
                   )}
                   <Button size="sm" onClick={() => setEditing(d)}>Edit</Button>
                   <Button variant="destructive" size="sm" onClick={() => setDeleteId(d.id)}>Delete</Button>
