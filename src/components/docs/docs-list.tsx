@@ -69,8 +69,17 @@ export function DocsList({ projectId, initialData }: Props) {
   };
 
   const handleView = async (doc: Doc) => {
+    const newWindow = window.open("", "_blank");
+    if (!newWindow) {
+      toast.error("Popup blocked — please allow popups for this site");
+      return;
+    }
     const url = await fetchSignedUrl(doc, false);
-    if (url) window.open(url, "_blank", "noopener");
+    if (url) {
+      newWindow.location.href = url;
+    } else {
+      newWindow.close();
+    }
   };
 
   const handleDownload = async (doc: Doc) => {
