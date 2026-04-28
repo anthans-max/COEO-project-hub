@@ -39,9 +39,20 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
   const [editMilestone, setEditMilestone] = useState<Milestone | null>(null);
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
   const [deleteMilestoneId, setDeleteMilestoneId] = useState<string | null>(null);
+  // null = follow the available range bounds; user picks override these.
+  const [fromQuarter, setFromQuarter] = useState<string | null>(null);
+  const [toQuarter, setToQuarter] = useState<string | null>(null);
   const toast = useToast();
 
-  const quarters = deriveQuarters(projects);
+  const allQuarters = deriveQuarters(projects);
+  const lookupIdx = (label: string | null, fallback: number): number => {
+    if (!label) return fallback;
+    const idx = allQuarters.findIndex((q) => q.label === label);
+    return idx === -1 ? fallback : idx;
+  };
+  const fromIdx = lookupIdx(fromQuarter, 0);
+  const toIdx = lookupIdx(toQuarter, allQuarters.length - 1);
+  const quarters = allQuarters.slice(fromIdx, toIdx + 1);
   const timelineStart = quarters[0].start.getTime();
   const timelineEnd = quarters[quarters.length - 1].end.getTime();
   const timelineRange = timelineEnd - timelineStart;
@@ -49,7 +60,23 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
     const d = new Date(date).getTime();
     return Math.max(0, Math.min(100, ((d - timelineStart) / timelineRange) * 100));
   };
+  const inWindow = (date: string | Date): boolean => {
+    const t = new Date(date).getTime();
+    return t >= timelineStart && t <= timelineEnd;
+  };
   const todayPct = dateToPercent(new Date());
+  const showTodayLine = inWindow(new Date());
+
+  const handleFromChange = (label: string) => {
+    setFromQuarter(label);
+    const newFromIdx = allQuarters.findIndex((q) => q.label === label);
+    if (newFromIdx > toIdx) setToQuarter(label);
+  };
+  const handleToChange = (label: string) => {
+    setToQuarter(label);
+    const newToIdx = allQuarters.findIndex((q) => q.label === label);
+    if (newToIdx < fromIdx) setFromQuarter(label);
+  };
 
   const projectOptions = projects.map((p) => ({ id: p.id, name: p.name }));
 
@@ -103,6 +130,32 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
     <>
       <div className="flex justify-between items-center gap-2 mb-4">
         <div className="flex items-center gap-4 text-[12px] text-text-muted">
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-1">
+              <span className="text-[11px] font-semibold tracking-[0.07em] uppercase text-text-secondary">From</span>
+              <select
+                value={allQuarters[fromIdx].label}
+                onChange={(e) => handleFromChange(e.target.value)}
+                className="border border-border rounded-card px-2 py-1 text-[13px] outline-none focus:border-accent bg-white"
+              >
+                {allQuarters.map((q) => (
+                  <option key={q.label} value={q.label}>{q.label}</option>
+                ))}
+              </select>
+            </label>
+            <label className="flex items-center gap-1">
+              <span className="text-[11px] font-semibold tracking-[0.07em] uppercase text-text-secondary">To</span>
+              <select
+                value={allQuarters[toIdx].label}
+                onChange={(e) => handleToChange(e.target.value)}
+                className="border border-border rounded-card px-2 py-1 text-[13px] outline-none focus:border-accent bg-white"
+              >
+                {allQuarters.map((q) => (
+                  <option key={q.label} value={q.label}>{q.label}</option>
+                ))}
+              </select>
+            </label>
+          </div>
           <span className="flex items-center gap-1.5">
             <span className="inline-block w-3 h-2 rounded-sm" style={{ backgroundColor: GANTT_BAR_COLORS["In Progress"] }} />
             In Progress
@@ -170,10 +223,12 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
                 ))}
 
                 {/* Today line */}
-                <div
-                  className="absolute top-0 bottom-0 w-[1.5px] bg-accent opacity-60 pointer-events-none z-10"
-                  style={{ left: `${todayPct}%` }}
-                />
+                {showTodayLine && (
+                  <div
+                    className="absolute top-0 bottom-0 w-[1.5px] bg-accent opacity-60 pointer-events-none z-10"
+                    style={{ left: `${todayPct}%` }}
+                  />
+                )}
 
                 {/* Project bar */}
                 {hasRange && width > 0 && (
@@ -193,20 +248,22 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
                 )}
 
                 {/* Milestone diamonds */}
-                {projectMilestones.map((ms) => {
-                  const msPct = dateToPercent(ms.due_date!);
-                  return (
-                    <div
-                      key={ms.id}
-                      className="absolute flex items-center justify-center w-5 h-[56px] cursor-pointer z-20"
-                      style={{ left: `calc(${msPct}% - 10px)` }}
-                      title={ms.title}
-                      onClick={() => setEditMilestone(ms)}
-                    >
-                      <div className="w-[12px] h-[12px] rotate-45 bg-accent border-[1.5px] border-white" />
-                    </div>
-                  );
-                })}
+                {projectMilestones
+                  .filter((ms) => inWindow(ms.due_date!))
+                  .map((ms) => {
+                    const msPct = dateToPercent(ms.due_date!);
+                    return (
+                      <div
+                        key={ms.id}
+                        className="absolute flex items-center justify-center w-5 h-[56px] cursor-pointer z-20"
+                        style={{ left: `calc(${msPct}% - 10px)` }}
+                        title={ms.title}
+                        onClick={() => setEditMilestone(ms)}
+                      >
+                        <div className="w-[12px] h-[12px] rotate-45 bg-accent border-[1.5px] border-white" />
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           );
