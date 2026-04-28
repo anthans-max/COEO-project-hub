@@ -41,7 +41,7 @@ export function GanttChart({ initialProjects, initialMilestones, people, hideAdd
   const [deleteMilestoneId, setDeleteMilestoneId] = useState<string | null>(null);
   // null = follow the available range bounds; user picks override these.
   const [fromQuarter, setFromQuarter] = useState<string | null>(null);
-  const [toQuarter, setToQuarter] = useState<string | null>(null);
+  const [toQuarter, setToQuarter] = useState<string | null>("Q4 2026");
   const toast = useToast();
 
   const allQuarters = deriveQuarters(projects);
