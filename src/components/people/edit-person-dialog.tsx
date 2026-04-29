@@ -91,6 +91,10 @@ export function EditPersonDialog({ person, onClose, onSave }: Props) {
   const inputClass =
     "border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent w-full";
 
+  const orgKey = form.organization.trim().toLowerCase();
+  const isVendorOrg = orgKey !== "" && orgKey !== "coeo internal" && orgKey !== "external";
+  const roleLabel = isVendorOrg ? "Vendor / company" : "Role / title";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={onClose}>
       <div
@@ -113,7 +117,7 @@ export function EditPersonDialog({ person, onClose, onSave }: Props) {
               <input type="text" value={form.organization} onChange={(e) => set("organization", e.target.value)} className={inputClass} />
             </div>
             <div>
-              <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Role / title</label>
+              <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">{roleLabel}</label>
               <input type="text" value={form.role} onChange={(e) => set("role", e.target.value)} className={inputClass} />
             </div>
           </div>

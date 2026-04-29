@@ -61,7 +61,7 @@ export function AddPersonDialog({ open, onClose, onAdd }: Props) {
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input type="text" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)}
             className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" autoFocus />
-          <input type="text" placeholder="Role / title" value={role} onChange={(e) => setRole(e.target.value)}
+          <input type="text" placeholder={organization === "Vendor" ? "Vendor / company" : "Role / title"} value={role} onChange={(e) => setRole(e.target.value)}
             className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent" />
           <select value={organization} onChange={(e) => setOrganization(e.target.value)}
             className="border border-border rounded-card px-3 py-2 text-[15px] outline-none focus:border-accent">
