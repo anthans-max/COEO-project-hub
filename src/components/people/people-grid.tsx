@@ -87,6 +87,9 @@ export function PeopleGrid({ initialData }: Props) {
   peopleByGroup.vendor.sort((a, b) =>
     (a.role ?? "").localeCompare(b.role ?? "")
   );
+  peopleByGroup.coeo_internal.sort((a, b) =>
+    (a.name ?? "").localeCompare(b.name ?? "")
+  );
 
   return (
     <>
