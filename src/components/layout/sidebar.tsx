@@ -13,6 +13,7 @@ import {
   Layers,
   GitPullRequestArrow,
   PoundSterling,
+  FileText,
   Server,
   Building2,
   Users,
@@ -45,6 +46,12 @@ const navSections = [
       { name: "Decisions", href: "/program/decisions", icon: GitPullRequestArrow },
       { name: "Budget", href: "/program/budget", icon: PoundSterling },
       { name: "AI Capability Map", href: "/program/ai-capabilities", icon: Sparkles },
+    ],
+  },
+  {
+    label: "Reporting",
+    items: [
+      { name: "Exec Report", href: "/reporting/exec-report", icon: FileText },
     ],
   },
   {

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coeo — Executive Program Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0A2342; --orange: #F4821F;
+      --cream: #F5F0E8; --cream-dark: #E8E0D0;
+      --text-body: #2C3E50; --text-muted: #6B7280; --border: #D8D0C4;
+      --green: #2D7D46; --green-light: #EAF3DE;
+      --amber: #BA7517; --amber-light: #FAEEDA;
+      --red: #A32D2D; --red-light: #FCEBEB;
+      --blue: #185FA5; --blue-light: #E6F1FB;
+      --page-w: 794px;
+      --page-pad-x: 44px; --page-pad-y: 32px;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: #e8e4dc; padding: 20px; }
+
+    /* ── Controls ── */
+    .controls-bar {
+      background: var(--navy); padding: 12px 20px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      margin: 0 auto 20px; border-radius: 8px; max-width: var(--page-w);
+    }
+    .controls-bar label { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.07em; }
+    .controls-bar input[type="date"] {
+      font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 5px 9px;
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 5px;
+      background: rgba(255,255,255,0.08); color: #fff; outline: none;
+    }
+    .btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 6px 16px; border: none; border-radius: 5px; cursor: pointer; }
+    .btn-update { background: rgba(255,255,255,0.15); color: #fff; }
+    .btn-print  { background: var(--orange); color: #fff; margin-left: auto; font-size: 13px; padding: 7px 20px; }
+
+    /* ── Page shell ── */
+    .page {
+      background: #fff;
+      width: var(--page-w);
+      min-height: 1123px;
+      margin: 0 auto 28px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      background: var(--navy);
+      padding: 22px var(--page-pad-x) 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .report-label-sm {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px;
+    }
+    .report-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .report-period { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 3px; }
+    .page-logo { height: 34px; opacity: 0.95; filter: brightness(0) invert(1); }
+
+    /* ── Meta strip ── */
+    .meta-strip {
+      background: var(--cream); border-bottom: 1px solid var(--border);
+      padding: 10px var(--page-pad-x); display: flex; gap: 28px;
+    }
+    .meta-item { font-size: 10px; color: var(--text-muted); }
+    .meta-item span { color: var(--navy); font-weight: 500; display: block; font-size: 11px; margin-top: 1px; }
+
+    /* ── Page body ── */
+    .page-body { padding: var(--page-pad-y) var(--page-pad-x); flex: 1; }
+
+    /* ── Page footer ── */
+    .page-footer {
+      background: var(--cream); border-top: 1px solid var(--border);
+      padding: 10px var(--page-pad-x);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; margin-top: auto;
+    }
+    .footer-left { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+    .footer-left strong { color: var(--navy); font-weight: 600; }
+    .footer-right { display: flex; align-items: center; gap: 10px; }
+    .footer-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px; background: var(--navy); color: #fff;
+      border-radius: 5px; font-size: 11px; font-weight: 500; text-decoration: none; white-space: nowrap;
+    }
+    .footer-page { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 22px; }
+    .section-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 12px; padding-bottom: 8px;
+      border-bottom: 2px solid var(--cream-dark);
+    }
+    .section-icon { width: 22px; height: 22px; flex-shrink: 0; }
+    .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--navy); }
+
+    /* ── Key highlights ── */
+    .highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .highlight-card { border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; position: relative; }
+    .highlight-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 6px 0 0 6px; }
+    .highlight-card.green::before  { background: var(--green); }
+    .highlight-card.amber::before  { background: var(--amber); }
+    .highlight-card.blue::before   { background: var(--blue); }
+    .highlight-card.orange::before { background: var(--orange); }
+    .hl-project { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 4px; }
+    .hl-text    { font-size: 11px; color: var(--text-body); line-height: 1.5; }
+    .hl-date    { font-size: 10px; color: var(--text-muted); margin-top: 5px; }
+
+    /* ── Gantt ── */
+    .gantt { width: 100%; border-collapse: collapse; font-size: 10px; table-layout: fixed; }
+    .gantt th { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 4px 0; background: var(--cream); border-bottom: 1px solid var(--border); text-align: center; }
+    .gantt th.lc { text-align: left; padding-left: 0; width: 148px; }
+    .gantt td { padding: 3px 0; border-bottom: 1px solid var(--cream-dark); vertical-align: middle; }
+    .gantt tr:last-child td { border-bottom: none; }
+    .gantt td.lc { padding-left: 0; width: 148px; }
+    .g-name { font-weight: 500; color: var(--navy); font-size: 10px; }
+    .g-sub  { font-size: 9px; color: var(--text-muted); }
+    .g-legend { display: flex; gap: 16px; margin-top: 7px; }
+    .g-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); }
+    .l-bar { width: 16px; height: 7px; border-radius: 2px; }
+    .l-dia { width: 9px; height: 9px; transform: rotate(45deg); border-radius: 1px; flex-shrink: 0; }
+
+    /* ── Milestones ── */
+    .ms-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .ms-table td { padding: 7px 8px; border-bottom: 1px solid var(--cream-dark); vertical-align: middle; }
+    .ms-table tr:last-child td { border-bottom: none; }
+    .ms-date-badge { background: var(--cream); border-radius: 5px; padding: 4px 8px; text-align: center; white-space: nowrap; }
+    .ms-date-badge .d { font-size: 15px; font-weight: 600; color: var(--navy); line-height: 1; }
+    .ms-date-badge .m { font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+    .ms-name { font-weight: 500; color: var(--navy); font-size: 11px; }
+    .ms-proj { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+
+    /* ── Status pills ── */
+    .pill { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 10px; font-weight: 500; white-space: nowrap; }
+    .pill.upcoming { background: var(--blue-light);  color: var(--blue); }
+    .pill.at-risk  { background: var(--amber-light); color: var(--amber); }
+    .pill.complete { background: var(--green-light); color: var(--green); }
+    .pill.tbc      { background: var(--cream); color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* ── Meetings ── */
+    .meeting-row { display: flex; align-items: flex-start; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--cream-dark); }
+    .meeting-row:last-child { border-bottom: none; }
+    .mtg-date { flex-shrink: 0; width: 52px; background: var(--cream); border-radius: 5px; padding: 5px; text-align: center; }
+    .mtg-date .d { font-size: 16px; font-weight: 600; color: var(--navy); line-height: 1; }
+    .mtg-date .m { font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+    .mtg-title   { font-size: 11px; font-weight: 500; color: var(--navy); margin-bottom: 2px; }
+    .mtg-summary { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+    .mtg-att     { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Other comments ── */
+    .comments-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .comment-card { border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; }
+    .cm-topic  { font-size: 11px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+    .cm-desc   { font-size: 10px; color: var(--text-body); line-height: 1.55; margin-bottom: 8px; }
+    .cm-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+    .cm-tag { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 99px; }
+    .cm-tag.blue   { background: var(--blue-light);  color: var(--blue); }
+    .cm-tag.amber  { background: var(--amber-light); color: var(--amber); }
+    .cm-tag.green  { background: var(--green-light); color: var(--green); }
+    .cm-tag.orange { background: #FEF0E4; color: var(--orange); }
+    .cm-owner { font-size: 10px; color: var(--text-muted); }
+    .cm-owner strong { color: var(--text-body); font-weight: 500; }
+
+    /* ── Print ── */
+    @media print {
+      .controls-bar { display: none !important; }
+      body { background: none; padding: 0; }
+      .page { box-shadow: none; margin: 0; page-break-after: always; width: 100%; min-height: 0; }
+      .page:last-child { page-break-after: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls -->
+  <div class="controls-bar">
+    <label>Week of</label>
+    <input type="date" id="df" value="2026-04-21">
+    <span style="font-size:12px;color:rgba(255,255,255,0.4)">—</span>
+    <input type="date" id="dt" value="2026-04-27">
+    <button class="btn btn-update" onclick="updatePeriod()">Update</button>
+    <button class="btn btn-print" onclick="window.print()">↓ Save as PDF</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PAGE 1: Highlights · Roadmap · Milestones
+       ═══════════════════════════════════════ -->
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="report-label-sm">Coeo Solutions — Technology Transformation</div>
+        <div class="report-title">Executive Program Report</div>
+        <div class="report-period" id="rp1">Week of 21 Apr – 27 Apr 2026</div>
+      </div>
+      <!-- Logo: place logo.png alongside this file in design-reference/ -->
+      <img class="page-logo" src="logo.png" alt="Coeo Solutions">
+    </div>
+
+    <div class="meta-strip">
+      <div class="meta-item">Report date<span id="gen-date"></span></div>
+      <div class="meta-item">Distribution<span>Exec team</span></div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- KEY HIGHLIGHTS -->
+      <div class="section">
+        <div class="section-header">
+          <svg class="section-icon" viewBox="0 0 22 22" fill="none">
+            <rect width="22" height="22" rx="5" fill="#0A2342"/>
+            <path d="M5.5 11h11M5.5 7.5h11M5.5 14.5h6" stroke="#F4821F" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <div class="section-title">Key highlights</div>
+        </div>
+        <div class="highlights-grid">
+          <div class="highlight-card green">
+            <div class="hl-project">Customer Portal</div>
+            <div class="hl-text">Technovate delivered the account management module UI for review. Stakeholder sign-off requested ahead of Phase 2 build commencing.</div>
+            <div class="hl-date">22 Apr 2026</div>
+          </div>
+          <div class="highlight-card blue">
+            <div class="hl-project">Salesforce Discovery</div>
+            <div class="hl-text">SETGO completed initial discovery sessions. Readout presentation scheduled for May. Platform direction decision required post-readout.</div>
+            <div class="hl-date">18 Apr 2026</div>
+          </div>
+          <div class="highlight-card amber">
+            <div class="hl-project">Data Warehouse</div>
+            <div class="hl-text">Architecture design finalised. Vendor selection for ETL tooling outstanding — required before development can begin.</div>
+            <div class="hl-date">14 Apr 2026</div>
+          </div>
+          <div class="highlight-card orange">
+            <div class="hl-project">Provisioning Portal</div>
+            <div class="hl-text">Rev.io integration spec agreed between Technovate and Rev.io teams. Development kick-off planned for early May.</div>
+            <div class="hl-date">10 Apr 2026</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSTREAM ROADMAP -->
+      <div class="section">
+        <div class="section-header">
+          <svg class="section-icon" viewBox="0 0 22 22" fill="none">
+            <rect width="22" height="22" rx="5" fill="#0A2342"/>
+            <rect x="4" y="7.5" width="5" height="7" rx="1.5" fill="#F4821F"/>
+            <rect x="11" y="5.5" width="7" height="4" rx="1.5" fill="rgba(255,255,255,0.45)"/>
+            <rect x="11" y="11.5" width="5" height="4" rx="1.5" fill="rgba(255,255,255,0.45)"/>
+          </svg>
+          <div class="section-title">Workstream roadmap — 2026</div>
+        </div>
+        <table class="gantt">
+          <thead>
+            <tr>
+              <th class="lc">Workstream</th>
+              <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>
+              <th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+            </tr>
+          </thead>
+          <tbody id="gantt-body"></tbody>
+        </table>
+        <div class="g-legend">
+          <div class="g-legend-item"><div class="l-bar" style="background:#0A2342"></div>In progress</div>
+          <div class="g-legend-item"><div class="l-bar" style="background:#B4B2A9"></div>Not started / TBD</div>
+          <div class="g-legend-item"><div class="l-dia" style="background:#F4821F"></div>Milestone</div>
+        </div>
+      </div>
+
+      <!-- UPCOMING MILESTONES -->
+      <div class="section">
+        <div class="section-header">
+          <svg class="section-icon" viewBox="0 0 22 22" fill="none">
+            <rect width="22" height="22" rx="5" fill="#0A2342"/>
+            <rect x="8" y="8" width="8" height="8" rx="1.5" transform="rotate(45 11 11)" fill="none" stroke="#F4821F" stroke-width="1.3"/>
+            <path d="M11 5.5v2M11 14.5v2M5.5 11h2M14.5 11h2" stroke="rgba(255,255,255,0.4)" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <div class="section-title">Upcoming milestones</div>
+        </div>
+        <table class="ms-table">
+          <tbody>
+            <tr>
+              <td style="width:64px"><div class="ms-date-badge"><div class="d">30</div><div class="m">Apr</div></div></td>
+              <td><div class="ms-name">Rev.io integration spec sign-off</div><div class="ms-proj">Provisioning Portal</div></td>
+              <td style="width:80px;text-align:right"><span class="pill at-risk">At risk</span></td>
+            </tr>
+            <tr>
+              <td><div class="ms-date-badge"><div class="d">15</div><div class="m">May</div></div></td>
+              <td><div class="ms-name">SETGO Salesforce readout presentation</div><div class="ms-proj">Salesforce Discovery</div></td>
+              <td style="text-align:right"><span class="pill upcoming">Upcoming</span></td>
+            </tr>
+            <tr>
+              <td><div class="ms-date-badge"><div class="d">31</div><div class="m">May</div></div></td>
+              <td><div class="ms-name">Customer Portal Phase 1 build complete</div><div class="ms-proj">Customer Portal</div></td>
+              <td style="text-align:right"><span class="pill upcoming">Upcoming</span></td>
+            </tr>
+            <tr>
+              <td><div class="ms-date-badge"><div class="d">30</div><div class="m">Jun</div></div></td>
+              <td><div class="ms-name">Data warehouse ETL vendor appointed</div><div class="ms-proj">Data Warehouse</div></td>
+              <td style="text-align:right"><span class="pill tbc">TBC</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div class="footer-left">
+        <strong>Coeo Solutions — Technology Transformation Program</strong><br>
+        Confidential — for exec distribution only
+      </div>
+      <div class="footer-right">
+        <span class="footer-page">Page 1 of 2</span>
+        <a class="footer-link" href="https://coeo-project-hub.vercel.app" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6h8M6 2l4 4-4 4" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          View Program Hub
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       PAGE 2: Meetings · Other Comments
+       ═══════════════════════════════════════ -->
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <div class="report-label-sm">Coeo Solutions — Technology Transformation</div>
+        <div class="report-title">Executive Program Report</div>
+        <div class="report-period" id="rp2">Week of 21 Apr – 27 Apr 2026</div>
+      </div>
+      <img class="page-logo" src="logo.png" alt="Coeo Solutions">
+    </div>
+
+    <div class="page-body">
+
+      <!-- RECENT MEETINGS -->
+      <div class="section">
+        <div class="section-header">
+          <svg class="section-icon" viewBox="0 0 22 22" fill="none">
+            <rect width="22" height="22" rx="5" fill="#0A2342"/>
+            <rect x="5.5" y="6.5" width="11" height="10" rx="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.1" fill="none"/>
+            <path d="M8 6.5V5.5M14 6.5V5.5" stroke="#F4821F" stroke-width="1.1" stroke-linecap="round"/>
+            <path d="M5.5 9.5h11" stroke="rgba(255,255,255,0.5)" stroke-width="1.1"/>
+          </svg>
+          <div class="section-title">Recent meetings</div>
+        </div>
+        <div>
+          <div class="meeting-row">
+            <div class="mtg-date"><div class="d">24</div><div class="m">Apr</div></div>
+            <div>
+              <div class="mtg-title">Program Steering — Weekly Sync</div>
+              <div class="mtg-summary">Reviewed portal Phase 1 progress. Agreed Rev.io integration spec sign-off deadline of 30 Apr. Data warehouse vendor shortlist to be circulated by Jack by end of week.</div>
+              <div class="mtg-att">Attendees: Jack Minster, Anthan, Sean Kirby, Mamata Huded</div>
+            </div>
+          </div>
+          <div class="meeting-row">
+            <div class="mtg-date"><div class="d">18</div><div class="m">Apr</div></div>
+            <div>
+              <div class="mtg-title">SETGO Salesforce Discovery Review</div>
+              <div class="mtg-summary">Dustin presented discovery findings. Identified 14 customisation gaps vs. standard Salesforce. Readout presentation to be prepared for exec review in May.</div>
+              <div class="mtg-att">Attendees: Jack Minster, Anthan, Dustin (SETGO), Mamata Huded</div>
+            </div>
+          </div>
+          <div class="meeting-row">
+            <div class="mtg-date"><div class="d">14</div><div class="m">Apr</div></div>
+            <div>
+              <div class="mtg-title">Technovate BRD Walkthrough</div>
+              <div class="mtg-summary">Parth Soni walked through the portal BRD. 3 open items flagged for clarification: authentication flow, notification logic, and customer data access tiers.</div>
+              <div class="mtg-att">Attendees: Anthan, Parth Soni (Technovate), Kevin Orofino</div>
+            </div>
+          </div>
+          <div class="meeting-row">
+            <div class="mtg-date"><div class="d">13</div><div class="m">Apr</div></div>
+            <div>
+              <div class="mtg-title">Program Kick-off</div>
+              <div class="mtg-summary">Formal program kick-off with exec sponsor. Workstream priorities confirmed, governance model agreed, and first steering cadence established.</div>
+              <div class="mtg-att">Attendees: Jack Minster, Frank, Anthan, Sean Kirby, Mamata Huded</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OTHER COMMENTS -->
+      <div class="section">
+        <div class="section-header">
+          <svg class="section-icon" viewBox="0 0 22 22" fill="none">
+            <rect width="22" height="22" rx="5" fill="#0A2342"/>
+            <rect x="5.5" y="6" width="11" height="9.5" rx="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.1" fill="none"/>
+            <path d="M8.5 17l2 2 2-2" stroke="#F4821F" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 10h6M8 12.5h4" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+          <div class="section-title">Other comments</div>
+        </div>
+        <div class="comments-grid">
+          <div class="comment-card">
+            <div class="cm-topic">Auth flow open items</div>
+            <div class="cm-desc">Three outstanding authentication specification items from the BRD walkthrough remain unresolved. These need sign-off before Phase 1 development resumes to avoid rework.</div>
+            <div class="cm-footer">
+              <span class="cm-tag blue">Customer Portal</span>
+              <span class="cm-owner">Owner: <strong>Anthan</strong></span>
+            </div>
+          </div>
+          <div class="comment-card">
+            <div class="cm-topic">KYC scope to be confirmed</div>
+            <div class="cm-desc">KYC workstream cannot be resourced or scheduled without scope clarity. Dependency on exec confirmation of requirements and budget before this workstream can progress.</div>
+            <div class="cm-footer">
+              <span class="cm-tag amber">KYC</span>
+              <span class="cm-owner">Owner: <strong>Jack Minster</strong></span>
+            </div>
+          </div>
+          <div class="comment-card">
+            <div class="cm-topic">Middleware scoping required</div>
+            <div class="cm-desc">Enterprise middleware remains at pre-scoping stage. A formal requirements session is needed to establish build vs. buy approach and timeline before this can be roadmapped.</div>
+            <div class="cm-footer">
+              <span class="cm-tag blue">Enterprise Middleware</span>
+              <span class="cm-owner">Owner: <strong>Sean Kirby</strong></span>
+            </div>
+          </div>
+          <div class="comment-card">
+            <div class="cm-topic">Vendor cadence — Technovate</div>
+            <div class="cm-desc">Weekly touchpoint with Parth Soni continuing. Recommend formalising a fortnightly written status update from Technovate to support exec-level visibility going forward.</div>
+            <div class="cm-footer">
+              <span class="cm-tag green">Governance</span>
+              <span class="cm-owner">Owner: <strong>Anthan</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div class="footer-left">
+        <strong>Coeo Solutions — Technology Transformation Program</strong><br>
+        Confidential — for exec distribution only
+      </div>
+      <div class="footer-right">
+        <span class="footer-page">Page 2 of 2</span>
+        <a class="footer-link" href="https://coeo-project-hub.vercel.app" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6h8M6 2l4 4-4 4" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          View Program Hub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('gen-date').textContent = new Date().toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    function fmtDate(val) {
+      if (!val) return '';
+      const d = new Date(val + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function updatePeriod() {
+      const from = document.getElementById('df').value;
+      const to   = document.getElementById('dt').value;
+      const label = 'Week of ' + fmtDate(from) + ' \u2013 ' + fmtDate(to);
+      document.getElementById('rp1').textContent = label;
+      document.getElementById('rp2').textContent = label;
+    }
+
+    // Gantt: start/span are 0-indexed months (0=Jan); ms = milestone month or null
+    const ganttRows = [
+      { name: 'Customer Portal',       vendor: 'Technovate / Nextian', start: 2, span: 8,  color: 'navy',  ms: 7    },
+      { name: 'Salesforce Discovery',  vendor: 'SETGO',                start: 2, span: 3,  color: 'navy',  ms: 4    },
+      { name: 'Provisioning Portal',   vendor: 'Technovate / Rev.io',  start: 3, span: 6,  color: 'navy',  ms: 8    },
+      { name: 'Data Warehouse',        vendor: 'TBC',                  start: 5, span: 6,  color: 'muted', ms: null },
+      { name: 'Enterprise Middleware', vendor: 'Internal',             start: 6, span: 5,  color: 'muted', ms: null },
+      { name: 'KYC',                   vendor: 'TransUnion / Neustar', start: 7, span: 4,  color: 'muted', ms: null },
+      { name: 'Acquisitions',          vendor: 'Internal',             start: 3, span: 9,  color: 'muted', ms: null },
+      { name: 'SF Maintenance',        vendor: 'Mamata / Internal',    start: 0, span: 12, color: 'navy',  ms: null },
+    ];
+
+    const tbody = document.getElementById('gantt-body');
+    ganttRows.forEach(r => {
+      const tr = document.createElement('tr');
+      const tdL = document.createElement('td');
+      tdL.className = 'lc';
+      tdL.innerHTML = '<div class="g-name">' + r.name + '</div><div class="g-sub">' + r.vendor + '</div>';
+      tr.appendChild(tdL);
+      for (let m = 0; m < 12; m++) {
+        const td = document.createElement('td');
+        td.style.cssText = 'padding:2px 1px;position:relative;height:24px;';
+        const inSpan  = m >= r.start && m < r.start + r.span;
+        const isFirst = m === r.start;
+        const isLast  = m === r.start + r.span - 1;
+        if (inSpan) {
+          const bar = document.createElement('div');
+          const bg  = r.color === 'navy' ? '#0A2342' : '#B4B2A9';
+          const rad = isFirst && isLast ? '3px' : isFirst ? '3px 0 0 3px' : isLast ? '0 3px 3px 0' : '0';
+          bar.style.cssText = 'position:absolute;top:6px;height:12px;background:' + bg + ';left:' + (isFirst ? '3px' : '0') + ';right:' + (isLast ? '3px' : '0') + ';border-radius:' + rad + ';';
+          td.appendChild(bar);
+        }
+        if (r.ms === m) {
+          const dia = document.createElement('div');
+          dia.style.cssText = 'position:absolute;top:4px;left:50%;margin-left:-7px;width:14px;height:14px;background:#F4821F;transform:rotate(45deg);border-radius:2px;z-index:2;';
+          td.appendChild(dia);
+        }
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

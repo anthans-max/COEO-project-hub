@@ -14,14 +14,14 @@ interface Props {
 }
 
 export function AddMeetingNoteDialog({ open, projectId, onClose, onAdd }: Props) {
-  const [form, setForm] = useState({ title: "", date: "", attendees: "", notes: "" });
+  const [form, setForm] = useState({ title: "", date: "", attendees: "", summary: "", notes: "" });
   const [saving, setSaving] = useState(false);
   const toast = useToast();
 
   if (!open) return null;
 
   const set = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
-  const reset = () => setForm({ title: "", date: "", attendees: "", notes: "" });
+  const reset = () => setForm({ title: "", date: "", attendees: "", summary: "", notes: "" });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +35,7 @@ export function AddMeetingNoteDialog({ open, projectId, onClose, onAdd }: Props)
         title: form.title.trim(),
         date: form.date || null,
         attendees: form.attendees.trim() || null,
+        summary: form.summary.trim() || null,
         notes: form.notes.trim() || null,
       })
       .select()
@@ -71,6 +72,16 @@ export function AddMeetingNoteDialog({ open, projectId, onClose, onAdd }: Props)
               <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Attendees</label>
               <input type="text" value={form.attendees} onChange={(e) => set("attendees", e.target.value)} className={input} placeholder="Names, comma-separated" />
             </div>
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Summary</label>
+            <textarea
+              value={form.summary}
+              onChange={(e) => set("summary", e.target.value)}
+              rows={2}
+              className={input}
+              placeholder="1–2 sentence summary for exec reporting (optional)"
+            />
           </div>
           <div>
             <label className="text-[10px] font-semibold text-text-secondary tracking-[0.07em] uppercase mb-1 block">Notes</label>

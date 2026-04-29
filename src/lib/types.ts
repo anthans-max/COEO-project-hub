@@ -14,6 +14,8 @@ export interface Project {
   created_at: string;
   updated_at: string;
   budget_amount: number | null;
+  vendor: string | null;
+  show_on_report: boolean;
 }
 
 export interface BudgetEntry {
@@ -118,6 +120,7 @@ export interface MeetingNote {
   date: string | null;
   attendees: string | null;
   notes: string | null;
+  summary: string | null;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -173,6 +176,28 @@ export interface KeyHighlight {
   headline: string;
   body: string;
   sort_order: number;
+  created_at: string;
+  updated_at: string;
+  date: string | null;
+}
+
+export interface ReportComment {
+  id: string;
+  topic: string;
+  description: string;
+  project_tag: string | null;
+  tag_colour: "blue" | "amber" | "green" | "orange";
+  owner: string | null;
+  report_week_start: string;
+  created_at: string;
+}
+
+export interface ReportNarrative {
+  id: string;
+  report_week_start: string;
+  focused_theme_codes: string[];
+  commentary: string | null;
+  comments_text: string | null;
   created_at: string;
   updated_at: string;
 }
