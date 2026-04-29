@@ -67,13 +67,13 @@ export function Highlights({ initialData }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-stretch">
         {sorted.map((h, index) => {
           const style = CARD_STYLES[h.sort_order] ?? CARD_STYLES[index] ?? FALLBACK_STYLE;
           return (
             <div
               key={h.id}
-              className="p-[14px] border border-border rounded-[10px] bg-white group relative"
+              className="p-[14px] border border-border rounded-[10px] bg-white group relative h-full"
             >
               <button
                 onClick={() => setEditing(h)}
