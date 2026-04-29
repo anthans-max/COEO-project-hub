@@ -84,6 +84,9 @@ export function PeopleGrid({ initialData }: Props) {
   for (const person of people) {
     peopleByGroup[groupFor(person)].push(person);
   }
+  peopleByGroup.vendor.sort((a, b) =>
+    (a.organization ?? "").localeCompare(b.organization ?? "")
+  );
 
   return (
     <>
