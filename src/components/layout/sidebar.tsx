@@ -85,11 +85,14 @@ export function Sidebar() {
       {/* Logo */}
       <div className="px-5 pt-5 pb-4 border-b border-white/[0.07] flex items-start justify-between gap-2">
         <div className="min-w-0">
+          <div className="bg-white rounded-xl px-4 py-2 mb-3 inline-block">
+            <img src="/logo.png" alt="COEO" className="h-8 w-auto" />
+          </div>
           <div className="text-[15px] font-semibold text-white tracking-[0.12em] uppercase whitespace-nowrap">
-            COEO PROJECT HUB
+            PROJECT HUB
           </div>
           <div className="text-[11px] text-white/[0.6] tracking-[0.14em] uppercase mt-[3px]">
-            Internal Operations · 2026
+            2026
           </div>
         </div>
         <button

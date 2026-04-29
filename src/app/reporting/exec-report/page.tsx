@@ -151,7 +151,9 @@ function PageHeader({ period }: { period: string }) {
         <div className="report-title">Executive Program Report</div>
         <div className="report-period">{period}</div>
       </div>
-      <span className="page-logo-text">COEO</span>
+      <div className="bg-white rounded-xl px-4 py-2">
+        <img src="/logo.png" alt="COEO" className="h-8 w-auto" />
+      </div>
     </div>
   );
 }
