@@ -3,6 +3,7 @@
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
+import { preprocessNoteText } from "@/lib/format-note";
 import type { MeetingNote } from "@/lib/types";
 
 interface Props {
@@ -58,7 +59,7 @@ export function MeetingNoteDrawer({ note, onClose, onEdit, onDelete }: Props) {
                 /* eslint-enable @typescript-eslint/no-unused-vars */
               }}
             >
-              {note.notes}
+              {preprocessNoteText(note.notes)}
             </ReactMarkdown>
           ) : (
             <span className="text-text-muted">No notes</span>

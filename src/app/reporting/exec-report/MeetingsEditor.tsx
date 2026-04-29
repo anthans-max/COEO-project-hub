@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
+import { preprocessNoteText } from "@/lib/format-note";
 import { formatBadgeDay, formatBadgeMonth } from "./lib";
 import type { MeetingNote } from "@/lib/types";
 
@@ -83,7 +85,19 @@ export function MeetingsEditor({ meetings }: MeetingsEditorProps) {
               <div className="read-only">
                 {(mtg.summary?.trim() || mtg.notes?.trim()) ? (
                   <div className="mtg-summary">
-                    {mtg.summary?.trim() || mtg.notes}
+                    <ReactMarkdown
+                      components={{
+                        /* eslint-disable @typescript-eslint/no-unused-vars */
+                        p: ({ node, ...props }) => <p style={{ margin: 0 }} {...props} />,
+                        ul: ({ node, ...props }) => <ul style={{ margin: "2px 0 0", paddingLeft: 14 }} {...props} />,
+                        ol: ({ node, ...props }) => <ol style={{ margin: "2px 0 0", paddingLeft: 14 }} {...props} />,
+                        li: ({ node, ...props }) => <li {...props} />,
+                        strong: ({ node, ...props }) => <strong style={{ fontWeight: 600, color: "var(--navy)" }} {...props} />,
+                        /* eslint-enable @typescript-eslint/no-unused-vars */
+                      }}
+                    >
+                      {preprocessNoteText(mtg.summary?.trim() || mtg.notes || "")}
+                    </ReactMarkdown>
                   </div>
                 ) : null}
               </div>
