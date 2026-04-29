@@ -276,7 +276,7 @@ export default async function ExecReportPage({
     supabase
       .from("coeo_key_highlights")
       .select("*")
-      .order("date", { ascending: false, nullsFirst: false })
+      .order("sort_order", { ascending: true })
       .limit(4),
     supabase
       .from("coeo_projects")
