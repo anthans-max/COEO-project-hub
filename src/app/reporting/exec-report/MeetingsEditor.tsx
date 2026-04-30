@@ -30,7 +30,7 @@ export function MeetingsEditor({ meetings }: MeetingsEditorProps) {
   const save = async (id: string) => {
     const item = items.find((m) => m.id === id);
     if (!item) return;
-    const draft = (drafts[id] ?? item.summary ?? "").trim();
+    const draft = (drafts[id] ?? item.summary ?? item.notes ?? "").trim();
     setSavingId(id);
     const supabase = createClient();
     const nowIso = new Date().toISOString();
@@ -63,7 +63,7 @@ export function MeetingsEditor({ meetings }: MeetingsEditorProps) {
   return (
     <div>
       {items.map((mtg) => {
-        const draft = drafts[mtg.id] ?? mtg.summary ?? "";
+        const draft = drafts[mtg.id] ?? mtg.summary ?? mtg.notes ?? "";
         return (
           <div key={mtg.id} className="meeting-row">
             <div className="mtg-date">

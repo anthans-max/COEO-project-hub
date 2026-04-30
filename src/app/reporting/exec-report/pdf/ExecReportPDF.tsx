@@ -119,30 +119,6 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     letterSpacing: 1,
   },
-  metaStrip: {
-    backgroundColor: CREAM,
-    borderBottomWidth: 1,
-    borderBottomColor: BORDER,
-    paddingVertical: 8,
-    paddingHorizontal: 36,
-    flexDirection: "row",
-    gap: 28,
-  },
-  metaItem: {
-    flexDirection: "column",
-  },
-  metaLabel: {
-    fontSize: 6.5,
-    color: TEXT_MUTED,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 2,
-  },
-  metaValue: {
-    fontSize: 10,
-    color: NAVY,
-    fontWeight: 500,
-  },
   body: {
     paddingHorizontal: 36,
     paddingTop: 12,
@@ -523,7 +499,10 @@ interface HeaderProps {
 }
 
 function PdfHeader({ periodLabel }: HeaderProps) {
-  // TODO: replace with embedded logo.png (base64) once design supplies a print-quality asset.
+  // TODO: replace with embedded white-on-transparent logo asset.
+  // public/logo.png is navy and @react-pdf/renderer does not support CSS
+  // filter, so a separate white variant (e.g. public/logo-white.png) is
+  // required before this can become an <Image>.
   return (
     <View style={styles.header} fixed={false}>
       <View>
@@ -561,25 +540,6 @@ function PdfFooter({ pageNumber }: FooterProps) {
         >
           View Program Hub →
         </Link>
-      </View>
-    </View>
-  );
-}
-
-interface MetaStripProps {
-  reportDate: string;
-}
-
-function MetaStrip({ reportDate }: MetaStripProps) {
-  return (
-    <View style={styles.metaStrip}>
-      <View style={styles.metaItem}>
-        <Text style={styles.metaLabel}>Report date</Text>
-        <Text style={styles.metaValue}>{reportDate}</Text>
-      </View>
-      <View style={styles.metaItem}>
-        <Text style={styles.metaLabel}>Distribution</Text>
-        <Text style={styles.metaValue}>Exec team</Text>
       </View>
     </View>
   );
@@ -869,14 +829,12 @@ export function ExecReportPDF({
   themes,
   narrative,
   ganttRows,
-  reportDate,
   periodLabel,
 }: ExecReportPDFProps) {
   return (
     <Document>
       <Page size="A4" orientation="portrait" style={styles.page}>
         <PdfHeader periodLabel={periodLabel} />
-        <MetaStrip reportDate={reportDate} />
         <View style={styles.body}>
           <View style={styles.section}>
             <SectionTitle icon="highlights" label="Key highlights" />

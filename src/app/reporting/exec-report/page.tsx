@@ -295,7 +295,7 @@ export default async function ExecReportPage({
       .gte("date", from)
       .lte("date", to)
       .order("date", { ascending: false })
-      .limit(5),
+      .limit(4),
     supabase
       .from("coeo_program_themes")
       .select("*")
