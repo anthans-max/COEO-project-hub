@@ -9,14 +9,13 @@ import type {
 import { CommentsTextEditor } from "./CommentsTextEditor";
 import { ExecReportControls } from "./controls";
 import { ExecReportShell } from "./ExecReportShell";
+import { GanttEditor } from "./GanttEditor";
 import { HighlightsEditor } from "./HighlightsEditor";
 import { MeetingsEditor } from "./MeetingsEditor";
 import { NarrativeEditor } from "./NarrativeEditor";
 import {
   GANTT_YEAR,
   MILESTONE_PILL_CLASS,
-  MONTHS,
-  NAVY_STATUSES,
   buildGanttRows,
   currentIsoWeek,
   formatBadgeDay,
@@ -190,63 +189,6 @@ function PageFooter({ pageNumber }: { pageNumber: number }) {
   );
 }
 
-function GanttBar({
-  startMonth,
-  endMonth,
-  month,
-  navy,
-}: {
-  startMonth: number;
-  endMonth: number;
-  month: number;
-  navy: boolean;
-}) {
-  const inSpan = month >= startMonth && month <= endMonth;
-  if (!inSpan) return null;
-  const isFirst = month === startMonth;
-  const isLast = month === endMonth;
-  const radius =
-    isFirst && isLast
-      ? "3px"
-      : isFirst
-      ? "3px 0 0 3px"
-      : isLast
-      ? "0 3px 3px 0"
-      : "0";
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "6px",
-        height: "12px",
-        background: navy ? "#0A2342" : "#B4B2A9",
-        left: isFirst ? "3px" : "0",
-        right: isLast ? "3px" : "0",
-        borderRadius: radius,
-      }}
-    />
-  );
-}
-
-function GanttDiamond() {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "4px",
-        left: "50%",
-        marginLeft: "-7px",
-        width: "14px",
-        height: "14px",
-        background: "#F4821F",
-        transform: "rotate(45deg)",
-        borderRadius: "2px",
-        zIndex: 2,
-      }}
-    />
-  );
-}
-
 interface SearchParams {
   from?: string;
   to?: string;
@@ -268,6 +210,7 @@ export default async function ExecReportPage({
   const [
     { data: highlightsRaw },
     { data: projectsRaw },
+    { data: allProjectsRaw },
     { data: milestonesRaw },
     { data: meetingsRaw },
     { data: themesRaw },
@@ -282,6 +225,10 @@ export default async function ExecReportPage({
       .from("coeo_projects")
       .select("*")
       .eq("show_on_report", true)
+      .order("sort_order"),
+    supabase
+      .from("coeo_projects")
+      .select("*")
       .order("sort_order"),
     supabase
       .from("coeo_milestones")
@@ -309,12 +256,14 @@ export default async function ExecReportPage({
 
   const highlights = (highlightsRaw ?? []) as KeyHighlight[];
   const projects = (projectsRaw ?? []) as Project[];
+  const allProjects = (allProjectsRaw ?? []) as Project[];
   const milestones = (milestonesRaw ?? []) as MilestoneWithProject[];
   const meetings = (meetingsRaw ?? []) as MeetingNote[];
   const themes = (themesRaw ?? []) as ProgramTheme[];
   const narrative = (narrativeRaw ?? null) as ReportNarrative | null;
 
   const ganttRows = buildGanttRows(projects, milestones, todayIso);
+  const allGanttRows = buildGanttRows(allProjects, milestones, todayIso);
   const period = periodLabel(from, to);
   const generatedDate = formatLong(todayIso);
 
@@ -355,72 +304,11 @@ export default async function ExecReportPage({
                 Workstream roadmap — {GANTT_YEAR}
               </div>
             </div>
-            <table className="gantt">
-              <thead>
-                <tr>
-                  <th className="lc">Workstream</th>
-                  {MONTHS.map((m) => (
-                    <th key={m}>{m}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {ganttRows.map((row) => {
-                  const navy = NAVY_STATUSES.has(row.project.status);
-                  return (
-                    <tr key={row.project.id}>
-                      <td className="lc">
-                        <div className="g-name">{row.project.name}</div>
-                        {row.project.vendor ? (
-                          <div className="g-sub">{row.project.vendor}</div>
-                        ) : null}
-                      </td>
-                      {MONTHS.map((_, m) => (
-                        <td
-                          key={m}
-                          style={{
-                            padding: "2px 1px",
-                            position: "relative",
-                            height: "24px",
-                          }}
-                        >
-                          <GanttBar
-                            startMonth={row.startMonth}
-                            endMonth={row.endMonth}
-                            month={m}
-                            navy={navy}
-                          />
-                          {row.msMonth === m ? <GanttDiamond /> : null}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            <div className="g-legend">
-              <div className="g-legend-item">
-                <div
-                  className="l-bar"
-                  style={{ background: "#0A2342" }}
-                />
-                In progress
-              </div>
-              <div className="g-legend-item">
-                <div
-                  className="l-bar"
-                  style={{ background: "#B4B2A9" }}
-                />
-                Not started / TBD
-              </div>
-              <div className="g-legend-item">
-                <div
-                  className="l-dia"
-                  style={{ background: "#F4821F" }}
-                />
-                Milestone
-              </div>
-            </div>
+            <GanttEditor
+              allProjects={allProjects}
+              ganttRows={ganttRows}
+              allGanttRows={allGanttRows}
+            />
           </div>
 
           {/* UPCOMING MILESTONES */}
@@ -1147,6 +1035,29 @@ const REPORT_CSS = `
   font-size: 11px;
   color: var(--text-body);
   line-height: 1.5;
+}
+
+.exec-report-shell .gantt-toggle-cell {
+  width: 28px;
+  text-align: center;
+  padding: 0;
+  vertical-align: middle;
+}
+.exec-report-shell .gantt-toggle-checkbox {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  accent-color: var(--navy);
+}
+.exec-report-shell .gantt-toggle-checkbox:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+.exec-report-shell .gantt-edit-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-style: italic;
 }
 
 @media print {
