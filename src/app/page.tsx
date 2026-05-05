@@ -69,9 +69,14 @@ export default async function DashboardPage() {
           inProgressCount={inProgressCount}
         />
 
-        <Section title="Key highlights">
-          <Highlights initialData={highlights} />
-        </Section>
+        <div className="mb-5">
+          <Highlights
+            initialData={highlights}
+            projects={[...projects]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((p) => ({ id: p.id, name: p.name }))}
+          />
+        </div>
 
         <Section title="Portfolio roadmap" linkLabel="View full roadmap" href="/projects/roadmap">
           <DashboardRoadmap projects={top5} phases={phases} milestones={milestones} />

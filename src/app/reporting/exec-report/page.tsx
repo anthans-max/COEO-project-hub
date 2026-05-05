@@ -289,10 +289,6 @@ export default async function ExecReportPage({
         <div className="page-body">
           {/* KEY HIGHLIGHTS */}
           <div className="section">
-            <div className="section-header">
-              {SECTION_ICONS.highlights}
-              <div className="section-title">Key highlights</div>
-            </div>
             <HighlightsEditor highlights={highlights} />
           </div>
 

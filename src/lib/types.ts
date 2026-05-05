@@ -179,6 +179,7 @@ export interface KeyHighlight {
   created_at: string;
   updated_at: string;
   date: string | null;
+  project_id: string | null;
 }
 
 export interface ReportComment {

@@ -6,14 +6,20 @@ import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
 import type { KeyHighlight } from "@/lib/types";
 
+interface ProjectOption {
+  id: string;
+  name: string;
+}
+
 interface Props {
   highlight: KeyHighlight | null;
+  projects: ProjectOption[];
   onClose: () => void;
   onSave: (updated: KeyHighlight) => void;
 }
 
-export function EditHighlightDialog({ highlight, onClose, onSave }: Props) {
-  const [form, setForm] = useState({ category: "", headline: "", body: "" });
+export function EditHighlightDialog({ highlight, projects, onClose, onSave }: Props) {
+  const [form, setForm] = useState({ category: "", headline: "", body: "", project_id: "" });
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const toast = useToast();
@@ -24,6 +30,7 @@ export function EditHighlightDialog({ highlight, onClose, onSave }: Props) {
         category: highlight.category,
         headline: highlight.headline,
         body: highlight.body,
+        project_id: highlight.project_id ?? "",
       });
       setErrorMsg(null);
     }
@@ -50,6 +57,7 @@ export function EditHighlightDialog({ highlight, onClose, onSave }: Props) {
       category: form.category.trim(),
       headline: form.headline.trim(),
       body: form.body.trim(),
+      project_id: form.project_id || null,
     };
 
     const supabase = createClient();
@@ -128,6 +136,22 @@ export function EditHighlightDialog({ highlight, onClose, onSave }: Props) {
               rows={4}
               className={inputClass}
             />
+          </div>
+
+          <div>
+            <label className={labelClass}>Linked project</label>
+            <select
+              value={form.project_id}
+              onChange={(e) => set("project_id", e.target.value)}
+              className={inputClass}
+            >
+              <option value="">None</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex justify-end gap-2 mt-3">

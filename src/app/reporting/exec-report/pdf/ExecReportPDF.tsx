@@ -18,7 +18,6 @@ import type {
 } from "@/lib/types";
 import {
   GANTT_YEAR,
-  HIGHLIGHT_COLOURS,
   MILESTONE_PILL_CLASS,
   MONTHS,
   NAVY_STATUSES,
@@ -54,13 +53,6 @@ const RED_LIGHT = "#FCEBEB";
 const GREY_BAR = "#B4B2A9";
 const WHITE_70 = "rgba(255,255,255,0.7)";
 const WHITE_55 = "rgba(255,255,255,0.55)";
-
-const HIGHLIGHT_BORDER: Record<(typeof HIGHLIGHT_COLOURS)[number], string> = {
-  green: GREEN,
-  blue: BLUE,
-  amber: AMBER,
-  orange: ORANGE,
-};
 
 const PILL_COLOURS: Record<string, { bg: string; fg: string }> = {
   upcoming: { bg: BLUE_LIGHT, fg: BLUE },
@@ -150,15 +142,20 @@ const styles = StyleSheet.create({
   },
   highlightCard: {
     width: "48.5%",
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    paddingLeft: 12,
+    flexDirection: "row",
     backgroundColor: CREAM,
-    borderLeftWidth: 3,
-    borderLeftColor: NAVY,
     borderTopLeftRadius: 2,
     borderBottomLeftRadius: 2,
     marginBottom: 7,
+  },
+  hlAccent: {
+    width: 3,
+    backgroundColor: ORANGE,
+  },
+  hlBody: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
   hlProject: {
     fontSize: 7,
@@ -168,13 +165,25 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     marginBottom: 3,
   },
-  hlText: {
+  hlBulletList: {
+    flexDirection: "column",
+    gap: 3,
+  },
+  hlBulletRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 4,
+  },
+  hlBulletDot: {
+    fontSize: 9,
+    color: ORANGE,
+    lineHeight: 1.4,
+  },
+  hlBulletText: {
+    flex: 1,
     fontSize: 9,
     color: TEXT_BODY,
     lineHeight: 1.4,
-  },
-  hlHeadline: {
-    fontWeight: 600,
   },
   hlDate: {
     fontSize: 7,
@@ -564,25 +573,31 @@ interface HighlightsGridProps {
 }
 
 function HighlightsGrid({ highlights }: HighlightsGridProps) {
+  const sorted = [...highlights].sort((a, b) => a.sort_order - b.sort_order);
   return (
     <View style={styles.highlightsGrid}>
-      {highlights.map((h, i) => {
-        const colour = HIGHLIGHT_COLOURS[i % 4];
+      {sorted.map((h) => {
+        const bullets = (h.body ?? "")
+          .split("•")
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0 && s !== "…" && s !== "...");
         return (
-          <View
-            key={h.id}
-            style={[styles.highlightCard, { borderLeftColor: HIGHLIGHT_BORDER[colour] }]}
-          >
-            <Text style={styles.hlProject}>{h.category}</Text>
-            <Text style={styles.hlText}>
-              {h.headline ? (
-                <Text style={styles.hlHeadline}>{h.headline}. </Text>
+          <View key={h.id} style={styles.highlightCard}>
+            <View style={styles.hlAccent} />
+            <View style={styles.hlBody}>
+              <Text style={styles.hlProject}>{h.category}</Text>
+              <View style={styles.hlBulletList}>
+                {bullets.map((bullet, i) => (
+                  <View key={i} style={styles.hlBulletRow}>
+                    <Text style={styles.hlBulletDot}>•</Text>
+                    <Text style={styles.hlBulletText}>{bullet}</Text>
+                  </View>
+                ))}
+              </View>
+              {h.date ? (
+                <Text style={styles.hlDate}>{formatShort(h.date)}</Text>
               ) : null}
-              {h.body}
-            </Text>
-            {h.date ? (
-              <Text style={styles.hlDate}>{formatShort(h.date)}</Text>
-            ) : null}
+            </View>
           </View>
         );
       })}
