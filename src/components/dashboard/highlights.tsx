@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Trash2 } from "lucide-react";
 import { useRealtime } from "@/lib/hooks/use-realtime";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { AddHighlightDialog } from "./add-highlight-dialog";
 import { EditHighlightDialog } from "./edit-highlight-dialog";
 import type { KeyHighlight } from "@/lib/types";
 
@@ -83,6 +86,8 @@ export function Highlights({ initialData, projects }: Props) {
     initialData
   );
   const [editing, setEditing] = useState<KeyHighlight | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const toast = useToast();
 
@@ -90,6 +95,25 @@ export function Highlights({ initialData, projects }: Props) {
 
   const handleSave = (updated: KeyHighlight) => {
     setHighlights((prev) => prev.map((h) => (h.id === updated.id ? updated : h)));
+  };
+
+  const handleAdd = (created: KeyHighlight) => {
+    setHighlights((prev) => [...prev, created]);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const id = deleteId;
+    const original = highlights.find((h) => h.id === id);
+    setHighlights((prev) => prev.filter((h) => h.id !== id));
+    setDeleteId(null);
+
+    const supabase = createClient();
+    const { error } = await supabase.from("coeo_key_highlights").delete().eq("id", id);
+    if (error) {
+      if (original) setHighlights((prev) => [...prev, original]);
+      toast.error("Failed to delete highlight");
+    }
   };
 
   const handleSync = async (h: KeyHighlight) => {
@@ -140,8 +164,13 @@ export function Highlights({ initialData, projects }: Props) {
 
   return (
     <>
-      <div className="text-[13px] font-semibold text-accent tracking-[0.05em] uppercase mb-2.5">
-        Key highlights
+      <div className="flex items-center justify-between mb-2.5">
+        <div className="text-[13px] font-semibold text-accent tracking-[0.05em] uppercase">
+          Key highlights
+        </div>
+        <Button size="sm" onClick={() => setShowAdd(true)}>
+          + Add highlight
+        </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-stretch">
         {sorted.map((h, index) => {
@@ -156,6 +185,14 @@ export function Highlights({ initialData, projects }: Props) {
               key={h.id}
               className="p-[14px] border border-border border-l-[3px] border-l-accent rounded-[10px] bg-white group relative h-full"
             >
+              <button
+                onClick={() => setDeleteId(h.id)}
+                className="absolute top-2 right-[80px] opacity-0 group-hover:opacity-100 transition-opacity text-destructive bg-white border border-border w-[22px] h-[22px] rounded-pill hover:bg-cream flex items-center justify-center"
+                aria-label={`Delete ${h.category}`}
+                title="Delete highlight"
+              >
+                <Trash2 size={11} />
+              </button>
               {h.project_id && (
                 <button
                   onClick={() => handleSync(h)}
@@ -199,11 +236,27 @@ export function Highlights({ initialData, projects }: Props) {
         })}
       </div>
 
+      <AddHighlightDialog
+        open={showAdd}
+        projects={projects}
+        nextSortOrder={highlights.length}
+        onClose={() => setShowAdd(false)}
+        onAdd={handleAdd}
+      />
+
       <EditHighlightDialog
         highlight={editing}
         projects={projects}
         onClose={() => setEditing(null)}
         onSave={handleSave}
+      />
+
+      <ConfirmDialog
+        open={!!deleteId}
+        title="Delete highlight"
+        message="Are you sure? This will remove the card from the dashboard and exec report."
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteId(null)}
       />
     </>
   );

@@ -4,18 +4,10 @@ import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/browser";
 import { useToast } from "@/components/ui/toast";
-import { formatShort, isoDate } from "./lib";
 import type { KeyHighlight } from "@/lib/types";
 
 interface HighlightsEditorProps {
   highlights: KeyHighlight[];
-}
-
-interface Draft {
-  category: string;
-  headline: string;
-  body: string;
-  date: string;
 }
 
 interface CardStyle {
@@ -61,15 +53,6 @@ const FALLBACK_STYLE: CardStyle = {
   ),
 };
 
-function draftFor(h: KeyHighlight): Draft {
-  return {
-    category: h.category ?? "",
-    headline: h.headline ?? "",
-    body: h.body ?? "",
-    date: h.date ?? "",
-  };
-}
-
 const SEP = " • ";
 
 function buildBody(bullets: string[]): string {
@@ -88,106 +71,12 @@ function pickHeadline(currentHeadline: string, projectName: string, firstBullet:
 
 export function HighlightsEditor({ highlights }: HighlightsEditorProps) {
   const [items, setItems] = useState<KeyHighlight[]>(highlights);
-  const [drafts, setDrafts] = useState<Record<string, Draft>>({});
-  const [savingId, setSavingId] = useState<string | null>(null);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const toast = useToast();
 
   useEffect(() => {
     setItems(highlights);
-    setDrafts({});
   }, [highlights]);
-
-  const setDraftField = (id: string, patch: Partial<Draft>) => {
-    setDrafts((prev) => {
-      const item = items.find((h) => h.id === id);
-      const current = prev[id] ?? (item ? draftFor(item) : null);
-      if (!current) return prev;
-      return { ...prev, [id]: { ...current, ...patch } };
-    });
-  };
-
-  const save = async (id: string) => {
-    const item = items.find((h) => h.id === id);
-    if (!item) return;
-    const draft = drafts[id] ?? draftFor(item);
-    setSavingId(id);
-    const supabase = createClient();
-    const nowIso = new Date().toISOString();
-    const { error } = await supabase
-      .from("coeo_key_highlights")
-      .update({
-        category: draft.category.trim() || "Uncategorised",
-        headline: draft.headline,
-        body: draft.body,
-        date: draft.date || null,
-        updated_at: nowIso,
-      })
-      .eq("id", id);
-    setSavingId(null);
-    if (error) {
-      toast.error("Failed to save highlight");
-      return;
-    }
-    setItems((prev) =>
-      prev.map((h) =>
-        h.id === id
-          ? {
-              ...h,
-              category: draft.category.trim() || "Uncategorised",
-              headline: draft.headline,
-              body: draft.body,
-              date: draft.date || null,
-              updated_at: nowIso,
-            }
-          : h
-      )
-    );
-    setDrafts((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-  };
-
-  const del = async (id: string) => {
-    if (!window.confirm("Delete this highlight?")) return;
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("coeo_key_highlights")
-      .delete()
-      .eq("id", id);
-    if (error) {
-      toast.error("Failed to delete highlight");
-      return;
-    }
-    setItems((prev) => prev.filter((h) => h.id !== id));
-    setDrafts((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-  };
-
-  const addNew = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from("coeo_key_highlights")
-      .insert({
-        category: "New highlight",
-        headline: "",
-        body: "",
-        date: isoDate(new Date()),
-        sort_order: items.length,
-      })
-      .select()
-      .single();
-    if (error || !data) {
-      toast.error("Failed to add highlight");
-      return;
-    }
-    setItems((prev) => [...prev, data as KeyHighlight]);
-  };
 
   const handleSync = async (h: KeyHighlight) => {
     if (!h.project_id || syncingId) return;
@@ -242,7 +131,6 @@ export function HighlightsEditor({ highlights }: HighlightsEditorProps) {
       </div>
       <div className="highlights-grid">
         {items.map((h, index) => {
-          const draft = drafts[h.id] ?? draftFor(h);
           const isSyncing = syncingId === h.id;
           const style = CARD_STYLES[h.sort_order] ?? CARD_STYLES[index] ?? FALLBACK_STYLE;
           const bullets = h.body
@@ -254,108 +142,41 @@ export function HighlightsEditor({ highlights }: HighlightsEditorProps) {
               key={h.id}
               className="p-[14px] border border-border border-l-[3px] border-l-accent rounded-[10px] bg-white group relative h-full"
             >
-              <div className="card-view read-only">
-                {h.project_id && (
-                  <button
-                    type="button"
-                    onClick={() => handleSync(h)}
-                    disabled={isSyncing}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-primary bg-white border border-border w-[22px] h-[22px] rounded-pill hover:bg-cream flex items-center justify-center disabled:opacity-100"
-                    aria-label={`Sync ${h.category} from project`}
-                    title="Sync from project"
-                  >
-                    <RefreshCw size={11} className={isSyncing ? "animate-spin" : ""} />
-                  </button>
-                )}
-                <div className="flex items-center gap-2 mb-[10px]">
-                  <div
-                    className="w-[28px] h-[28px] rounded-[8px] flex items-center justify-center shrink-0"
-                    style={{ background: style.bg }}
-                  >
-                    {style.icon}
-                  </div>
-                  <div className="text-[12px] text-[#6B6560]">{h.category}</div>
-                </div>
-                <ul className="flex flex-col gap-[6px]">
-                  {bullets.map((bullet, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-[14px] text-text-primary leading-[1.5]"
-                    >
-                      <span className="text-accent leading-[1.5] shrink-0">●</span>
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-                {h.date ? (
-                  <div className="hl-date">{formatShort(h.date)}</div>
-                ) : null}
-              </div>
-
-              <div className="card-edit edit-only">
+              {h.project_id && (
                 <button
                   type="button"
-                  className="card-delete-btn"
-                  onClick={() => del(h.id)}
-                  aria-label="Delete highlight"
+                  onClick={() => handleSync(h)}
+                  disabled={isSyncing}
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-primary bg-white border border-border w-[22px] h-[22px] rounded-pill hover:bg-cream flex items-center justify-center disabled:opacity-100"
+                  aria-label={`Sync ${h.category} from project`}
+                  title="Sync from project"
                 >
-                  ×
+                  <RefreshCw size={11} className={isSyncing ? "animate-spin" : ""} />
                 </button>
-                <input
-                  type="text"
-                  className="inline-input hl-project-input"
-                  value={draft.category}
-                  onChange={(e) =>
-                    setDraftField(h.id, { category: e.target.value })
-                  }
-                  placeholder="Category"
-                />
-                <input
-                  type="text"
-                  className="inline-input hl-headline-input"
-                  value={draft.headline}
-                  onChange={(e) =>
-                    setDraftField(h.id, { headline: e.target.value })
-                  }
-                  placeholder="Headline"
-                />
-                <textarea
-                  className="inline-textarea hl-body-input"
-                  rows={3}
-                  value={draft.body}
-                  onChange={(e) =>
-                    setDraftField(h.id, { body: e.target.value })
-                  }
-                  placeholder="Body"
-                />
-                <input
-                  type="date"
-                  className="inline-input hl-date-input"
-                  value={draft.date}
-                  onChange={(e) => setDraftField(h.id, { date: e.target.value })}
-                />
-                <div className="card-edit-actions">
-                  <button
-                    type="button"
-                    className="card-save-btn"
-                    disabled={savingId === h.id}
-                    onClick={() => save(h.id)}
-                  >
-                    {savingId === h.id ? "Saving…" : "Save"}
-                  </button>
+              )}
+              <div className="flex items-center gap-2 mb-[10px]">
+                <div
+                  className="w-[28px] h-[28px] rounded-[8px] flex items-center justify-center shrink-0"
+                  style={{ background: style.bg }}
+                >
+                  {style.icon}
                 </div>
+                <div className="text-[12px] text-[#6B6560]">{h.category}</div>
               </div>
+              <ul className="flex flex-col gap-[6px]">
+                {bullets.map((bullet, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-[14px] text-text-primary leading-[1.5]"
+                  >
+                    <span className="text-accent leading-[1.5] shrink-0">●</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           );
         })}
-
-        <button
-          type="button"
-          className="card-add-btn edit-only"
-          onClick={addNew}
-        >
-          + Add highlight
-        </button>
       </div>
     </>
   );
